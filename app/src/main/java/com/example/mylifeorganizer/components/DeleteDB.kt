@@ -58,7 +58,9 @@ fun DeleteDB() {
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = {},
+            onClick = {
+                deleteDatabase(context, dbName)
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(

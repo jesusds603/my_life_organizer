@@ -11,7 +11,7 @@ import androidx.room.Relation
 data class NoteEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "noteId") // Renombramos la columna a noteId
-    val noteId: Int = 0,
+    val noteId: Long = 0,
     val title: String,
     val content: String,
     val createdAt: Long = System.currentTimeMillis(),
@@ -25,10 +25,9 @@ data class NoteEntity(
 data class CategoryEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "categoryId") // Renombramos la columna a categoryId
-    val categoryId: Int = 0,
+    val categoryId: Long = 0,
     val name: String,
-    val bgColorDark: String,
-    val bgColorLight: String,
+    val bgColor: String,
 )
 
 // Tabla intermedia para la relación muchos a muchos
@@ -38,9 +37,9 @@ data class CategoryEntity(
 )
 data class NoteCategoryCrossRef(
     @ColumnInfo(name = "noteId") // Referencia a la columna "noteId" de NoteEntity
-    val noteId: Int,
+    val noteId: Long,
     @ColumnInfo(name = "categoryId") // Referencia a la columna "categoryId" de CategoryEntity
-    val categoryId: Int
+    val categoryId: Long
 )
 
 // Relación completa entre las notas y las categorías

@@ -12,9 +12,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
-    fun addNote(note: NoteEntity) {
+    fun addNote(note: NoteEntity, onNoteAdded: (Long) -> Unit) {
         viewModelScope.launch {
-            notesRepository.insertNote(note)
+            val noteId = notesRepository.insertNote(note)
+            onNoteAdded(noteId) // Ejecuta una acción cuando se inserta la nota
         }
     }
 
@@ -24,7 +25,7 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
         }
     }
 
-    fun linkNoteWithCategory(noteId: Int, categoryId: Int) {
+    fun linkNoteWithCategory(noteId: Long, categoryId: Long) {
         viewModelScope.launch {
             notesRepository.linkNoteWithCategory(noteId, categoryId)
         }

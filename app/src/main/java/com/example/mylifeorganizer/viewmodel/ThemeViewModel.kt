@@ -14,6 +14,26 @@ class ThemeViewModel : ViewModel() {
         updateThemeColors()
     }
 
+    val namesColorCategories = listOf(
+        "red", "green", "blue", "yellow", "purple", "orange", "cyan", "pink", "gray"
+    )
+
+    // Obtener los colores de categories usando los nombres de los colores
+    fun getCategoryColor(colorName: String): Color {
+        return when (colorName) {
+            "red"-> themeColors.value.categoriesNotes.red
+            "green" -> themeColors.value.categoriesNotes.green
+            "blue" -> themeColors.value.categoriesNotes.blue
+            "yellow" -> themeColors.value.categoriesNotes.yellow
+            "purple" -> themeColors.value.categoriesNotes.purple
+            "orange" -> themeColors.value.categoriesNotes.orange
+            "cyan" -> themeColors.value.categoriesNotes.cyan
+            "pink" -> themeColors.value.categoriesNotes.pink
+            "gray" -> themeColors.value.categoriesNotes.gray
+            else -> Color.Transparent // Valor por defecto si el nombre del color no coincide
+        }
+    }
+
     var themeColors = mutableStateOf(
         ThemeColors(
             backGround1 = Color(0xff000000),
@@ -35,9 +55,22 @@ class ThemeViewModel : ViewModel() {
                 addIncome = Color(0xFF15BF09),
                 addTask = Color(0xFF303F9F)
             ),
-            backgroundTransparent1 = Color(0xcc000000)
+            backgroundTransparent1 = Color(0xcc000000),
+            categoriesNotes = ThemeColors.CategoriesNotes(
+                red = Color(0xFFBF0B2C),
+                green = Color(0xFF04A004),
+                blue = Color(0xFF0F0FB1),
+                yellow =  Color(0xFFFFC107),
+                purple = Color(0xFF53089E),
+                orange = Color(0xFFF34C17),
+                cyan = Color(0xFF0EA380),
+                pink = Color(0xFFD51FBD),
+                gray = Color(0xFF5C5C5C)
+            )
         )
     )
+
+
 
     private fun updateThemeColors() {
         themeColors.value = if (isThemeDark.value) {
@@ -61,7 +94,18 @@ class ThemeViewModel : ViewModel() {
                     addIncome = Color(0xFF15BF09),
                     addTask = Color(0xFF303F9F)
                 ),
-                backgroundTransparent1 = Color(0xcc000000)
+                backgroundTransparent1 = Color(0xcc000000),
+                categoriesNotes = ThemeColors.CategoriesNotes(
+                    red = Color(0xFFB00020),
+                    green = Color(0xFF008000),
+                    blue = Color(0xFF000080),
+                    yellow =  Color(0xFFFFC107),
+                    purple = Color(0xFF800080),
+                    orange = Color(0xFFFF5722),
+                    cyan = Color(0xFF800040),
+                    pink = Color(0xFFEC24D1),
+                    gray = Color(0xFF5C5C5C)
+                )
             )
         } else {
             ThemeColors(
@@ -84,11 +128,23 @@ class ThemeViewModel : ViewModel() {
                     addIncome = Color(0xFF5CF63A),
                     addTask = Color(0xFF2196F3)
                 ),
-                backgroundTransparent1 = Color(0xccffffff)
+                backgroundTransparent1 = Color(0xccffffff),
+                categoriesNotes = ThemeColors.CategoriesNotes(
+                    red = Color(0xFFF8304E),
+                    green = Color(0xFF00FF00),
+                    blue = Color(0xFF03A9F4),
+                    yellow =  Color(0xFFFFE500),
+                    purple = Color(0xFFAB29F1),
+                    orange = Color(0xFFFFA500),
+                    cyan = Color(0xFF00FFFF),
+                    pink = Color(0xFFF538CC),
+                    gray = Color(0xFFA0A0A0)
+                )
             )
         }
     }
 }
+
 
 data class ThemeColors(
     val backGround1: Color,
@@ -104,6 +160,7 @@ data class ThemeColors(
     val buttonDelete: Color,
     val quickCard: QuickCardColors,
     val backgroundTransparent1: Color,
+    val categoriesNotes: CategoriesNotes
 ) {
     data class QuickCardColors(
         val addNote: Color,
@@ -112,5 +169,17 @@ data class ThemeColors(
         val addExpense: Color,
         val addIncome: Color,
         val addTask: Color,
+    )
+
+    data class CategoriesNotes(
+        val red: Color,
+        val green: Color,
+        val blue: Color,
+        val yellow: Color,
+        val purple: Color,
+        val orange: Color,
+        val cyan: Color,
+        val pink: Color,
+        val gray: Color
     )
 }

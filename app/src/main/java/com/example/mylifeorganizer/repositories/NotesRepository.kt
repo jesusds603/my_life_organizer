@@ -12,8 +12,8 @@ class NotesRepository (val noteDB: NoteDB) {
     private val noteDAO = noteDB.noteDao()
 
     // Insertar una nueva nota
-    suspend fun insertNote(note: NoteEntity) {
-        noteDAO.insertNote(note)
+    suspend fun insertNote(note: NoteEntity): Long {
+        return noteDAO.insertNote(note)
     }
 
     // Insertar una nueva categoría
@@ -22,7 +22,7 @@ class NotesRepository (val noteDB: NoteDB) {
     }
 
     // Vincular una nota con una categoría
-    suspend fun linkNoteWithCategory(noteId: Int, categoryId: Int) {
+    suspend fun linkNoteWithCategory(noteId: Long, categoryId: Long) {
         noteDAO.insertNoteCategoryCrossRef(NoteCategoryCrossRef(noteId, categoryId))
     }
 

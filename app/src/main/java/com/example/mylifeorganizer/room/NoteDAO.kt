@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface NoteDao {
     // Insertar una nueva nota
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertNote(note: NoteEntity)
+    suspend fun insertNote(note: NoteEntity): Long
 
     // Insertar una nueva categoría
     @Insert(onConflict = OnConflictStrategy.REPLACE)
