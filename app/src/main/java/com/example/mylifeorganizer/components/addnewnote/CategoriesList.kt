@@ -9,12 +9,15 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -36,34 +39,33 @@ fun CategoriesList(
 
     Text(
         text = "Available Categories",
-        fontSize = 18.sp,
+        fontSize = 14.sp,
+        fontWeight = FontWeight.Bold,
         color = themeColors.text1,
         modifier = Modifier.padding(vertical = 8.dp)
     )
 
     if (categoriesWithNotes.isNotEmpty()) {
-        FlowRow(
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth()
-                .border(width = 1.dp, color = Color.Magenta, shape = RoundedCornerShape(16.dp)),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalArrangement = Arrangement.Center
+        LazyRow(
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            categoriesWithNotes.forEach { categoryWithNotes ->
+            items(categoriesWithNotes) { categoryWithNotes ->
                 val category = categoryWithNotes.category
                 val isSelected = selectedCategories.contains(category)
 
                 Box(
                     modifier = Modifier
+                        .padding(horizontal = 4.dp)
                         .background(themeViewModel.getCategoryColor(category.bgColor))
-                        .clickable { onCategoryClick(category, isSelected) },
+                        .clickable { onCategoryClick(category, isSelected) }
+                        .padding(vertical = 4.dp, horizontal = 4.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = category.name,
                         color = themeColors.text1,
-                        fontSize = 18.sp
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
                     )
                 }
             }
@@ -73,7 +75,8 @@ fun CategoriesList(
         Text(
             text = "No categories available",
             color = themeColors.text1,
-            fontSize = 16.sp,
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(16.dp)
         )
     }

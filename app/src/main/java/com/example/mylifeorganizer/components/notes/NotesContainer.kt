@@ -64,7 +64,7 @@ fun NotesContainer(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 2.dp, horizontal = 8.dp)
-                    .background(themeColors.backGround4, shape = RoundedCornerShape(16.dp))
+                    .background(themeColors.backGround4, shape = RoundedCornerShape(8.dp))
                     .padding(vertical = 4.dp, horizontal = 16.dp)
             ) {
                 // Formatear las fechas
@@ -78,9 +78,9 @@ fun NotesContainer(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = note.title,
+                        text = note.title.replace("\n", " "),
                         color = themeColors.text1,
-                        fontSize = 16.sp,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                     )
 
@@ -88,7 +88,7 @@ fun NotesContainer(
                         Text(
                             text = "⋮",
                             color = themeColors.text1,
-                            fontSize = 24.sp,
+                            fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
                                 .clickable { showMenu = true } // Al hacer clic, mostrar el menú
@@ -96,7 +96,7 @@ fun NotesContainer(
                                     color = themeColors.backGround1,
                                     shape = RoundedCornerShape(8.dp)
                                 )
-                                .padding(vertical = 2.dp, horizontal = 16.dp)
+                                .padding(vertical = 2.dp, horizontal = 8.dp)
                         )
 
                         // Ventana flotante con las opciones
@@ -107,50 +107,38 @@ fun NotesContainer(
                     }
                 }
 
-                // Contenido truncado (primeros 50 caracteres)
-                Text(
-                    text = if (note.content.length > 90) {
-                        note.content.substring(0, 90).replace("\n", "  ") + "..."
-                    } else {
-                        note.content.replace("\n", "  ")
-                    },
-                    color = themeColors.text1,
-                    fontSize = 14.sp,
-                    modifier = Modifier.padding(top = 2.dp)
-                )
 
-                // Fila con createdAt y updatedAt
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 2.dp),
+                Row (
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "Created:   $formattedCreatedAt",
-                        color = themeColors.text3,
+                        text = "Last updated:",
+                        color = themeColors.text2,
                         fontSize = 12.sp
                     )
                     Text(
-                        text = "Updated:   $formattedUpdatedAt",
-                        color = themeColors.text3,
+                        text = formattedUpdatedAt,
+                        color = themeColors.text2,
                         fontSize = 12.sp
                     )
                 }
 
                 // FlowRow para las categorías de la nota
                 FlowRow(
-                    modifier = Modifier.padding(top = 4.dp)
+                    modifier = Modifier.padding(top = 1.dp)
                 ) {
                     val categories = notesWithCategories.find { it.note.noteId == note.noteId }?.categories ?: emptyList()
                     categories.forEach { category ->
                         Box(
                             modifier = Modifier
-                                .padding(end = 4.dp)
+                                .padding(end = 1.dp)
                                 .background(
                                     themeViewModel.getCategoryColor(category.bgColor),
                                     shape = RoundedCornerShape(16.dp)
                                 )
-                                .padding(horizontal = 12.dp, vertical = 2.dp)
+                                .padding(horizontal = 12.dp, vertical = 1.dp)
                         ) {
                             Text(
                                 text = category.name,

@@ -69,7 +69,7 @@ dependencies {
     ksp("androidx.room:room-compiler:$room_version")
 
     // Navigation
-    implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation("androidx.navigation:navigation-compose:2.8.5")
 
     // Para el sistema
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.36.0")

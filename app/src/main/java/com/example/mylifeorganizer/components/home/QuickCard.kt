@@ -43,7 +43,7 @@ fun QuickCard(
 
     Card (
         modifier = Modifier
-            .padding(16.dp)
+            .padding(4.dp)
             .clickable(onClick = onClick)
             .fillMaxWidth()
             .height(160.dp),

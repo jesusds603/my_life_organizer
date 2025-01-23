@@ -35,7 +35,7 @@ fun NotesScreen() {
     Column (
         modifier = Modifier
             .fillMaxSize()
-            .systemBarsPadding()
+
     ) {
         RowCategories(
             selectedCategory = selectedCategory,

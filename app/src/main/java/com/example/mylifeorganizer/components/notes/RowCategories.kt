@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -14,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -31,8 +33,14 @@ fun RowCategories(
 
     var themeColors = themeViewModel.themeColors.value
 
+    val padding4 = 4.dp
+    val padding2 = 2.dp
+    val fontSize = 16.sp
+    val cornerRadius = 4.dp
+    val padding8 = 8.dp
+
     LazyRow (
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
 
         // Agregar la opción "All"
@@ -42,9 +50,9 @@ fun RowCategories(
                     .clickable { onCategorySelected("All") }
                     .background(
                         color = Color.Transparent,
-                        shape = RoundedCornerShape(16.dp)
+                        shape = RoundedCornerShape(cornerRadius)
                     )
-                    .padding(8.dp)
+                    .padding(horizontal = padding8)
                     .drawWithContent {
                         // Dibuja el contenido primero
                         drawContent()
@@ -55,7 +63,7 @@ fun RowCategories(
                                 color = Color.Green,
                                 start = Offset(0f, size.height), // Comienza en el fondo de la Box
                                 end = Offset(size.width, size.height), // Termina en el fondo de la Box
-                                strokeWidth = 20f
+                                strokeWidth = 10f
                             )
                         }
                     }
@@ -64,14 +72,15 @@ fun RowCategories(
                     modifier = Modifier
                         .background(
                             color = themeColors.backGround1,
-                            shape = RoundedCornerShape(16.dp)
+                            shape = RoundedCornerShape(cornerRadius)
                         )
-                        .padding(horizontal = 16.dp, vertical = 8.dp), // Espaciado adicional dentro del fondo
+                        .padding(vertical = padding2, horizontal = padding4), // Espaciado adicional dentro del fondo
                 ) {
                     Text(
                         text = "All",
                         color = if (selectedCategory == "All") themeColors.text1 else themeColors.text3,
-                        fontSize = 20.sp,
+                        fontSize = fontSize,
+                        fontWeight = FontWeight.Bold
                     )
                 }
 
@@ -88,8 +97,9 @@ fun RowCategories(
                         .clickable { onCategorySelected(categoryName) }
                         .background(
                             color = Color.Transparent,
-                            shape = RoundedCornerShape(4.dp)
+                            shape = RoundedCornerShape(cornerRadius)
                         )
+                        .padding(horizontal = padding8)
                         .drawWithContent {
                             // Dibuja el contenido primero
                             drawContent()
@@ -100,7 +110,7 @@ fun RowCategories(
                                     color = Color.Green,
                                     start = Offset(0f, size.height), // Comienza en el fondo de la Box
                                     end = Offset(size.width, size.height), // Termina en el fondo de la Box
-                                    strokeWidth = 20f
+                                    strokeWidth = 10f
                                 )
                             }
                         }
@@ -109,14 +119,15 @@ fun RowCategories(
                         modifier = Modifier
                             .background(
                                 color = themeViewModel.getCategoryColor(categoryWithNotes.category.bgColor),
-                                shape = RoundedCornerShape(16.dp)
+                                shape = RoundedCornerShape(cornerRadius)
                             )
-                            .padding(horizontal = 16.dp, vertical = 8.dp), // Espaciado adicional dentro del fondo,
+                            .padding(vertical = padding2, horizontal = padding4), // Espaciado adicional dentro del fondo,
                     ) {
                         Text(
                             text = categoryName,
                             color = if (selectedCategory == categoryName) themeColors.text1 else themeColors.text3,
-                            fontSize = 20.sp
+                            fontSize = fontSize,
+                            fontWeight = FontWeight.Bold
                         )
                     }
 

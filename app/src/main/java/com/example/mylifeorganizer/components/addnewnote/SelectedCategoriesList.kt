@@ -9,12 +9,15 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -42,27 +45,26 @@ fun SelectedCategoriesList(
             modifier = Modifier.padding(vertical = 8.dp)
         )
 
-        FlowRow (
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth()
-                .border(width = 1.dp, color = Color.Magenta, shape = RoundedCornerShape(16.dp)),
-            horizontalArrangement = Arrangement.SpaceBetween
+        LazyRow (
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            selectedCategories.forEach { selectedCategory ->
+            items(selectedCategories) { selectedCategory ->
                 val category = categoriesWithNotes.find { it.category == selectedCategory }?.category
                 val isSelected = category != null
 
                 Box(
                     modifier = Modifier
+                        .padding(horizontal = 4.dp)
                         .background(themeViewModel.getCategoryColor(category?.bgColor ?: ""))
-                        .clickable { onCategoryClick(selectedCategory, isSelected) },
+                        .clickable { onCategoryClick(selectedCategory, isSelected) }
+                        .padding(vertical = 4.dp, horizontal = 4.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         text = category?.name ?: "",
                         color = themeColors.text1,
-                        fontSize = 18.sp
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
                     )
                 }
             }

@@ -34,7 +34,6 @@ fun Header() {
     Row (
         modifier = Modifier
             .fillMaxWidth()
-            .statusBarsPadding()
             .background(themeColors.backGround1)
             .height(50.dp),
         horizontalArrangement = Arrangement.SpaceBetween,

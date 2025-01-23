@@ -39,10 +39,12 @@ fun ButtonTabs() {
     val themeColors = themeViewModel.themeColors.value
     val isLangEng = appViewModel.isLangEng.value
 
+    val heightBar = 60.dp
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .height(60.dp)
+            .height(heightBar)
             .background(themeColors.backGround1),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
@@ -150,19 +152,16 @@ fun TabButton(
     TextButton(
         onClick = onClick,
         modifier = modifier
-            .fillMaxHeight()
-            .padding(0.dp)
             .background(Color.Transparent),
         colors = ButtonDefaults.textButtonColors(
-            contentColor = themeColors.text1,
-            containerColor = if (isSelected) themeColors.tabButtonSelected else themeColors.tabButtonDefault
+            contentColor = if (isSelected) themeColors.tabButtonSelected else themeColors.tabButtonDefault,
+            containerColor = Color.Transparent
         ),
-        shape = RoundedCornerShape(16.dp)
+        shape = RoundedCornerShape(4.dp)
     ) {
         Column (
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxHeight()
         ) {
             icon()
 

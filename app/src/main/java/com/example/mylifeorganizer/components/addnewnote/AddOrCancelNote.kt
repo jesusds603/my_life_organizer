@@ -22,7 +22,7 @@ fun AddOrCancelNote (
     noteViewModel: NoteViewModel,
     selectedCategories: List<CategoryEntity>,
     newTitle: String,
-    newContent: String
+    newContent: String,
 ) {
     val appViewModel: AppViewModel = viewModel()
     Row(
@@ -36,6 +36,7 @@ fun AddOrCancelNote (
         ) {
             Text(text = "Cancel", color = Color.Red)
         }
+
         TextButton(
             onClick = {
                 // Agregar nota y manejar el ID generado
