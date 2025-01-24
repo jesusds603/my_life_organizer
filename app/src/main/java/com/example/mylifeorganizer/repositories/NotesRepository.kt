@@ -28,12 +28,14 @@ class NotesRepository (val noteDB: NoteDB) {
 
     // Obtener todas las notas
     fun getAllNotesWithCategories() = noteDAO.getAllNotesWithCategories()
+    fun getAllNotes() = noteDAO.getAllNotes()
 
 //    // Obtener todas las notas sin su contenido
 //    fun getAllNotesDescription() = noteDAO.getAllNotesDescription()
 
     // Obtener todas las categorías con sus notas
     fun getAllCategoriesWithNotes() = noteDAO.getAllCategoriesWithNotes()
+    fun getAllCategories() = noteDAO.getAllCategories()
 
     // Filtrar notas por una categoría específica
     fun getNotesByCategory(categoryId: Long) = noteDAO.getNotesByCategory(categoryId)

@@ -22,6 +22,9 @@ interface NoteDao {
     @Query("SELECT * FROM notes")
     fun getAllNotesWithCategories(): Flow<List<NoteWithCategories>>
 
+    @Query("SELECT * FROM notes")
+    fun getAllNotes(): Flow<List<NoteEntity>>
+
 //    // Obtener todas las notas sin su contenido (para la screen)
 //    @Transaction
 //    @Query("SELECT noteId, title, createdAt, updatedAt, isFavorite, isArchived FROM notes")
@@ -31,6 +34,9 @@ interface NoteDao {
     @Transaction
     @Query("SELECT * FROM categories")
     fun getAllCategoriesWithNotes(): Flow<List<CategoryWithNotes>>
+
+    @Query("SELECT * FROM categories")
+    fun getAllCategories(): Flow<List<CategoryEntity>>
 
 
     // Filtrar notas por una categoría específica

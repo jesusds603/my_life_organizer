@@ -34,12 +34,14 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
 
     // Obtener todas las notas con sus categorías
     val notesWithCategories = notesRepository.getAllNotesWithCategories()
+    val notes = notesRepository.getAllNotes()
 
 //    // Obtener todas las notas sin su contenido
 //    val notesDescription = notesRepository.getAllNotesDescription()
 
     // Obtener todas las categorías con sus notas
     val categoriesWithNotes = notesRepository.getAllCategoriesWithNotes()
+    val categories = notesRepository.getAllCategories()
 
     // Filtrar notas por una categoría específica
     fun getNotesByCategory(categoryId: Long): Flow<List<NoteEntity>> {

@@ -28,8 +28,8 @@ fun NotesScreen() {
     val notesRepository = NotesRepository(noteDB)
     val noteViewModel = NoteViewModel(notesRepository)
 
-    val categoriesWithNotes by noteViewModel.categoriesWithNotes.collectAsState(initial = emptyList())
-    val notesDescription by noteViewModel.notesWithCategories.collectAsState(initial = emptyList())
+    val notesWithCategories by noteViewModel.notesWithCategories.collectAsState(initial = emptyList())
+    val categories by noteViewModel.categories.collectAsState(initial = emptyList())
 
     // Estado para rastrear la categoría seleccionada
     var selectedCategory by remember { mutableStateOf("All") }
@@ -44,14 +44,13 @@ fun NotesScreen() {
             onCategorySelected = { category ->
                 selectedCategory = category // Actualizar el valor al seleccionar una categoría
             },
-            categoriesWithNotes = categoriesWithNotes,
+            categories = categories
         )
 
         // Mostrar las notas correspondientes a la categoría seleccionada
         NotesContainer(
             selectedCategory = selectedCategory,
-            notesDescription = notesDescription,
-            categoriesWithNotes = categoriesWithNotes
+            notesWithCategories = notesWithCategories,
         )
     }
 }

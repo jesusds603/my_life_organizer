@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,27 +16,19 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mylifeorganizer.repositories.NotesRepository
-import com.example.mylifeorganizer.room.CategoryWithNotes
-
 import com.example.mylifeorganizer.room.NoteWithCategories
 import com.example.mylifeorganizer.viewmodel.AppViewModel
-import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
-import kotlinx.coroutines.flow.Flow
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -47,8 +38,7 @@ import java.util.Locale
 @Composable
 fun NotesContainer(
     selectedCategory: String,
-    notesDescription: List<NoteWithCategories>,
-    categoriesWithNotes: List<CategoryWithNotes>
+    notesWithCategories: List<NoteWithCategories>,
 ) {
     val appViewModel: AppViewModel = viewModel()
 
@@ -60,10 +50,11 @@ fun NotesContainer(
     ) {
 
         val notesToShow = if (selectedCategory == "All") {
-            notesDescription.map { it.note }
+            notesWithCategories.map { it }
         } else {
-            val selectedCategoryNotes = categoriesWithNotes.find { it.category.name == selectedCategory }
-            selectedCategoryNotes?.notes ?: emptyList()
+            notesWithCategories.filter { noteWithCategories ->
+                noteWithCategories.categories.any { it.name == selectedCategory}
+            }.map { it }
         }
 
         items(notesToShow) { note ->
@@ -79,7 +70,7 @@ fun NotesContainer(
                         appViewModel.toggleShowingNote()
                     }
             ) {
-                val formattedUpdatedAt = formatDate(note.updatedAt)
+                val formattedUpdatedAt = formatDate(note.note.updatedAt)
 
                 // Fila superior con el título y el botón de opciones
                 Row(
@@ -88,7 +79,7 @@ fun NotesContainer(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = note.title.replace("\n", " "),
+                        text = note.note.title.replace("\n", " "),
                         color = themeColors.text1,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
@@ -139,7 +130,7 @@ fun NotesContainer(
                 LazyRow(
                     modifier = Modifier.padding(top = 1.dp)
                 ) {
-                    val categories = notesDescription.find { it.note.noteId== note.noteId }?.categories ?: emptyList()
+                    val categories = notesToShow.find { it.note.noteId== note.note.noteId }?.categories ?: emptyList()
 
                     items(categories) { category ->
                         Box(

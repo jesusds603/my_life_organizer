@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.repositories.NotesRepository
+import com.example.mylifeorganizer.room.CategoryEntity
 import com.example.mylifeorganizer.room.CategoryWithNotes
 import com.example.mylifeorganizer.room.NoteDB
 import com.example.mylifeorganizer.viewmodel.AppViewModel
@@ -36,7 +37,7 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 fun RowCategories(
     selectedCategory: String,
     onCategorySelected: (String) -> Unit,
-    categoriesWithNotes: List<CategoryWithNotes>
+    categories: List<CategoryEntity>
 ) {
     val appViewModel: AppViewModel = viewModel()
 
@@ -100,10 +101,10 @@ fun RowCategories(
             }
         }
 
-        if (categoriesWithNotes.isNotEmpty()) {
+        if (categories.isNotEmpty()) {
             // Agregar las demás categorías
-            items(categoriesWithNotes)  { categoryWithNotes ->
-                val categoryName = categoryWithNotes.category.name
+            items(categories)  { category ->
+                val categoryName = category.name
 
                 Box(
                     modifier = Modifier
@@ -131,7 +132,7 @@ fun RowCategories(
                     Box(
                         modifier = Modifier
                             .background(
-                                color = themeViewModel.getCategoryColor(categoryWithNotes.category.bgColor),
+                                color = themeViewModel.getCategoryColor(category.bgColor),
                                 shape = RoundedCornerShape(cornerRadius)
                             )
                             .padding(vertical = padding2, horizontal = padding4), // Espaciado adicional dentro del fondo,
