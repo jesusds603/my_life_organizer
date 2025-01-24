@@ -11,8 +11,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.components.ButtonTabs
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
-import com.example.mylifeorganizer.components.addnewnote.AddNoteWindow
-import com.example.mylifeorganizer.components.notes.noteview.NoteWindow
+import com.example.mylifeorganizer.components.notes.add.AddNoteWindow
+import com.example.mylifeorganizer.components.notes.edit.NoteWindow
 
 @Composable
 fun MainScreen() {

@@ -25,10 +25,13 @@ interface NoteDao {
     @Query("SELECT * FROM notes")
     fun getAllNotes(): Flow<List<NoteEntity>>
 
-//    // Obtener todas las notas sin su contenido (para la screen)
-//    @Transaction
-//    @Query("SELECT noteId, title, createdAt, updatedAt, isFavorite, isArchived FROM notes")
-//    fun getAllNotesDescription(): Flow<List<NoteSummaryWithCategories>>
+    @Transaction
+    @Query("""
+    SELECT noteId, title, createdAt, updatedAt, isFavorite, isArchived 
+    FROM notes
+""")
+    fun getAllNotesWithoutContentWithCategories(): Flow<List<NoteWithoutContentWithCategories>>
+
 
     // Obtener todas las categorías con sus notas
     @Transaction
@@ -58,6 +61,14 @@ interface NoteDao {
     WHERE note_category_cross_ref.noteId = :noteId
 """)
     fun getCategoriesByNote(noteId: Long): Flow<List<CategoryEntity>>
+
+    @Transaction
+    @Query("""
+    SELECT * 
+    FROM notes
+    WHERE noteId = :noteId
+""")
+    fun getNoteWithCategoriesById(noteId: Long): Flow<NoteWithCategories>
 
 
     // Eliminar una nota

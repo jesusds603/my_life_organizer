@@ -40,9 +40,9 @@ class AppViewModel: ViewModel() {
 
     // -------------------------------------------------
     // NOTAS
-    val selectedNote = mutableStateOf<NoteEntity?>(null)
-    fun changeSelectedNote(note: NoteEntity) {
-        selectedNote.value = note
+    val selectedNoteId = mutableStateOf<Long?>(null)
+    fun changeSelectedNoteId(noteId: Long?) {
+        selectedNoteId.value = noteId
     }
 
     val selectedCategory = mutableStateOf<CategoryEntity?>(null)

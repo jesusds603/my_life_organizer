@@ -1,4 +1,4 @@
-package com.example.mylifeorganizer.components.addnewnote
+package com.example.mylifeorganizer.components.notes.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.R
+import com.example.mylifeorganizer.components.addnewnote.SelectedCategoriesList
 import com.example.mylifeorganizer.room.CategoryEntity
 import com.example.mylifeorganizer.room.CategoryWithNotes
 import com.example.mylifeorganizer.viewmodel.NoteViewModel

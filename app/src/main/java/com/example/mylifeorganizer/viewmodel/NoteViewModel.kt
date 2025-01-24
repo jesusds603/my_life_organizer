@@ -35,6 +35,7 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
     // Obtener todas las notas con sus categorías
     val notesWithCategories = notesRepository.getAllNotesWithCategories()
     val notes = notesRepository.getAllNotes()
+    val notesWithoutContentWithCategories = notesRepository.getAllNotesWithoutContentWithCategories()
 
 //    // Obtener todas las notas sin su contenido
 //    val notesDescription = notesRepository.getAllNotesDescription()
@@ -51,6 +52,10 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
     // Filtrar categorías por una nota específica
     fun getCategoriesByNote(noteId: Long): Flow<List<CategoryEntity>> {
         return notesRepository.getCategoriesByNote(noteId)
+    }
+
+    fun getNoteWithCategoriesById(noteId: Long): Flow<NoteWithCategories> {
+        return notesRepository.getNoteWithCategoriesById(noteId)
     }
 
     // Eliminar una nota

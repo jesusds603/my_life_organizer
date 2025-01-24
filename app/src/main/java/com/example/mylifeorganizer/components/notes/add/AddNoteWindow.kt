@@ -1,4 +1,4 @@
-package com.example.mylifeorganizer.components.addnewnote
+package com.example.mylifeorganizer.components.notes.add
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -26,6 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mylifeorganizer.components.notes.common.CategoriesSection
 import com.example.mylifeorganizer.repositories.NotesRepository
 import com.example.mylifeorganizer.room.CategoryEntity
 import com.example.mylifeorganizer.room.NoteDB
@@ -41,7 +42,6 @@ fun AddNoteWindow(modifier: Modifier = Modifier) {
     val themeViewModel: ThemeViewModel = viewModel()
 
     val themeColors = themeViewModel.themeColors.value
-    val isThemeDark = themeViewModel.isThemeDark.value
 
     var newTitle by remember { mutableStateOf("") }
     var newContent by remember { mutableStateOf("") }

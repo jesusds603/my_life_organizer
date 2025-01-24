@@ -1,4 +1,4 @@
-package com.example.mylifeorganizer.components.addnewnote
+package com.example.mylifeorganizer.components.notes.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

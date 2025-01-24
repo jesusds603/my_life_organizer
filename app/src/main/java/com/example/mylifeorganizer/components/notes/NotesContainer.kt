@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.room.NoteWithCategories
+import com.example.mylifeorganizer.room.NoteWithoutContentWithCategories
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 import java.text.SimpleDateFormat
@@ -34,11 +35,11 @@ import java.util.Date
 import java.util.Locale
 
 
-@OptIn(ExperimentalLayoutApi::class)
+
 @Composable
 fun NotesContainer(
     selectedCategory: String,
-    notesWithCategories: List<NoteWithCategories>,
+    notesWithoutContentWithCategories: List<NoteWithoutContentWithCategories>
 ) {
     val appViewModel: AppViewModel = viewModel()
 
@@ -48,11 +49,13 @@ fun NotesContainer(
     LazyColumn(
         modifier = Modifier.fillMaxSize()
     ) {
+        // Ordenamos las notas por `updatedAt` descendente
+        val sortedNotes = notesWithoutContentWithCategories.sortedByDescending { it.note.updatedAt }
 
         val notesToShow = if (selectedCategory == "All") {
-            notesWithCategories.map { it }
+            sortedNotes.map { it }
         } else {
-            notesWithCategories.filter { noteWithCategories ->
+            sortedNotes.filter { noteWithCategories ->
                 noteWithCategories.categories.any { it.name == selectedCategory}
             }.map { it }
         }
@@ -67,6 +70,7 @@ fun NotesContainer(
                     .background(themeColors.backGround4, shape = RoundedCornerShape(8.dp))
                     .padding(vertical = 4.dp, horizontal = 16.dp)
                     .clickable {
+                        appViewModel.changeSelectedNoteId(note.note.noteId)
                         appViewModel.toggleShowingNote()
                     }
             ) {

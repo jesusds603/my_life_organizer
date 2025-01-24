@@ -28,7 +28,7 @@ fun NotesScreen() {
     val notesRepository = NotesRepository(noteDB)
     val noteViewModel = NoteViewModel(notesRepository)
 
-    val notesWithCategories by noteViewModel.notesWithCategories.collectAsState(initial = emptyList())
+    val notesWithoutContentWithCategories by noteViewModel.notesWithoutContentWithCategories.collectAsState(initial = emptyList())
     val categories by noteViewModel.categories.collectAsState(initial = emptyList())
 
     // Estado para rastrear la categoría seleccionada
@@ -50,7 +50,7 @@ fun NotesScreen() {
         // Mostrar las notas correspondientes a la categoría seleccionada
         NotesContainer(
             selectedCategory = selectedCategory,
-            notesWithCategories = notesWithCategories,
+            notesWithoutContentWithCategories = notesWithoutContentWithCategories
         )
     }
 }

@@ -64,3 +64,25 @@ data class CategoryWithNotes(
     )
     val notes: List<NoteEntity>
 )
+
+// --------
+
+data class NoteWithoutContent(
+    val noteId: Long,
+    val title: String,
+    val createdAt: Long,
+    val updatedAt: Long,
+    val isFavorite: Boolean,
+    val isArchived: Boolean
+)
+
+data class NoteWithoutContentWithCategories(
+    @Embedded
+    val note: NoteWithoutContent,
+    @Relation(
+        parentColumn = "noteId",
+        entityColumn = "categoryId",
+        associateBy = androidx.room.Junction(NoteCategoryCrossRef::class)
+    )
+    val categories: List<CategoryEntity>
+)
