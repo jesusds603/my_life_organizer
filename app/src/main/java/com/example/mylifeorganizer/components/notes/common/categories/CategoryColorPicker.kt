@@ -1,4 +1,4 @@
-package com.example.mylifeorganizer.components.notes.common
+package com.example.mylifeorganizer.components.notes.common.categories
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

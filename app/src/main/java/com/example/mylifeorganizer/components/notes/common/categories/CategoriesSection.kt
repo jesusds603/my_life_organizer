@@ -1,4 +1,4 @@
-package com.example.mylifeorganizer.components.notes.common
+package com.example.mylifeorganizer.components.notes.common.categories
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -19,9 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.R
-import com.example.mylifeorganizer.components.addnewnote.SelectedCategoriesList
 import com.example.mylifeorganizer.room.CategoryEntity
-import com.example.mylifeorganizer.room.CategoryWithNotes
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
@@ -29,7 +27,7 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 @Composable
 fun CategoriesSection(
     noteViewModel: NoteViewModel,
-    categoriesWithNotes: List<CategoryWithNotes>,
+    categories: List<CategoryEntity>,
     selectedCategories: List<CategoryEntity>,
     onCategoryClick: (CategoryEntity, Boolean) -> Unit, // Callback para manejar clics en categorías
     newCategory: MutableState<String>,
@@ -57,7 +55,7 @@ fun CategoriesSection(
 
         // Categorías seleccionadas
         SelectedCategoriesList(
-            categoriesWithNotes = categoriesWithNotes,
+            categories = categories,
             selectedCategories = selectedCategories,
             onCategoryClick = onCategoryClick
         )
@@ -67,7 +65,7 @@ fun CategoriesSection(
 
         // Categorías disponibles
         CategoriesList(
-            categoriesWithNotes = categoriesWithNotes,
+            categories = categories,
             selectedCategories = selectedCategories,
             onCategoryClick = onCategoryClick
         )

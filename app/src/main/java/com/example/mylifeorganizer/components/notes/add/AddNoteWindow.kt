@@ -26,7 +26,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mylifeorganizer.components.notes.common.CategoriesSection
+import com.example.mylifeorganizer.components.notes.common.categories.CategoriesSection
 import com.example.mylifeorganizer.repositories.NotesRepository
 import com.example.mylifeorganizer.room.CategoryEntity
 import com.example.mylifeorganizer.room.NoteDB
@@ -50,7 +50,7 @@ fun AddNoteWindow(modifier: Modifier = Modifier) {
     val noteDB = NoteDB.getInstance(context)
     val notesRepository = NotesRepository(noteDB)
     val noteViewModel = NoteViewModel(notesRepository)
-    val categoriesWithNotes by noteViewModel.categoriesWithNotes.collectAsState(initial = emptyList())
+    val categories by noteViewModel.categories.collectAsState(initial = emptyList())
 
     val newCategory by remember { mutableStateOf("") }
     val newCategoryColor by remember { mutableStateOf("") }
@@ -113,7 +113,7 @@ fun AddNoteWindow(modifier: Modifier = Modifier) {
         )
 
 
-        // Input para el contenido razóon))
+        // Input para el contenido
         TextField(
             value = newContent,
             onValueChange = { newContent = it},
@@ -175,7 +175,7 @@ fun AddNoteWindow(modifier: Modifier = Modifier) {
                 ) {
                     CategoriesSection(
                         noteViewModel,
-                        categoriesWithNotes,
+                        categories,
                         selectedCategories,
                         onCategoryClick = { category, isSelected ->
                             selectedCategories = if (isSelected) {

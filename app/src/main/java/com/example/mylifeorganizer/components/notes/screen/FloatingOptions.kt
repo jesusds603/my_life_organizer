@@ -1,4 +1,4 @@
-package com.example.mylifeorganizer.components.notes
+package com.example.mylifeorganizer.components.notes.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer

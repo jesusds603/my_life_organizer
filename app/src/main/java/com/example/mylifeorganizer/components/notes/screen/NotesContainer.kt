@@ -1,11 +1,10 @@
-package com.example.mylifeorganizer.components.notes
+package com.example.mylifeorganizer.components.notes.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,7 +25,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mylifeorganizer.room.NoteWithCategories
 import com.example.mylifeorganizer.room.NoteWithoutContentWithCategories
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
@@ -116,16 +114,16 @@ fun NotesContainer(
                 Row (
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.Start
                 ) {
                     Text(
-                        text = "Last updated:",
-                        color = themeColors.text2,
+                        text = "Modified:  ",
+                        color = themeColors.text3,
                         fontSize = 12.sp
                     )
                     Text(
                         text = formattedUpdatedAt,
-                        color = themeColors.text2,
+                        color = themeColors.text3,
                         fontSize = 12.sp
                     )
                 }

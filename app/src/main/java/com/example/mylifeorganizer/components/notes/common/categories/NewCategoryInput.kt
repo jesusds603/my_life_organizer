@@ -1,4 +1,4 @@
-package com.example.mylifeorganizer.components.notes.common
+package com.example.mylifeorganizer.components.notes.common.categories
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

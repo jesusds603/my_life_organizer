@@ -1,4 +1,4 @@
-package com.example.mylifeorganizer.components.notes.common
+package com.example.mylifeorganizer.components.notes.common.categories
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,13 +15,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.room.CategoryEntity
-import com.example.mylifeorganizer.room.CategoryWithNotes
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 
 @Composable
 fun CategoriesList(
-    categoriesWithNotes: List<CategoryWithNotes>,
+    categories: List<CategoryEntity>,
     selectedCategories: List<CategoryEntity>,
     onCategoryClick: (CategoryEntity, Boolean) -> Unit // Callback para manejar clics en categorías
 ) {
@@ -37,12 +36,11 @@ fun CategoriesList(
         modifier = Modifier.padding(vertical = 8.dp)
     )
 
-    if (categoriesWithNotes.isNotEmpty()) {
+    if (categories.isNotEmpty()) {
         LazyRow(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            items(categoriesWithNotes) { categoryWithNotes ->
-                val category = categoryWithNotes.category
+            items(categories) { category ->
                 val isSelected = selectedCategories.contains(category)
 
                 Box(
