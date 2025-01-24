@@ -37,12 +37,13 @@ fun MainView(
     onChangeTitle: (String) -> Unit,
     content: String,
     onChangeContent: (String) -> Unit,
-    categories: List<CategoryEntity>,
-    onChangeCategories: (List<CategoryEntity>) -> Unit,
+    categories: List<CategoryEntity>, // Todas las categorías disponibles
+    selectedCategories: List<CategoryEntity>, // Categorías seleccionadas para agregar o eliminar
+    onChangeSelectedCategories: (List<CategoryEntity>) -> Unit,
     noteViewModel: NoteViewModel,
     newCategory: String,
     showCategoryInput: Boolean,
-    newCategoryColor: String
+    newCategoryColor: String,
 ) {
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
@@ -100,14 +101,16 @@ fun MainView(
             Text("Agregar Categorías")
         }
 
+
+
         // Mostrar categorías seleccionadas
-        if(categories.isNotEmpty()) {
+        if(selectedCategories.isNotEmpty()) {
             LazyRow (
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                items(categories.size) { index ->
-                    val categoryName = categories[index].name
-                    val categoryColor = categories[index].bgColor
+                items(selectedCategories.size) { index ->
+                    val categoryName = selectedCategories[index].name
+                    val categoryColor = selectedCategories[index].bgColor
 
                     Box(
                         modifier = Modifier
@@ -135,13 +138,13 @@ fun MainView(
                     CategoriesSection(
                         noteViewModel,
                         categories,
-                        categories,
+                        selectedCategories,
                         onCategoryClick = { category, isSelected ->
-                            onChangeCategories(
+                            onChangeSelectedCategories(
                                 if (isSelected) {
-                                    categories.filter { it != category }
+                                    selectedCategories.filter { it != category }
                                 } else {
-                                    categories + category
+                                    selectedCategories + category
                                 }
                             )
                         },
@@ -159,5 +162,4 @@ fun MainView(
 
         }
     }
-
 }

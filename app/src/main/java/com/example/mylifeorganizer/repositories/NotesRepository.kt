@@ -1,11 +1,9 @@
 package com.example.mylifeorganizer.repositories
 
 import com.example.mylifeorganizer.room.CategoryEntity
-import com.example.mylifeorganizer.room.CategoryWithNotes
 import com.example.mylifeorganizer.room.NoteCategoryCrossRef
 import com.example.mylifeorganizer.room.NoteDB
 import com.example.mylifeorganizer.room.NoteEntity
-import com.example.mylifeorganizer.room.NoteWithCategories
 
 class NotesRepository (val noteDB: NoteDB) {
 
@@ -65,5 +63,12 @@ class NotesRepository (val noteDB: NoteDB) {
     // Actualizar una categoría
     suspend fun updateCategory(category: CategoryEntity) {
         noteDAO.updateCategory(category)
+    }
+
+
+    // --------------------------------------
+    // Método para actualizar una nota con sus categorías
+    suspend fun updateNoteWithCategories(note: NoteEntity, categoryIds: List<Long>) {
+        noteDAO.updateNoteWithCategories(note, categoryIds)
     }
 }

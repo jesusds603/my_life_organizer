@@ -73,9 +73,10 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
     }
 
     // Actualizar una nota
-    fun updateNote(note: NoteEntity) {
+    fun updateNote(note: NoteEntity, onNoteUpdated: (Long) -> Unit) {
         viewModelScope.launch {
             notesRepository.updateNote(note)
+            onNoteUpdated(note.noteId) // Ejecuta una acción cuando se actualiza la nota
         }
     }
 
@@ -86,5 +87,14 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
         }
 
     }
+
+    // -----------------------------------------------
+    // Método para actualizar una nota con sus categorías
+    fun updateNoteWithCategories(note: NoteEntity, categoryIds: List<Long>) {
+        viewModelScope.launch {
+            notesRepository.updateNoteWithCategories(note, categoryIds)
+        }
+    }
+
 
 }

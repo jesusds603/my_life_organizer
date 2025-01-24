@@ -1,7 +1,6 @@
 package com.example.mylifeorganizer.components.home
 
 import androidx.compose.ui.graphics.Color
-import androidx.navigation.NavController
 import com.example.mylifeorganizer.R
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeColors
