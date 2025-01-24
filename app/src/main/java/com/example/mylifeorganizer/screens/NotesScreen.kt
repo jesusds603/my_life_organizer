@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.R
-import com.example.mylifeorganizer.components.notes.screen.NotesContainer
+import com.example.mylifeorganizer.components.notes.screen.NotesFoldersContainer
 import com.example.mylifeorganizer.components.notes.screen.RowCategories
 import com.example.mylifeorganizer.repositories.NotesRepository
 import com.example.mylifeorganizer.room.FolderEntity
@@ -88,7 +88,7 @@ fun NotesScreen() {
             )
 
             // Mostrar las notas correspondientes a la categoría seleccionada
-            NotesContainer(
+            NotesFoldersContainer(
                 selectedCategory = selectedCategory,
                 noteViewModel = noteViewModel
             )
