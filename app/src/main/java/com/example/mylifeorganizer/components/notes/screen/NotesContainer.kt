@@ -94,7 +94,10 @@ fun NotesContainer(
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
-                                .clickable { showMenu = true } // Al hacer clic, mostrar el menú
+                                .clickable {
+                                    showMenu = true
+                                    appViewModel.changeSelectedNoteId(note.note.noteId)
+                                } // Al hacer clic, mostrar el menú
                                 .background(
                                     color = themeColors.backGround1,
                                     shape = RoundedCornerShape(8.dp)
@@ -105,7 +108,7 @@ fun NotesContainer(
                         // Ventana flotante con las opciones
                         FloatingOptions(
                             showMenu = showMenu,
-                            changeShowMenu = { showMenu = it }
+                            changeShowMenu = { showMenu = it },
                         )
                     }
                 }
