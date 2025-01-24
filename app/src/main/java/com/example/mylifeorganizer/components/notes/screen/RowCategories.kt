@@ -9,6 +9,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -20,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.room.CategoryEntity
 import com.example.mylifeorganizer.viewmodel.AppViewModel
+import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 
@@ -27,9 +30,10 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 fun RowCategories(
     selectedCategory: String,
     onCategorySelected: (String) -> Unit,
-    categories: List<CategoryEntity>
+    noteViewModel: NoteViewModel
 ) {
     val appViewModel: AppViewModel = viewModel()
+    val categories by noteViewModel.categories.collectAsState(initial = emptyList())
 
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value

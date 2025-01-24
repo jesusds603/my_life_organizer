@@ -31,6 +31,7 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 fun FloatingOptions(
     showMenu: Boolean = false,
     changeShowMenu: (Boolean) -> Unit,
+    noteViewModel: NoteViewModel
 ) {
     val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
@@ -38,10 +39,6 @@ fun FloatingOptions(
     var themeColors = themeViewModel.themeColors.value
     val noteId = appViewModel.selectedNoteId.value
 
-    val context = LocalContext.current
-    val noteDB = NoteDB.getInstance(context)
-    val notesRepository = NotesRepository(noteDB)
-    val noteViewModel = NoteViewModel(notesRepository)
 
     var showRenameDialog by remember { mutableStateOf(false) } // Controla si el diálogo de renombrar está visible
     var newTitle by remember { mutableStateOf("") } // Título temporal para renombrar
