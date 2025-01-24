@@ -111,18 +111,22 @@ interface NoteDao {
 
 
     // Insertar una nueva carpeta
-    @Insert
-    fun insertFolder(folder: FolderEntity): Long
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertFolder(folder: FolderEntity): Long
+
+    // Obtener todas las carpetas
+    @Query("SELECT * FROM folders")
+    fun getAllFolders(): Flow<List<FolderEntity>>
 
     // Obtener las subcarpetas de una carpeta específica
     @Transaction
     @Query("SELECT * FROM folders WHERE parentFolderId = :parentId")
-    fun getSubfolders(parentId: Long?): List<FolderWithSubfolders>
+    fun getSubfolders(parentId: Long?): Flow<List<FolderWithSubfolders>>
 
     // Obtener todas las notas de una carpeta
     @Transaction
     @Query("SELECT * FROM notes WHERE folderId = :folderId")
-    fun getNotesInFolder(folderId: Long?): List<NoteEntity>
+    fun getNotesInFolder(folderId: Long?): Flow<List<NoteEntity>>
 
     // Insertar la relación de nota con carpeta
     @Query("UPDATE notes SET folderId = :folderId WHERE noteId = :noteId")

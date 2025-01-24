@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mylifeorganizer.room.NoteEntity
 import com.example.mylifeorganizer.room.NoteWithoutContentWithCategories
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
@@ -44,12 +45,26 @@ fun NotesContainer(
     val appViewModel: AppViewModel = viewModel()
     val notesWithoutContentWithCategories by noteViewModel.notesWithoutContentWithCategories.collectAsState(initial = emptyList())
 
+    val folders by noteViewModel.folders.collectAsState(initial = emptyList())
+    var selectedFolderId by remember { mutableStateOf<Long?>(null) }
+    var notesInFolder by remember { mutableStateOf<List<NoteEntity>>(emptyList()) }
+    var expandedFolders by remember { mutableStateOf<Set<Long>>(emptySet()) }
+
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
 
     LazyColumn(
         modifier = Modifier.fillMaxSize()
     ) {
+        // Mostramos carpetas
+        items(folders) { folder ->
+            Text(
+                text = folder.name,
+                color = themeColors.text1,
+            )
+        }
+
+
         // Ordenamos las notas por `updatedAt` descendente
         val sortedNotes = notesWithoutContentWithCategories.sortedByDescending { it.note.updatedAt }
 

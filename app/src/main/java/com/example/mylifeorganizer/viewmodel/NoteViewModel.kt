@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.mylifeorganizer.repositories.NotesRepository
 import com.example.mylifeorganizer.room.CategoryEntity
 import com.example.mylifeorganizer.room.FolderEntity
+import com.example.mylifeorganizer.room.FolderWithSubfolders
 import com.example.mylifeorganizer.room.NoteEntity
 import com.example.mylifeorganizer.room.NoteWithCategories
 import kotlinx.coroutines.flow.Flow
@@ -105,13 +106,22 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
     // -----------------------------------------------
 
 
-
     // Insertar una nueva carpeta
     fun addFolder(folder: FolderEntity, onFolderAdded: (Long) -> Unit) {
         viewModelScope.launch {
             val folderId = notesRepository.insertFolder(folder)
             onFolderAdded(folderId) // Ejecuta una acción cuando se inserta la carpeta
         }
+    }
+
+    val folders = notesRepository.getAllFolders()
+
+    fun getSubfolders(parentId: Long?): Flow<List<FolderWithSubfolders>> {
+        return notesRepository.getSubfolders(parentId)
+    }
+
+    fun getNotesInFolder(folderId: Long?): Flow<List<NoteEntity>> {
+        return notesRepository.getNotesInFolder(folderId)
     }
 
     // Vincular una nota con una carpeta

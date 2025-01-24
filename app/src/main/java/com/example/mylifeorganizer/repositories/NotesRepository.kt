@@ -2,6 +2,7 @@ package com.example.mylifeorganizer.repositories
 
 import com.example.mylifeorganizer.room.CategoryEntity
 import com.example.mylifeorganizer.room.FolderEntity
+import com.example.mylifeorganizer.room.FolderWithSubfolders
 import com.example.mylifeorganizer.room.NoteCategoryCrossRef
 import com.example.mylifeorganizer.room.NoteDB
 import com.example.mylifeorganizer.room.NoteEntity
@@ -84,6 +85,15 @@ class NotesRepository (val noteDB: NoteDB) {
     suspend fun insertFolder(folder: FolderEntity): Long {
         return noteDAO.insertFolder(folder)
     }
+
+    // Obtener todas las carpetas
+    fun getAllFolders() = noteDAO.getAllFolders()
+
+    // Obtener los subfolders de una carpeta
+    fun getSubfolders(parentId: Long?) = noteDAO.getSubfolders(parentId)
+
+    // Obtener las notas dentro de una carpeta
+    fun getNotesInFolder(folderId: Long?) = noteDAO.getNotesInFolder(folderId)
 
     // Vincular una nota con una carpeta
     suspend fun linkNoteWithFolder(noteId: Long, folderId: Long?) {

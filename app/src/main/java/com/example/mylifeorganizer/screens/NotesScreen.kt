@@ -1,5 +1,8 @@
 package com.example.mylifeorganizer.screens
 
+import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,6 +10,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -16,6 +21,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -34,6 +40,7 @@ import com.example.mylifeorganizer.R
 import com.example.mylifeorganizer.components.notes.screen.NotesContainer
 import com.example.mylifeorganizer.components.notes.screen.RowCategories
 import com.example.mylifeorganizer.repositories.NotesRepository
+import com.example.mylifeorganizer.room.FolderEntity
 import com.example.mylifeorganizer.room.NoteDB
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
@@ -57,6 +64,7 @@ fun NotesScreen() {
 
     // Estado para controlar la visibilidad del cuadro de diálogo
     var showDialog by remember { mutableStateOf(false) }
+    var showAddFolderDialog by remember { mutableStateOf(false) }
 
     val verticalPaddingOptions = 16.dp
     val sizeTextButtons = 24.sp
@@ -156,6 +164,7 @@ fun NotesScreen() {
                         TextButton(
                             onClick = {
                                 showDialog = false
+                                showAddFolderDialog = true
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -187,5 +196,120 @@ fun NotesScreen() {
             )
         }
 
+        if (showAddFolderDialog) {
+            AddFolderDialog(
+                onDismiss = { showAddFolderDialog = false },
+                onFolderAdded = { name, parentId ->
+                    noteViewModel.addFolder(
+                        FolderEntity(
+                            name = name,
+                            parentFolderId = parentId
+                        ),
+                        onFolderAdded = { folderId ->
+                            // Realiza acciones adicionales si es necesario
+                            Log.d("AddFolder", "Folder added with ID: $folderId")
+                        }
+                    )
+                },
+                noteViewModel = noteViewModel,
+                folders = emptyList()
+            )
+        }
+
     }
+}
+
+
+
+@Composable
+fun AddFolderDialog(
+    onDismiss: () -> Unit,
+    onFolderAdded: (String, Long?) -> Unit,
+    noteViewModel: NoteViewModel,
+    folders: List<FolderEntity>
+) {
+    var folderName by remember { mutableStateOf("") }
+    var selectedParentId by remember { mutableStateOf<Long?>(null) }
+
+    AlertDialog(
+        onDismissRequest = { onDismiss() },
+        confirmButton = {
+            Button(
+                onClick = {
+                    onFolderAdded(folderName, selectedParentId)
+                    onDismiss()
+                },
+                enabled = folderName.isNotBlank(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
+            ) {
+                Text("Add Folder", color = MaterialTheme.colorScheme.onPrimary)
+            }
+        },
+        dismissButton = {
+            Button(
+                onClick = { onDismiss() },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary
+                )
+            ) {
+                Text("Cancel", color = MaterialTheme.colorScheme.onSecondary)
+            }
+        },
+        text = {
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth()
+            ) {
+                Text(
+                    text = "Create New Folder",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+
+                TextField(
+                    value = folderName,
+                    onValueChange = { folderName = it },
+                    label = { Text("Folder Name") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                if (folders.isNotEmpty()) {
+                    Text(
+                        text = "Select Parent Folder (Optional)",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.surface)
+                            .padding(8.dp)
+                    ) {
+                        items(folders) { folder ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable { selectedParentId = folder.folderId }
+                                    .padding(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = folder.name,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                if (selectedParentId == folder.folderId) {
+                                    Text("✓", color = MaterialTheme.colorScheme.primary)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    )
 }
