@@ -26,6 +26,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mylifeorganizer.room.FolderEntity
+import com.example.mylifeorganizer.room.FolderWithSubfolders
 import com.example.mylifeorganizer.room.NoteEntity
 import com.example.mylifeorganizer.room.NoteWithoutContentWithCategories
 import com.example.mylifeorganizer.viewmodel.AppViewModel
@@ -56,22 +58,90 @@ fun NotesContainer(
     LazyColumn(
         modifier = Modifier.fillMaxSize()
     ) {
-        // Mostramos carpetas
-        items(folders) { folder ->
-            Text(
-                text = folder.name,
-                color = themeColors.text1,
-            )
+        // Función recursiva para mostrar carpetas y subcarpetas
+        fun displayFolders(folders: List<FolderEntity>, parentId: Long?, depth: Int) {
+            val filteredFolders = folders.filter { it.parentFolderId == parentId }
+
+            filteredFolders.forEach { folder ->
+                item {
+                    Row (
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = (16 * depth).dp, vertical = 8.dp)
+                            .clickable {
+                                expandedFolders = if(expandedFolders.contains(folder.folderId)) {
+                                    expandedFolders - folder.folderId
+                                } else {
+                                    expandedFolders + folder.folderId
+                                }
+                            }
+                            .background(themeColors.backGround4, shape = RoundedCornerShape(8.dp))
+                            .padding(8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = folder.name,
+                            color = themeColors.text1,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+                }
+
+
+                // Mostrar subfolders si el folder actual está expandido
+                if (expandedFolders.contains(folder.folderId)) {
+                    displayFolders(folders, folder.folderId, depth + 1)
+                }
+
+                // Mostrar notas en este folder
+                if (expandedFolders.contains(folder.folderId)) {
+                    val notesInFolder = notesWithoutContentWithCategories.filter {
+                        it.note.folderId == folder.folderId
+                    }
+
+                    notesInFolder.forEach { noteWithCategories ->
+                        item {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = (16 * (depth + 1)).dp, vertical = 4.dp)
+                                    .clickable {
+                                        appViewModel.changeSelectedNoteId(noteWithCategories.note.noteId)
+                                        appViewModel.toggleShowingNote()
+                                    }
+                                    .background(themeColors.backGround4, shape = RoundedCornerShape(8.dp))
+                                    .padding(8.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = noteWithCategories.note.title.replace("\n", " "),
+                                    color = themeColors.text1,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Normal
+                                )
+                            }
+                        }
+                    }
+                }
+            }
         }
 
+
+        // Mostrar carpetas y subcarpetas desde el nivel raíz
+        displayFolders(folders, parentId = null, depth = 0)
+
+        val notesWithoutFolders = notesWithoutContentWithCategories.filter { it.note.folderId == null }
+        val sortedNotesWithoutFolders = notesWithoutFolders.sortedByDescending { it.note.updatedAt }
 
         // Ordenamos las notas por `updatedAt` descendente
         val sortedNotes = notesWithoutContentWithCategories.sortedByDescending { it.note.updatedAt }
 
         val notesToShow = if (selectedCategory == "All") {
-            sortedNotes.map { it }
+            sortedNotesWithoutFolders.map { it }
         } else {
-            sortedNotes.filter { noteWithCategories ->
+            sortedNotesWithoutFolders.filter { noteWithCategories ->
                 noteWithCategories.categories.any { it.name == selectedCategory}
             }.map { it }
         }

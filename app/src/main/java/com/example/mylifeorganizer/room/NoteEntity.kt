@@ -74,7 +74,8 @@ data class NoteWithoutContent(
     val createdAt: Long,
     val updatedAt: Long,
     val isFavorite: Boolean,
-    val isArchived: Boolean
+    val isArchived: Boolean,
+    val folderId: Long?
 )
 
 data class NoteWithoutContentWithCategories(
