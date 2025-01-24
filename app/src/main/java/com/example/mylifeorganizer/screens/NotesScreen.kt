@@ -11,10 +11,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.components.notes.NotesContainer
 import com.example.mylifeorganizer.components.notes.RowCategories
 import com.example.mylifeorganizer.repositories.NotesRepository
 import com.example.mylifeorganizer.room.NoteDB
+import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
 
 
@@ -27,7 +29,7 @@ fun NotesScreen() {
     val noteViewModel = NoteViewModel(notesRepository)
 
     val categoriesWithNotes by noteViewModel.categoriesWithNotes.collectAsState(initial = emptyList())
-    val notesWithCategories by noteViewModel.notesWithCategories.collectAsState(initial = emptyList())
+    val notesDescription by noteViewModel.notesWithCategories.collectAsState(initial = emptyList())
 
     // Estado para rastrear la categoría seleccionada
     var selectedCategory by remember { mutableStateOf("All") }
@@ -48,7 +50,7 @@ fun NotesScreen() {
         // Mostrar las notas correspondientes a la categoría seleccionada
         NotesContainer(
             selectedCategory = selectedCategory,
-            notesWithCategories = notesWithCategories,
+            notesDescription = notesDescription,
             categoriesWithNotes = categoriesWithNotes
         )
     }

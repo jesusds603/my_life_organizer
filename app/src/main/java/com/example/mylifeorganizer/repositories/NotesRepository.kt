@@ -27,16 +27,19 @@ class NotesRepository (val noteDB: NoteDB) {
     }
 
     // Obtener todas las notas
-    fun getNotesWithCategories() = noteDAO.getNotesWithCategories()
+    fun getAllNotesWithCategories() = noteDAO.getAllNotesWithCategories()
+
+//    // Obtener todas las notas sin su contenido
+//    fun getAllNotesDescription() = noteDAO.getAllNotesDescription()
 
     // Obtener todas las categorías con sus notas
-    fun getCategoriesWithNotes() = noteDAO.getCategoriesWithNotes()
+    fun getAllCategoriesWithNotes() = noteDAO.getAllCategoriesWithNotes()
 
     // Filtrar notas por una categoría específica
-    fun getNotesByCategory(categoryId: Int) = noteDAO.getNotesByCategory(categoryId)
+    fun getNotesByCategory(categoryId: Long) = noteDAO.getNotesByCategory(categoryId)
 
     // Filtrar categorías por una nota específica
-    fun getCategoriesByNote(noteId: Int) = noteDAO.getCategoriesByNote(noteId)
+    fun getCategoriesByNote(noteId: Long) = noteDAO.getCategoriesByNote(noteId)
 
     // Eliminar una nota
     suspend fun deleteNote(note: NoteEntity) {

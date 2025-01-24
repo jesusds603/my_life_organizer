@@ -2,6 +2,8 @@ package com.example.mylifeorganizer.viewmodel
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.example.mylifeorganizer.room.CategoryEntity
+import com.example.mylifeorganizer.room.NoteEntity
 
 class AppViewModel: ViewModel() {
     // Language state
@@ -28,5 +30,23 @@ class AppViewModel: ViewModel() {
     val isAddingDaily = mutableStateOf(false)
     fun toggleAddingDaily() {
         isAddingDaily.value = !isAddingDaily.value
+    }
+
+    // Estado para visualizar una nota
+    val isShowingNote = mutableStateOf(false)
+    fun toggleShowingNote() {
+        isShowingNote.value = !isShowingNote.value
+    }
+
+    // -------------------------------------------------
+    // NOTAS
+    val selectedNote = mutableStateOf<NoteEntity?>(null)
+    fun changeSelectedNote(note: NoteEntity) {
+        selectedNote.value = note
+    }
+
+    val selectedCategory = mutableStateOf<CategoryEntity?>(null)
+    fun changeSelectedCategory(category: CategoryEntity?) {
+        selectedCategory.value = category
     }
 }

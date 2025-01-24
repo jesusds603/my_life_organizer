@@ -11,7 +11,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.components.ButtonTabs
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
-import com.example.mylifeorganizer.windows.AddNoteWindow
+import com.example.mylifeorganizer.components.addnewnote.AddNoteWindow
+import com.example.mylifeorganizer.components.notes.noteview.NoteWindow
 
 @Composable
 fun MainScreen() {
@@ -20,6 +21,7 @@ fun MainScreen() {
 
     val themeColors = themeViewModel.themeColors.value
     val isAddingNote = appViewModel.isAddingNote.value
+    val isShowingNote = appViewModel.isShowingNote.value
 
 
     Box(
@@ -33,6 +35,8 @@ fun MainScreen() {
 
             // Mostrar AddNoteWindow ocupando toda la pantalla
             AddNoteWindow(modifier = Modifier.fillMaxSize())
+        }  else if (isShowingNote) {
+            NoteWindow()
         } else {
             // Mostrar ContentMainScreen cuando no se está agregando una nota
             ContentMainScreen()

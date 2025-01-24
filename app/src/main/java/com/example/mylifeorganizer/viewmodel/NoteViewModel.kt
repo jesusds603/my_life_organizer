@@ -1,5 +1,6 @@
 package com.example.mylifeorganizer.viewmodel
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
@@ -32,18 +33,21 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
     }
 
     // Obtener todas las notas con sus categorías
-    val notesWithCategories = notesRepository.getNotesWithCategories()
+    val notesWithCategories = notesRepository.getAllNotesWithCategories()
+
+//    // Obtener todas las notas sin su contenido
+//    val notesDescription = notesRepository.getAllNotesDescription()
 
     // Obtener todas las categorías con sus notas
-    val categoriesWithNotes = notesRepository.getCategoriesWithNotes()
+    val categoriesWithNotes = notesRepository.getAllCategoriesWithNotes()
 
     // Filtrar notas por una categoría específica
-    fun getNotesByCategory(categoryId: Int): Flow<List<NoteEntity>> {
+    fun getNotesByCategory(categoryId: Long): Flow<List<NoteEntity>> {
         return notesRepository.getNotesByCategory(categoryId)
     }
 
     // Filtrar categorías por una nota específica
-    fun getCategoriesByNote(noteId: Int): Flow<List<CategoryEntity>> {
+    fun getCategoriesByNote(noteId: Long): Flow<List<CategoryEntity>> {
         return notesRepository.getCategoriesByNote(noteId)
     }
 
@@ -75,4 +79,5 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
         }
 
     }
+
 }

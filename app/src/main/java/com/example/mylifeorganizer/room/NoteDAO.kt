@@ -20,12 +20,18 @@ interface NoteDao {
     // Obtener todas las notas con sus categorías
     @Transaction
     @Query("SELECT * FROM notes")
-    fun getNotesWithCategories(): Flow<List<NoteWithCategories>>
+    fun getAllNotesWithCategories(): Flow<List<NoteWithCategories>>
+
+//    // Obtener todas las notas sin su contenido (para la screen)
+//    @Transaction
+//    @Query("SELECT noteId, title, createdAt, updatedAt, isFavorite, isArchived FROM notes")
+//    fun getAllNotesDescription(): Flow<List<NoteSummaryWithCategories>>
 
     // Obtener todas las categorías con sus notas
     @Transaction
     @Query("SELECT * FROM categories")
-    fun getCategoriesWithNotes(): Flow<List<CategoryWithNotes>>
+    fun getAllCategoriesWithNotes(): Flow<List<CategoryWithNotes>>
+
 
     // Filtrar notas por una categoría específica
     @Transaction
@@ -35,7 +41,7 @@ interface NoteDao {
         ON notes.noteId = note_category_cross_ref.noteId 
         WHERE note_category_cross_ref.categoryId = :categoryId
     """)
-    fun getNotesByCategory(categoryId: Int): Flow<List<NoteEntity>>
+    fun getNotesByCategory(categoryId: Long): Flow<List<NoteEntity>>
 
     // Obtener todas las categorías asociadas a una nota específica
     @Transaction
@@ -45,7 +51,7 @@ interface NoteDao {
     ON categories.categoryId = note_category_cross_ref.categoryId 
     WHERE note_category_cross_ref.noteId = :noteId
 """)
-    fun getCategoriesByNote(noteId: Int): Flow<List<CategoryEntity>>
+    fun getCategoriesByNote(noteId: Long): Flow<List<CategoryEntity>>
 
 
     // Eliminar una nota

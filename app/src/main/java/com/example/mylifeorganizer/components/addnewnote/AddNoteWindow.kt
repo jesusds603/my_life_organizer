@@ -1,4 +1,4 @@
-package com.example.mylifeorganizer.windows
+package com.example.mylifeorganizer.components.addnewnote
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -6,9 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -28,8 +26,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mylifeorganizer.components.addnewnote.AddOrCancelNote
-import com.example.mylifeorganizer.components.addnewnote.CategoriesSection
 import com.example.mylifeorganizer.repositories.NotesRepository
 import com.example.mylifeorganizer.room.CategoryEntity
 import com.example.mylifeorganizer.room.NoteDB
@@ -37,7 +33,6 @@ import com.example.mylifeorganizer.room.NoteEntity
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 
 @Composable

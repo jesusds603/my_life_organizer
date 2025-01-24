@@ -10,16 +10,25 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mylifeorganizer.repositories.NotesRepository
 import com.example.mylifeorganizer.room.CategoryWithNotes
+import com.example.mylifeorganizer.room.NoteDB
+import com.example.mylifeorganizer.viewmodel.AppViewModel
+import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 
@@ -29,9 +38,10 @@ fun RowCategories(
     onCategorySelected: (String) -> Unit,
     categoriesWithNotes: List<CategoryWithNotes>
 ) {
-    val themeViewModel: ThemeViewModel = viewModel()
+    val appViewModel: AppViewModel = viewModel()
 
-    var themeColors = themeViewModel.themeColors.value
+    val themeViewModel: ThemeViewModel = viewModel()
+    val themeColors = themeViewModel.themeColors.value
 
     val padding4 = 4.dp
     val padding2 = 2.dp
@@ -39,15 +49,18 @@ fun RowCategories(
     val cornerRadius = 4.dp
     val padding8 = 8.dp
 
+
     LazyRow (
         verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .background(color = themeColors.backGround1)
     ) {
 
         // Agregar la opción "All"
         item {
             Box(
                 modifier = Modifier
-                    .clickable { onCategorySelected("All") }
+                    .clickable {onCategorySelected("All")}
                     .background(
                         color = Color.Transparent,
                         shape = RoundedCornerShape(cornerRadius)
@@ -58,7 +71,7 @@ fun RowCategories(
                         drawContent()
 
                         // Si está seleccionada, dibuja un borde verde en la parte inferior
-                        if (selectedCategory == "All") {
+                        if (selectedCategory ==  "All") {
                             drawLine(
                                 color = Color.Green,
                                 start = Offset(0f, size.height), // Comienza en el fondo de la Box

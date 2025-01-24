@@ -12,24 +12,32 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mylifeorganizer.repositories.NotesRepository
 import com.example.mylifeorganizer.room.CategoryWithNotes
+
 import com.example.mylifeorganizer.room.NoteWithCategories
 import com.example.mylifeorganizer.viewmodel.AppViewModel
+import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
+import kotlinx.coroutines.flow.Flow
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -39,19 +47,20 @@ import java.util.Locale
 @Composable
 fun NotesContainer(
     selectedCategory: String,
-    notesWithCategories: List<NoteWithCategories>,
+    notesDescription: List<NoteWithCategories>,
     categoriesWithNotes: List<CategoryWithNotes>
 ) {
     val appViewModel: AppViewModel = viewModel()
-    val themeViewModel: ThemeViewModel = viewModel()
 
-    var themeColors = themeViewModel.themeColors.value
+    val themeViewModel: ThemeViewModel = viewModel()
+    val themeColors = themeViewModel.themeColors.value
 
     LazyColumn(
         modifier = Modifier.fillMaxSize()
     ) {
+
         val notesToShow = if (selectedCategory == "All") {
-            notesWithCategories.map { it.note }
+            notesDescription.map { it.note }
         } else {
             val selectedCategoryNotes = categoriesWithNotes.find { it.category.name == selectedCategory }
             selectedCategoryNotes?.notes ?: emptyList()
@@ -66,9 +75,10 @@ fun NotesContainer(
                     .padding(vertical = 2.dp, horizontal = 8.dp)
                     .background(themeColors.backGround4, shape = RoundedCornerShape(8.dp))
                     .padding(vertical = 4.dp, horizontal = 16.dp)
+                    .clickable {
+                        appViewModel.toggleShowingNote()
+                    }
             ) {
-                // Formatear las fechas
-                val formattedCreatedAt = formatDate(note.createdAt)
                 val formattedUpdatedAt = formatDate(note.updatedAt)
 
                 // Fila superior con el título y el botón de opciones
@@ -126,11 +136,12 @@ fun NotesContainer(
                 }
 
                 // FlowRow para las categorías de la nota
-                FlowRow(
+                LazyRow(
                     modifier = Modifier.padding(top = 1.dp)
                 ) {
-                    val categories = notesWithCategories.find { it.note.noteId == note.noteId }?.categories ?: emptyList()
-                    categories.forEach { category ->
+                    val categories = notesDescription.find { it.note.noteId== note.noteId }?.categories ?: emptyList()
+
+                    items(categories) { category ->
                         Box(
                             modifier = Modifier
                                 .padding(end = 1.dp)
