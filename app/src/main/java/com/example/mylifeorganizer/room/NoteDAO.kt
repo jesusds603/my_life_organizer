@@ -5,44 +5,23 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NoteDao {
-    // Insertar una nueva nota
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNote(note: NoteEntity): Long
-
-    // Insertar una nueva categoría
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCategory(category: CategoryEntity)
-
-    // Vincular una nota con una categoría
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertNoteCategoryCrossRef(crossRef: NoteCategoryCrossRef)
-
-    // Obtener todas las notas con sus categorías
-    @Transaction
-    @Query("SELECT * FROM notes")
-    fun getAllNotesWithCategories(): Flow<List<NoteWithCategories>>
 
     @Query("SELECT * FROM notes")
     fun getAllNotes(): Flow<List<NoteEntity>>
 
     @Transaction
+    @Query("SELECT * FROM notes")
+    fun getAllNotesWithCategories(): Flow<List<NoteWithCategories>>
+
+    @Transaction
     @Query("""
     SELECT noteId, title, createdAt, updatedAt, isFavorite, isArchived 
     FROM notes
-""")
+    """)
     fun getAllNotesWithoutContentWithCategories(): Flow<List<NoteWithoutContentWithCategories>>
 
-
-    // Obtener todas las categorías con sus notas
-    @Transaction
-    @Query("SELECT * FROM categories")
-    fun getAllCategoriesWithNotes(): Flow<List<CategoryWithNotes>>
-
-    @Query("SELECT * FROM categories")
-    fun getAllCategories(): Flow<List<CategoryEntity>>
-
-
-    // Filtrar notas por una categoría específica
     @Transaction
     @Query("""
         SELECT * FROM notes 
@@ -52,43 +31,56 @@ interface NoteDao {
     """)
     fun getNotesByCategory(categoryId: Long): Flow<List<NoteEntity>>
 
-    // Obtener todas las categorías asociadas a una nota específica
+    @Transaction
+    @Query("""
+    SELECT * 
+    FROM notes
+    WHERE noteId = :noteId
+    """)
+    fun getNoteWithCategoriesById(noteId: Long): Flow<NoteWithCategories>
+
+    @Delete
+    suspend fun deleteNote(note: NoteEntity)
+
+    @Update
+    suspend fun updateNote(note: NoteEntity)
+
+
+    // -----------------------------------------------------------------------
+
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCategory(category: CategoryEntity)
+
+    @Query("SELECT * FROM categories")
+    fun getAllCategories(): Flow<List<CategoryEntity>>
+
+    @Transaction
+    @Query("SELECT * FROM categories")
+    fun getAllCategoriesWithNotes(): Flow<List<CategoryWithNotes>>
+
     @Transaction
     @Query("""
     SELECT * FROM categories 
     INNER JOIN note_category_cross_ref 
     ON categories.categoryId = note_category_cross_ref.categoryId 
     WHERE note_category_cross_ref.noteId = :noteId
-""")
+    """)
     fun getCategoriesByNote(noteId: Long): Flow<List<CategoryEntity>>
 
-    @Transaction
-    @Query("""
-    SELECT * 
-    FROM notes
-    WHERE noteId = :noteId
-""")
-    fun getNoteWithCategoriesById(noteId: Long): Flow<NoteWithCategories>
-
-
-    // Eliminar una nota
-    @Delete
-    suspend fun deleteNote(note: NoteEntity)
-
-    // Eliminar una categoría
     @Delete
     suspend fun deleteCategory(category: CategoryEntity)
 
-    // Actualizar una nota
-    @Update
-    suspend fun updateNote(note: NoteEntity)
-
-    // Actualizar una categoría
     @Update
     suspend fun updateCategory(category: CategoryEntity)
 
 
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
+
+
+    // Vincular una nota con una categoría
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertNoteCategoryCrossRef(crossRef: NoteCategoryCrossRef)
 
     // Eliminar todas las categorías relacionadas con una nota
     @Query("DELETE FROM note_category_cross_ref WHERE noteId = :noteId")
@@ -114,4 +106,37 @@ interface NoteDao {
         insertNoteCategories(noteCategoryCrossRefs)
     }
 
+
+    // -----------------------------------------------------------------------
+
+
+    // Insertar una nueva carpeta
+    @Insert
+    fun insertFolder(folder: FolderEntity): Long
+
+    // Obtener las subcarpetas de una carpeta específica
+    @Transaction
+    @Query("SELECT * FROM folders WHERE parentFolderId = :parentId")
+    fun getSubfolders(parentId: Long?): List<FolderWithSubfolders>
+
+    // Obtener todas las notas de una carpeta
+    @Transaction
+    @Query("SELECT * FROM notes WHERE folderId = :folderId")
+    fun getNotesInFolder(folderId: Long?): List<NoteEntity>
+
+    // Insertar la relación de nota con carpeta
+    @Query("UPDATE notes SET folderId = :folderId WHERE noteId = :noteId")
+    suspend fun updateNoteFolderId(noteId: Long, folderId: Long?)
+
+    // Actualizar la relación de carpeta con subcarpeta
+    @Query("UPDATE folders SET parentFolderId = :parentFolderId WHERE folderId = :subfolderId")
+    suspend fun updateFolderParentId(subfolderId: Long, parentFolderId: Long?)
+
+    // Eliminar una carpeta
+    @Delete
+    suspend fun deleteFolder(folder: FolderEntity)
+
+    // Actualizar una carpeta
+    @Update
+    suspend fun updateFolder(folder: FolderEntity)
 }

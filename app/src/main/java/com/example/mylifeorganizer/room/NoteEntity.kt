@@ -17,7 +17,9 @@ data class NoteEntity(
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),
     val isFavorite: Boolean = false,
-    val isArchived: Boolean = false
+    val isArchived: Boolean = false,
+    @ColumnInfo(name = "folderId") // Carpeta asociada, null si no tiene
+    val folderId: Long? = null
 )
 
 // Entidad para las categorías
@@ -65,7 +67,6 @@ data class CategoryWithNotes(
     val notes: List<NoteEntity>
 )
 
-// --------
 
 data class NoteWithoutContent(
     val noteId: Long,
@@ -85,4 +86,41 @@ data class NoteWithoutContentWithCategories(
         associateBy = androidx.room.Junction(NoteCategoryCrossRef::class)
     )
     val categories: List<CategoryEntity>
+)
+
+
+// ------------------------------ Para carpetas ----------------------------------
+
+
+@Entity(tableName = "folders")
+data class FolderEntity(
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "folderId") // Renombramos la columna a folderId
+    val folderId: Long = 0,
+    val name: String,
+    @ColumnInfo(name = "parentFolderId") // Renombramos la columna a parentFolderId
+    val parentFolderId: Long? = null,
+    val createdAt: Long = System.currentTimeMillis(),
+)
+
+// Relación de una carpeta con sus subcarpetas
+data class FolderWithSubfolders(
+    @Embedded
+    val folder: FolderEntity,
+    @Relation(
+        parentColumn = "folderId",
+        entityColumn = "parentFolderId"
+    )
+    val subfolders: List<FolderEntity>
+)
+
+// Relación para obtener las notas de una carpeta
+data class FolderWithNotes(
+    @Embedded
+    val folder: FolderEntity,
+    @Relation(
+        parentColumn = "folderId",
+        entityColumn = "folderId",
+    )
+    val notes: List<NoteEntity>
 )

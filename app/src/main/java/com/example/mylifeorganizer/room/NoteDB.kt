@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(
-    entities = [NoteEntity::class, CategoryEntity::class, NoteCategoryCrossRef::class],
-    version = 8, exportSchema = true
+    entities = [NoteEntity::class, CategoryEntity::class, NoteCategoryCrossRef::class, FolderEntity::class],
+    version = 11, exportSchema = true
 )
 abstract class NoteDB : RoomDatabase() {
 
@@ -28,7 +30,9 @@ abstract class NoteDB : RoomDatabase() {
                         context.applicationContext,
                         NoteDB::class.java,
                         "notes.db"
-                    ).fallbackToDestructiveMigration()
+                    )
+//                        .addMigrations(MIGRATION_10_11)
+                        .fallbackToDestructiveMigration()
                         .setJournalMode(JournalMode.AUTOMATIC)
                         .enableMultiInstanceInvalidation()
                         .build()
@@ -37,5 +41,21 @@ abstract class NoteDB : RoomDatabase() {
                 return instance
             }
         }
+
+        val MIGRATION_10_11 = object : Migration(10, 11) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                // Crear la nueva tabla de carpetas
+                db.execSQL("""
+            CREATE TABLE IF NOT EXISTS `folders` (
+                `folderId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+                `name` TEXT NOT NULL,
+                `parentFolderId` INTEGER,
+                `createdAt` INTEGER NOT NULL
+            )
+        """)
+            }
+        }
+
+
     }
 }

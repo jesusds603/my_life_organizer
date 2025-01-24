@@ -7,6 +7,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.mylifeorganizer.repositories.NotesRepository
 import com.example.mylifeorganizer.room.CategoryEntity
+import com.example.mylifeorganizer.room.FolderEntity
 import com.example.mylifeorganizer.room.NoteEntity
 import com.example.mylifeorganizer.room.NoteWithCategories
 import kotlinx.coroutines.flow.Flow
@@ -20,38 +21,14 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
         }
     }
 
-    fun addCategory(category: CategoryEntity) {
-        viewModelScope.launch {
-            notesRepository.insertCategory(category)
-        }
-    }
-
-    fun linkNoteWithCategory(noteId: Long, categoryId: Long) {
-        viewModelScope.launch {
-            notesRepository.linkNoteWithCategory(noteId, categoryId)
-        }
-    }
-
     // Obtener todas las notas con sus categorías
     val notesWithCategories = notesRepository.getAllNotesWithCategories()
     val notes = notesRepository.getAllNotes()
     val notesWithoutContentWithCategories = notesRepository.getAllNotesWithoutContentWithCategories()
 
-//    // Obtener todas las notas sin su contenido
-//    val notesDescription = notesRepository.getAllNotesDescription()
-
-    // Obtener todas las categorías con sus notas
-    val categoriesWithNotes = notesRepository.getAllCategoriesWithNotes()
-    val categories = notesRepository.getAllCategories()
-
     // Filtrar notas por una categoría específica
     fun getNotesByCategory(categoryId: Long): Flow<List<NoteEntity>> {
         return notesRepository.getNotesByCategory(categoryId)
-    }
-
-    // Filtrar categorías por una nota específica
-    fun getCategoriesByNote(noteId: Long): Flow<List<CategoryEntity>> {
-        return notesRepository.getCategoriesByNote(noteId)
     }
 
     fun getNoteWithCategoriesById(noteId: Long): Flow<NoteWithCategories> {
@@ -65,18 +42,44 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
         }
     }
 
-    // Eliminar una categoría
-    fun deleteCategory(category: CategoryEntity) {
-        viewModelScope.launch {
-            notesRepository.deleteCategory(category)
-        }
-    }
-
     // Actualizar una nota
     fun updateNote(note: NoteEntity, onNoteUpdated: (Long) -> Unit) {
         viewModelScope.launch {
             notesRepository.updateNote(note)
             onNoteUpdated(note.noteId) // Ejecuta una acción cuando se actualiza la nota
+        }
+    }
+
+    // Método para actualizar una nota con sus categorías
+    fun updateNoteWithCategories(note: NoteEntity, categoryIds: List<Long>) {
+        viewModelScope.launch {
+            notesRepository.updateNoteWithCategories(note, categoryIds)
+        }
+    }
+
+
+    // ---------------------------------------------------------------
+
+
+    fun addCategory(category: CategoryEntity) {
+        viewModelScope.launch {
+            notesRepository.insertCategory(category)
+        }
+    }
+
+    // Obtener todas las categorías con sus notas
+    val categoriesWithNotes = notesRepository.getAllCategoriesWithNotes()
+    val categories = notesRepository.getAllCategories()
+
+    // Filtrar categorías por una nota específica
+    fun getCategoriesByNote(noteId: Long): Flow<List<CategoryEntity>> {
+        return notesRepository.getCategoriesByNote(noteId)
+    }
+
+    // Eliminar una categoría
+    fun deleteCategory(category: CategoryEntity) {
+        viewModelScope.launch {
+            notesRepository.deleteCategory(category)
         }
     }
 
@@ -88,13 +91,54 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
 
     }
 
-    // -----------------------------------------------
-    // Método para actualizar una nota con sus categorías
-    fun updateNoteWithCategories(note: NoteEntity, categoryIds: List<Long>) {
+
+    // ---------------------------------------------
+
+
+    fun linkNoteWithCategory(noteId: Long, categoryId: Long) {
         viewModelScope.launch {
-            notesRepository.updateNoteWithCategories(note, categoryIds)
+            notesRepository.linkNoteWithCategory(noteId, categoryId)
         }
     }
 
 
+    // -----------------------------------------------
+
+
+
+    // Insertar una nueva carpeta
+    fun addFolder(folder: FolderEntity, onFolderAdded: (Long) -> Unit) {
+        viewModelScope.launch {
+            val folderId = notesRepository.insertFolder(folder)
+            onFolderAdded(folderId) // Ejecuta una acción cuando se inserta la carpeta
+        }
+    }
+
+    // Vincular una nota con una carpeta
+    fun linkNoteWithFolder(noteId: Long, folderId: Long?) {
+        viewModelScope.launch {
+            notesRepository.linkNoteWithFolder(noteId, folderId)
+        }
+    }
+
+    // Vincular una carpeta con su subcarpeta
+    fun linkFolderWithSubfolder(parentFolderId: Long, subfolderId: Long) {
+        viewModelScope.launch {
+            notesRepository.linkFolderWithSubfolder(parentFolderId, subfolderId)
+        }
+    }
+
+    // Eliminar una carpeta
+    fun deleteFolder(folder: FolderEntity) {
+        viewModelScope.launch {
+            notesRepository.deleteFolder(folder)
+        }
+    }
+
+    // Actualizar una carpeta
+    fun updateFolder(folder: FolderEntity) {
+        viewModelScope.launch {
+            notesRepository.updateFolder(folder)
+        }
+    }
 }
