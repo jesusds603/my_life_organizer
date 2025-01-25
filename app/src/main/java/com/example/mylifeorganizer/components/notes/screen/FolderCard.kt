@@ -14,13 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -58,6 +53,7 @@ fun FolderCard(
 
     var showRenameDialog by remember { mutableStateOf(false) } // Controla si el diálogo de renombrar está visible
     var newName by remember { mutableStateOf("") } // Título temporal para renombrar
+    var showDetailsDialog by remember { mutableStateOf(false) }
 
     var showAddSubfolderDialog by remember { mutableStateOf(false) }
 
@@ -105,7 +101,18 @@ fun FolderCard(
                     tint = themeColors.text1,
                     modifier = Modifier.size(24.dp)
                 )
-                Spacer(modifier = Modifier.width(8.dp)) // Espaciado entre el icono y el texto
+                Spacer(modifier = Modifier.width(1.dp))
+                Icon(
+                    painter = if (expandedFolders.contains(folder.folderId))  {
+                        painterResource(id = R.drawable.baseline_keyboard_arrow_down_24)
+                    } else {
+                        painterResource(id = R.drawable.baseline_keyboard_arrow_right_24)
+                    },
+                    contentDescription = null,
+                    tint = themeColors.text1,
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
                 Text(
                     text = folder.name,
                     color = themeColors.text1,
@@ -130,77 +137,16 @@ fun FolderCard(
                 )
 
                 if (showDialog) {
-                    DropdownMenu(
-                        expanded = showDialog,
-                        onDismissRequest = { showDialog = false },
-                        modifier = Modifier.background(themeColors.backGround1)
-                    ) {
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = "Add Note",
-                                    color = themeColors.text1
-                                )
-                            },
-                            onClick = {
-                                appViewModel.changeIdFolderForAddingNote(folder.folderId)
-                                appViewModel.toggleAddingNote()
-                                showDialog = false
-                            },
-                            modifier = Modifier.background(themeColors.backGround3)
-                        )
-
-                        Spacer(modifier = Modifier.size(8.dp))
-
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = "Delete Folder",
-                                    color = themeColors.text1
-                                )
-                            },
-                            onClick = {
-                                noteViewModel.deleteFolder(folder)
-                                showDialog = false
-                            },
-                            modifier = Modifier.background(themeColors.backGround3),
-                        )
-
-                        Spacer(modifier = Modifier.size(8.dp))
-
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = "Rename Folder",
-                                    color = themeColors.text1
-                                )
-                            },
-                            onClick = {
-                                newName = folder.name
-                                showDialog = false
-                                showRenameDialog = true
-                            },
-                            modifier = Modifier.background(themeColors.backGround3)
-                        )
-
-                        Spacer(modifier = Modifier.size(8.dp))
-
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = "Add Subfolder",
-                                    color = themeColors.text1
-                                )
-                            },
-                            onClick = {
-                                showDialog = false
-                                showAddSubfolderDialog = true
-                                appViewModel.changeIdFolderForAddingSubFolder(folder.folderId)
-                            },
-                            modifier = Modifier.background(themeColors.backGround3)
-                        )
-
-                    }
+                    FloatingOptionsFolder(
+                        noteViewModel = noteViewModel,
+                        folder = folder,
+                        showDialog = showDialog,
+                        onShowDialog = { showDialog = it },
+                        onShowDetailsDialog = { showDetailsDialog = it },
+                        onShowAddSubfolderDialog = { showAddSubfolderDialog = it },
+                        onShowRenameDialog = { showRenameDialog = it },
+                        onNewName = { newName = it }
+                    )
                 }
             }
 
@@ -252,9 +198,14 @@ fun FolderCard(
                     textFieldLabel = "Subfolder Name"
                 )
             }
+
+            if (showDetailsDialog) {
+                DialogDetailsFolder(
+                    noteViewModel = noteViewModel,
+                    onShowDetailsDialog = { showDetailsDialog = it },
+                    folder = folder
+                )
+            }
         }
-
     }
-
-
 }

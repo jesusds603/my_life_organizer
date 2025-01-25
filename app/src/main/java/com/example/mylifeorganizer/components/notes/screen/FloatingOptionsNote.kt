@@ -1,11 +1,17 @@
 package com.example.mylifeorganizer.components.notes.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -39,6 +45,7 @@ fun FloatingOptionsNote(
 
     var showRenameDialog by remember { mutableStateOf(false) } // Controla si el diálogo de renombrar está visible
     var newTitle by remember { mutableStateOf("") } // Título temporal para renombrar
+    var showDetailsDialog by remember { mutableStateOf(false) }
 
     val noteWithCategories by noteViewModel
         .getNoteWithCategoriesById(noteId ?: 1L)
@@ -99,7 +106,7 @@ fun FloatingOptionsNote(
                 color = themeColors.text1
             ) },
             onClick = {
-                // Acción para Edit
+                showDetailsDialog = true
                 changeShowMenu(false)
             },
             modifier = Modifier.background(themeColors.backGround3)
@@ -124,6 +131,69 @@ fun FloatingOptionsNote(
             textFieldValue = newTitle,
             textFieldOnValueChange = { newTitle = it },
             textFieldLabel = "New Note Title"
+        )
+    }
+
+    if(showDetailsDialog) {
+        AlertDialog(
+            onDismissRequest = { showDetailsDialog = false },
+            confirmButton = {
+                Button(
+                    onClick = {showDetailsDialog = false},
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = themeColors.backGround1
+                    )
+                ) {
+                    Text(
+                        text = "OK"
+                    )
+                }
+            },
+            text = {
+                Column (
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                ) {
+                    Text(
+                        text = "Title: ${noteWithCategories?.note?.title}",
+                        color = themeColors.text1
+                    )
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    Text(
+                        text = "${noteWithCategories?.note?.content?.length} characters",
+                        color = themeColors.text1
+                    )
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    Text(
+                        text = "${noteWithCategories?.note?.content?.split("\\s+".toRegex())?.filter { it.isNotBlank() }?.size ?: 0} words",
+                        color = themeColors.text1
+                    )
+                   Spacer(modifier = Modifier.padding(8.dp))
+                    Text(
+                        text = "Categories: ${noteWithCategories?.categories?.joinToString(", ") { it.name }}",
+                        color = themeColors.text1
+                    )
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    Text(
+                        text = "Created at: ${formatDate(noteWithCategories?.note?.createdAt ?: 0)}",
+                        color = themeColors.text1
+                    )
+                    Spacer(modifier = Modifier.padding(8.dp))
+                    Text(
+                        text = "Last modified at: ${formatDate(noteWithCategories?.note?.updatedAt ?: 0)}",
+                        color = themeColors.text1
+                    )
+                }
+            },
+            title = {
+                Text(
+                    text = "Details",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = themeColors.text1
+                )
+            },
+            containerColor = themeColors.backGround2
         )
     }
 }

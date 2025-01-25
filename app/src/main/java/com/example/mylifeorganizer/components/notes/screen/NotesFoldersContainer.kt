@@ -1,8 +1,6 @@
 package com.example.mylifeorganizer.components.notes.screen
 
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
@@ -12,12 +10,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import com.example.mylifeorganizer.room.FolderEntity
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 
 @Composable
@@ -25,10 +20,13 @@ fun NotesFoldersContainer(
     selectedCategory: String,
     noteViewModel: NoteViewModel
 ) {
+    val appViewModel: AppViewModel = viewModel()
     val notesWithoutContentWithCategories by noteViewModel.notesWithoutContentWithCategories.collectAsState(initial = emptyList())
 
     val folders by noteViewModel.folders.collectAsState(initial = emptyList())
     var expandedFolders by remember { mutableStateOf<Set<Long>>(emptySet()) }
+
+    val selectedOrderingNotes = appViewModel.selectedOrderingNotes.value
 
 
     LazyColumn(
@@ -38,7 +36,17 @@ fun NotesFoldersContainer(
         fun displayFoldersAndNotes(parentId: Long, depth: Int) {
             val filteredFolders = folders.filter { it.parentFolderId == parentId }
 
-            filteredFolders.forEach { folder ->
+            val sortedFolders = when(selectedOrderingNotes) {
+                "createdAscending" -> filteredFolders.sortedBy { it.createdAt }
+                "createdDescending" -> filteredFolders.sortedByDescending { it.createdAt }
+                "updatedAscending" -> filteredFolders.sortedBy { it.createdAt }
+                "updatedDescending" -> filteredFolders.sortedByDescending { it.createdAt }
+                "nameAscending" -> filteredFolders.sortedBy { it.name }
+                "nameDescending" -> filteredFolders.sortedByDescending { it.name }
+                else -> filteredFolders.sortedByDescending { it.createdAt }
+            }
+
+            sortedFolders.forEach { folder ->
                 item {
                     FolderCard(
                         noteViewModel = noteViewModel,
@@ -59,7 +67,15 @@ fun NotesFoldersContainer(
                         it.note.folderId == folder.folderId
                     }
 
-                    val sortedNotesInFolder = notesInFolder.sortedByDescending { it.note.updatedAt }
+                    val sortedNotesInFolder = when(selectedOrderingNotes) {
+                        "createdAscending" -> notesInFolder.sortedBy { it.note.createdAt }
+                        "createdDescending" -> notesInFolder.sortedByDescending { it.note.createdAt }
+                        "updatedAscending" -> notesInFolder.sortedBy { it.note.updatedAt }
+                        "updatedDescending" -> notesInFolder.sortedByDescending { it.note.updatedAt }
+                        "nameAscending" -> notesInFolder.sortedBy { it.note.title }
+                        "nameDescending" -> notesInFolder.sortedByDescending { it.note.title }
+                        else -> notesInFolder.sortedByDescending { it.note.updatedAt }
+                    }
                     val notesToShow = if (selectedCategory == "All") {
                         sortedNotesInFolder
                     } else {
@@ -94,7 +110,15 @@ fun NotesFoldersContainer(
             it.note.folderId == 0L
         }
 
-        val sortedNotesWithoutFolders = notesWithoutFolders.sortedByDescending { it.note.updatedAt }
+        val sortedNotesWithoutFolders = when(selectedOrderingNotes) {
+            "createdAscending" -> notesWithoutFolders.sortedBy { it.note.createdAt }
+            "createdDescending" -> notesWithoutFolders.sortedByDescending { it.note.createdAt }
+            "updatedAscending" -> notesWithoutFolders.sortedBy { it.note.updatedAt }
+            "updatedDescending" -> notesWithoutFolders.sortedByDescending { it.note.updatedAt }
+            "nameAscending" -> notesWithoutFolders.sortedBy { it.note.title }
+            "nameDescending" -> notesWithoutFolders.sortedByDescending { it.note.title }
+            else -> notesWithoutFolders.sortedByDescending { it.note.updatedAt }
+        }
 
         val notesToShow = if (selectedCategory == "All") {
             sortedNotesWithoutFolders

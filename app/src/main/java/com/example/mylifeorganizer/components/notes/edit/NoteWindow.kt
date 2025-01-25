@@ -42,8 +42,9 @@ fun NoteWindow(modifier: Modifier = Modifier) {
         .collectAsState(initial = emptyList())
 
     // Estados reactivos para el título y contenido
-    val titleState = remember { mutableStateOf("") }
-    val contentState = remember { mutableStateOf("") }
+    val (titleState, originalTitle) = remember { mutableStateOf("") to mutableStateOf("") }
+    val (contentState, originalContent) = remember { mutableStateOf("") to mutableStateOf("") }
+
 
     val newCategory by remember { mutableStateOf("") }
     val newCategoryColor by remember { mutableStateOf("") }
@@ -57,6 +58,8 @@ fun NoteWindow(modifier: Modifier = Modifier) {
         noteWithCategories?.note?.let { note ->
             titleState.value = note.title
             contentState.value = note.content
+            originalTitle.value = note.title
+            originalContent.value = note.content
         }
         selectedCategories = categoriesForNote
     }
@@ -85,7 +88,9 @@ fun NoteWindow(modifier: Modifier = Modifier) {
         val selectedCategoryIds = selectedCategories.map { it.categoryId }
 
         // Llamar al metodo del ViewModel para actualizar la nota y las categorías
-        noteViewModel.updateNoteWithCategories(updatedNote, selectedCategoryIds)
+        if(titleState.value != originalTitle.value || contentState.value != originalContent.value) {
+            noteViewModel.updateNoteWithCategories(updatedNote, selectedCategoryIds)
+        }
 
         appViewModel.toggleShowingNote()
         appViewModel.changeIdFolderForAddingNote(0)

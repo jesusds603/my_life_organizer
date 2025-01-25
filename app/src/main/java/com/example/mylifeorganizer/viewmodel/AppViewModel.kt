@@ -57,4 +57,11 @@ class AppViewModel: ViewModel() {
     fun changeSelectedCategory(category: CategoryEntity?) {
         selectedCategory.value = category
     }
+
+    // Ordenar notas en la screen
+    // Valores: createdAscending, createdDescending, updatedAscending, updatedDescending, nameAscending, nameDescending
+    val selectedOrderingNotes = mutableStateOf("updatedDescending") // la mas reciente arriba
+    fun changeSelectedOrderingNotes(ordering: String) {
+        selectedOrderingNotes.value = ordering
+    }
 }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -68,104 +69,103 @@ fun NoteCard(
         }
 
 
-        // Card
-        Row (
+        Column(
             modifier = Modifier
                 .background(themeColors.backGround4, shape = RoundedCornerShape(8.dp))
                 .padding(horizontal = 8.dp)
-                .fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+                .fillMaxSize()
+                .clickable {
+                    appViewModel.changeSelectedNoteId(note.note.noteId)
+                    appViewModel.toggleShowingNote()
+                    appViewModel.changeIdFolderForAddingNote(note.note.folderId)
+                }
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.baseline_edit_note_24),
-                contentDescription = null,
-                tint = themeColors.text1,
-            )
+            val formattedUpdatedAt = formatDate(note.note.updatedAt)
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .clickable {
-                        appViewModel.changeSelectedNoteId(note.note.noteId)
-                        appViewModel.toggleShowingNote()
-                        appViewModel.changeIdFolderForAddingNote(note.note.folderId)
-                    }
+            // Fila superior con el título y el botón de opciones
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                val formattedUpdatedAt = formatDate(note.note.updatedAt)
-
-                // Fila superior con el título y el botón de opciones
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                Row (
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
                 ) {
-
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_edit_note_24),
+                        contentDescription = null,
+                        tint = themeColors.text1,
+                        modifier = Modifier
+                            .height(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         text = note.note.title.replace("\n", " "),
                         color = themeColors.text1,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                     )
-
-                    Box {
-                        Icon(
-                            painter = painterResource(R.drawable.baseline_more_vert_24),
-                            contentDescription = null,
-                            tint = themeColors.text1,
-                            modifier = Modifier
-                                .height(20.dp)
-                                .width(32.dp)
-                                .clickable {
-                                    showMenu = true
-                                    appViewModel.changeSelectedNoteId(note.note.noteId)
-                                }
-                        )
-
-                        // Ventana flotante con las opciones
-                        FloatingOptionsNote(
-                            showMenu = showMenu,
-                            changeShowMenu = { showMenu = it },
-                            noteViewModel = noteViewModel
-                        )
-                    }
                 }
 
-
-                Row (
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Start
-                ) {
-                    Text(
-                        text = "Modified:  ",
-                        color = themeColors.text3,
-                        fontSize = 12.sp
+                Box {
+                    Icon(
+                        painter = painterResource(R.drawable.baseline_more_vert_24),
+                        contentDescription = null,
+                        tint = themeColors.text1,
+                        modifier = Modifier
+                            .height(20.dp)
+                            .width(32.dp)
+                            .clickable {
+                                showMenu = true
+                                appViewModel.changeSelectedNoteId(note.note.noteId)
+                            }
                     )
-                    Text(
-                        text = formattedUpdatedAt,
-                        color = themeColors.text3,
-                        fontSize = 12.sp
+
+                    // Ventana flotante con las opciones
+                    FloatingOptionsNote(
+                        showMenu = showMenu,
+                        changeShowMenu = { showMenu = it },
+                        noteViewModel = noteViewModel
                     )
                 }
+            }
 
-                // FlowRow para las categorías de la nota
-                LazyRow(
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    val categories = note.categories
 
-                    items(categories) { category ->
-                        CategoryBox(
-                            category = category,
-                            selectedCategory = "",
-                            onCategorySelected = {},
-                            categoryName = category.name
-                        )
-                    }
+            Row (
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Text(
+                    text = "Modified:  ",
+                    color = themeColors.text3,
+                    fontSize = 12.sp
+                )
+                Text(
+                    text = formattedUpdatedAt,
+                    color = themeColors.text3,
+                    fontSize = 12.sp
+                )
+            }
+
+            // FlowRow para las categorías de la nota
+            LazyRow(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                val categories = note.categories
+
+                items(categories) { category ->
+                    CategoryBox(
+                        category = category,
+                        selectedCategory = "",
+                        onCategorySelected = {},
+                        categoryName = category.name
+                    )
                 }
             }
         }
+
 
     }
 }

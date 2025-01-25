@@ -12,6 +12,7 @@ import com.example.mylifeorganizer.room.FolderWithSubfolders
 import com.example.mylifeorganizer.room.NoteEntity
 import com.example.mylifeorganizer.room.NoteWithCategories
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
@@ -123,6 +124,72 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
     fun getNotesInFolder(folderId: Long): Flow<List<NoteEntity>> {
         return notesRepository.getNotesInFolder(folderId)
     }
+
+    fun countSubfoldersAndNotes(
+        folderId: Long,
+        onResult: (Int, Int) -> Unit
+    ) {
+        viewModelScope.launch {
+            // Recoge subcarpetas y notas de manera reactiva
+            val subfoldersFlow = getSubfolders(folderId)
+            val notesFlow = getNotesInFolder(folderId)
+
+            val subfolders = subfoldersFlow.first() // Obtenemos la lista actual
+            val notes = notesFlow.first() // Obtenemos la lista actual
+
+            var totalSubfolders = subfolders.size
+            var totalNotes = notes.size
+
+            // Procesar subcarpetas recursivamente
+            subfolders.forEach { subfolder ->
+                countSubfoldersAndNotes(subfolder.folder.folderId) { subfolderCount, noteCount ->
+                    totalSubfolders += subfolderCount
+                    totalNotes += noteCount
+                }
+            }
+
+            // Devuelve el resultado acumulado
+            onResult(totalSubfolders, totalNotes)
+        }
+    }
+
+    fun countTotalSubfoldersAndNotes(
+        folderId: Long,
+        onResult: (Int, Int) -> Unit
+    ) {
+        viewModelScope.launch {
+            // Obtener subcarpetas y notas asociadas al folder actual
+            val subfoldersFlow = getSubfolders(folderId)
+            val notesFlow = getNotesInFolder(folderId)
+
+            val subfolders = subfoldersFlow.first() // Obtener la lista de subcarpetas actual
+            val notes = notesFlow.first() // Obtener la lista de notas actual
+
+            // Inicializar los totales con los elementos de la capa actual
+            var totalSubfolders = subfolders.size
+            var totalNotes = notes.size
+
+            // Procesar subcarpetas de manera recursiva
+            subfolders.forEach { subfolder ->
+                // Llamada recursiva para cada subcarpeta
+                countTotalSubfoldersAndNotes(subfolder.folder.folderId) { subfolderCount, noteCount ->
+                    // Sumar los resultados recursivos al total
+                    totalSubfolders += subfolderCount
+                    totalNotes += noteCount
+
+                    // Devolver el resultado acumulado una vez terminado
+                    onResult(totalSubfolders, totalNotes)
+                }
+            }
+
+            // Si no hay subcarpetas, devolver directamente el resultado
+            if (subfolders.isEmpty()) {
+                onResult(totalSubfolders, totalNotes)
+            }
+        }
+    }
+
+
 
     // Vincular una nota con una carpeta
     fun linkNoteWithFolder(noteId: Long, folderId: Long) {
