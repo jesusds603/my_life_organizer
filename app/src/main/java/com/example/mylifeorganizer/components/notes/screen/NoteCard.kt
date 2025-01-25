@@ -31,12 +31,14 @@ import com.example.mylifeorganizer.room.NoteWithoutContentWithCategories
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun NoteCard(
     noteViewModel: NoteViewModel,
     note: NoteWithoutContentWithCategories,
-    notesToShow: List<NoteWithoutContentWithCategories>
 ) {
     val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
@@ -127,7 +129,7 @@ fun NoteCard(
             LazyRow(
                 modifier = Modifier.padding(top = 1.dp)
             ) {
-                val categories = notesToShow.find { it.note.noteId== note.note.noteId }?.categories ?: emptyList()
+                val categories = note.categories
 
                 items(categories) { category ->
                     Box(
@@ -148,5 +150,18 @@ fun NoteCard(
                 }
             }
         }
+    }
+}
+
+
+// Función para formatear las fechas
+fun formatDate(timestamp: Long): String {
+    return try {
+        val date = Date(timestamp)
+        val formatter = SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault())
+        formatter.format(date)
+    } catch (e: Exception) {
+        // En caso de error, devuelve un texto por defecto
+        "Invalid Date"
     }
 }

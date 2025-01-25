@@ -90,13 +90,13 @@ class NotesRepository (val noteDB: NoteDB) {
     fun getAllFolders() = noteDAO.getAllFolders()
 
     // Obtener los subfolders de una carpeta
-    fun getSubfolders(parentId: Long?) = noteDAO.getSubfolders(parentId)
+    fun getSubfolders(parentId: Long) = noteDAO.getSubfolders(parentId)
 
     // Obtener las notas dentro de una carpeta
-    fun getNotesInFolder(folderId: Long?) = noteDAO.getNotesInFolder(folderId)
+    fun getNotesInFolder(folderId: Long) = noteDAO.getNotesInFolder(folderId)
 
     // Vincular una nota con una carpeta
-    suspend fun linkNoteWithFolder(noteId: Long, folderId: Long?) {
+    suspend fun linkNoteWithFolder(noteId: Long, folderId: Long) {
         noteDAO.updateNoteFolderId(noteId, folderId)
     }
 

@@ -19,7 +19,7 @@ data class NoteEntity(
     val isFavorite: Boolean = false,
     val isArchived: Boolean = false,
     @ColumnInfo(name = "folderId") // Carpeta asociada, null si no tiene
-    val folderId: Long? = null
+    val folderId: Long
 )
 
 // Entidad para las categorías
@@ -75,7 +75,7 @@ data class NoteWithoutContent(
     val updatedAt: Long,
     val isFavorite: Boolean,
     val isArchived: Boolean,
-    val folderId: Long?
+    val folderId: Long
 )
 
 data class NoteWithoutContentWithCategories(
@@ -95,12 +95,12 @@ data class NoteWithoutContentWithCategories(
 
 @Entity(tableName = "folders")
 data class FolderEntity(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @ColumnInfo(name = "folderId") // Renombramos la columna a folderId
-    val folderId: Long = 0,
+    val folderId: Long,
     val name: String,
     @ColumnInfo(name = "parentFolderId") // Renombramos la columna a parentFolderId
-    val parentFolderId: Long? = null,
+    val parentFolderId: Long,
     val createdAt: Long = System.currentTimeMillis(),
 )
 

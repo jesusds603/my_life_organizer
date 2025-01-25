@@ -17,7 +17,7 @@ interface NoteDao {
 
     @Transaction
     @Query("""
-    SELECT noteId, title, createdAt, updatedAt, isFavorite, isArchived 
+    SELECT noteId, title, createdAt, updatedAt, isFavorite, isArchived, folderId 
     FROM notes
     """)
     fun getAllNotesWithoutContentWithCategories(): Flow<List<NoteWithoutContentWithCategories>>
@@ -121,20 +121,20 @@ interface NoteDao {
     // Obtener las subcarpetas de una carpeta específica
     @Transaction
     @Query("SELECT * FROM folders WHERE parentFolderId = :parentId")
-    fun getSubfolders(parentId: Long?): Flow<List<FolderWithSubfolders>>
+    fun getSubfolders(parentId: Long): Flow<List<FolderWithSubfolders>>
 
     // Obtener todas las notas de una carpeta
     @Transaction
     @Query("SELECT * FROM notes WHERE folderId = :folderId")
-    fun getNotesInFolder(folderId: Long?): Flow<List<NoteEntity>>
+    fun getNotesInFolder(folderId: Long): Flow<List<NoteEntity>>
 
     // Insertar la relación de nota con carpeta
     @Query("UPDATE notes SET folderId = :folderId WHERE noteId = :noteId")
-    suspend fun updateNoteFolderId(noteId: Long, folderId: Long?)
+    suspend fun updateNoteFolderId(noteId: Long, folderId: Long)
 
     // Actualizar la relación de carpeta con subcarpeta
     @Query("UPDATE folders SET parentFolderId = :parentFolderId WHERE folderId = :subfolderId")
-    suspend fun updateFolderParentId(subfolderId: Long, parentFolderId: Long?)
+    suspend fun updateFolderParentId(subfolderId: Long, parentFolderId: Long)
 
     // Eliminar una carpeta
     @Delete

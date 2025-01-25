@@ -26,12 +26,12 @@ class AppViewModel: ViewModel() {
     fun toggleAddingNote() {
         isAddingNote.value = !isAddingNote.value
     }
-    val idFolderForAddingNote = mutableStateOf<Long?>(null)
-    fun changeIdFolderForAddingNote(folderId: Long?) {
+    val idFolderForAddingNote = mutableStateOf<Long>(0)
+    fun changeIdFolderForAddingNote(folderId: Long) {
         idFolderForAddingNote.value = folderId
     }
-    val idFolderForAddingSubFolder = mutableStateOf<Long?>(null)
-    fun changeIdFolderForAddingSubFolder(folderId: Long?) {
+    val idFolderForAddingSubFolder = mutableStateOf<Long>(0)
+    fun changeIdFolderForAddingSubFolder(folderId: Long) {
         idFolderForAddingSubFolder.value = folderId
     }
 

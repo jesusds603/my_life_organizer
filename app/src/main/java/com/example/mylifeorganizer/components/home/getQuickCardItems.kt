@@ -25,7 +25,10 @@ fun getQuickCardItems(
             title = "Add Note",
             subtitle = "Add a new note",
             iconResId = R.drawable.baseline_colorize_24,
-            onClick = { appViewModel.toggleAddingNote() },
+            onClick = {
+                appViewModel.changeIdFolderForAddingNote(0)
+                appViewModel.toggleAddingNote()
+                      },
             backgroundColor = themeColors.quickCard.addNote
         ),
         QuickCardItem(

@@ -66,7 +66,7 @@ fun DialogOptionsAdd(
                 // Button Add Note
                 TextButton(
                     onClick = {
-                        appViewModel.changeIdFolderForAddingNote(null)
+                        appViewModel.changeIdFolderForAddingNote(0)
                         appViewModel.toggleAddingNote()
                         onShowDialog(false)
                     },
@@ -96,6 +96,7 @@ fun DialogOptionsAdd(
                     onClick = {
                         onShowDialog(false)
                         onShowAddFolderDialog(true)
+                        appViewModel.changeIdFolderForAddingSubFolder(0)
                     },
                     modifier = Modifier
                         .fillMaxWidth()

@@ -54,6 +54,7 @@ fun AddFolderDialog(
                 onClick = {
                     noteViewModel.addFolder(
                         FolderEntity(
+                            folderId = System.currentTimeMillis(),
                             name = folderName,
                             parentFolderId = idFolderForAddingSubFolder
                         ),

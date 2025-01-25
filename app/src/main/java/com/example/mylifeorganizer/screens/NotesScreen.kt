@@ -92,7 +92,7 @@ fun NotesScreen() {
                 onShowDialog = { showDialog = it },
                 onShowAddFolderDialog = {
                     showAddFolderDialog = it
-                    appViewModel.changeIdFolderForAddingSubFolder(null)
+                    appViewModel.changeIdFolderForAddingSubFolder(0)
                 }
             )
         }

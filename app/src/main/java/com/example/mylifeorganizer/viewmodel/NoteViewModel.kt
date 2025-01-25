@@ -116,16 +116,16 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
 
     val folders = notesRepository.getAllFolders()
 
-    fun getSubfolders(parentId: Long?): Flow<List<FolderWithSubfolders>> {
+    fun getSubfolders(parentId: Long): Flow<List<FolderWithSubfolders>> {
         return notesRepository.getSubfolders(parentId)
     }
 
-    fun getNotesInFolder(folderId: Long?): Flow<List<NoteEntity>> {
+    fun getNotesInFolder(folderId: Long): Flow<List<NoteEntity>> {
         return notesRepository.getNotesInFolder(folderId)
     }
 
     // Vincular una nota con una carpeta
-    fun linkNoteWithFolder(noteId: Long, folderId: Long?) {
+    fun linkNoteWithFolder(noteId: Long, folderId: Long) {
         viewModelScope.launch {
             notesRepository.linkNoteWithFolder(noteId, folderId)
         }

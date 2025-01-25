@@ -50,6 +50,8 @@ fun NoteWindow(modifier: Modifier = Modifier) {
     val showCategoryInput by remember { mutableStateOf(false) }
     var selectedCategories by remember { mutableStateOf<List<CategoryEntity>>(emptyList()) }
 
+    val idFolderForAddingNote = appViewModel.idFolderForAddingNote.value
+
     // Sincronizar el estado del título y contenido con la nota obtenida
     LaunchedEffect(noteWithCategories) {
         noteWithCategories?.note?.let { note ->
@@ -75,7 +77,8 @@ fun NoteWindow(modifier: Modifier = Modifier) {
             updatedAt = System.currentTimeMillis(),
             isFavorite = noteWithCategories?.note?.isFavorite ?: false,
             isArchived = noteWithCategories?.note?.isArchived ?: false,
-            createdAt = noteWithCategories?.note?.createdAt ?: System.currentTimeMillis()
+            createdAt = noteWithCategories?.note?.createdAt ?: System.currentTimeMillis(),
+            folderId = idFolderForAddingNote
         )
 
         // Recopilar las categorías seleccionadas
@@ -85,6 +88,7 @@ fun NoteWindow(modifier: Modifier = Modifier) {
         noteViewModel.updateNoteWithCategories(updatedNote, selectedCategoryIds)
 
         appViewModel.toggleShowingNote()
+        appViewModel.changeIdFolderForAddingNote(0)
     }
 
     // Mostramos toda la información de la nota
