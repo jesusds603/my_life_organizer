@@ -73,6 +73,7 @@ fun NotesFoldersContainer(
                             NoteCard(
                                 noteViewModel = noteViewModel,
                                 note = noteWithCategories,
+                                depth = depth + 1
                             )
                         }
                     }
@@ -107,6 +108,7 @@ fun NotesFoldersContainer(
             NoteCard(
                 noteViewModel = noteViewModel,
                 note = note,
+                depth = 0
             )
         }
     }

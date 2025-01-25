@@ -67,6 +67,14 @@ class ThemeViewModel : ViewModel() {
                 cyan = Color(0xFF0EA380),
                 pink = Color(0xFFD51FBD),
                 gray = Color(0xFF5C5C5C)
+            ),
+            verticalLinesNotes = listOf(
+                Color(0xFF1EF6C4),
+                Color(0xFFE4F639),
+                Color(0xFF18F521),
+                Color(0xFFF51BD8),
+                Color(0xFFF63939),
+                Color(0xFF7D30F8)
             )
         )
     )
@@ -107,6 +115,14 @@ class ThemeViewModel : ViewModel() {
                     cyan = Color(0xFF800040),
                     pink = Color(0xFFEC24D1),
                     gray = Color(0xFF5C5C5C)
+                ),
+                verticalLinesNotes = listOf(
+                    Color(0xFF1EF6C4),
+                    Color(0xFFE4F639),
+                    Color(0xFF18F521),
+                    Color(0xFFF51BD8),
+                    Color(0xFFF63939),
+                    Color(0xFF7D30F8)
                 )
             )
         } else {
@@ -141,7 +157,15 @@ class ThemeViewModel : ViewModel() {
                     orange = Color(0xFFFFA500),
                     cyan = Color(0xFF00FFFF),
                     pink = Color(0xFFF538CC),
-                    gray = Color(0xFFA0A0A0)
+                    gray = Color(0xFFA0A0A0),
+                ),
+                verticalLinesNotes = listOf(
+                    Color(0xFF05B683),
+                    Color(0xFFD7C420),
+                    Color(0xFF29A12E),
+                    Color(0xFFB8159D),
+                    Color(0xFFE91E63),
+                    Color(0xFF7D30F8)
                 )
             )
         }
@@ -164,7 +188,8 @@ data class ThemeColors(
     val buttonDelete: Color,
     val quickCard: QuickCardColors,
     val backgroundTransparent1: Color,
-    val categoriesNotes: CategoriesNotes
+    val categoriesNotes: CategoriesNotes,
+    val verticalLinesNotes: List<Color>
 ) {
     data class QuickCardColors(
         val addNote: Color,

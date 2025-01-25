@@ -6,9 +6,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -40,6 +44,7 @@ import java.util.Locale
 fun NoteCard(
     noteViewModel: NoteViewModel,
     note: NoteWithoutContentWithCategories,
+    depth: Int
 ) {
     val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
@@ -47,103 +52,121 @@ fun NoteCard(
 
     var showMenu by remember { mutableStateOf(false) }
 
-
-    Row (
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp, horizontal = 8.dp)
-            .background(themeColors.backGround4, shape = RoundedCornerShape(8.dp))
-            .padding(vertical = 4.dp, horizontal = 4.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .height(72.dp)
+            .padding(vertical = 1.dp),
     ) {
-        Icon(
-            painter = painterResource(id = R.drawable.baseline_edit_note_24),
-            contentDescription = null,
-            tint = themeColors.text1,
-        )
+        if (depth > 0) {
+            // Líneas verticales a la izquierda
+            repeat(depth) { index -> // `index` es el índice del ciclo
+                VerticalLine(
+                    depth = index // Pasar el índice como argumento
+                )
+            }
+        }
 
-        Column(
+
+        // Card
+        Row (
             modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    appViewModel.changeSelectedNoteId(note.note.noteId)
-                    appViewModel.toggleShowingNote()
-                    appViewModel.changeIdFolderForAddingNote(note.note.folderId)
-                }
+                .background(themeColors.backGround4, shape = RoundedCornerShape(8.dp))
+                .padding(horizontal = 8.dp)
+                .fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            val formattedUpdatedAt = formatDate(note.note.updatedAt)
+            Icon(
+                painter = painterResource(id = R.drawable.baseline_edit_note_24),
+                contentDescription = null,
+                tint = themeColors.text1,
+            )
 
-            // Fila superior con el título y el botón de opciones
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clickable {
+                        appViewModel.changeSelectedNoteId(note.note.noteId)
+                        appViewModel.toggleShowingNote()
+                        appViewModel.changeIdFolderForAddingNote(note.note.folderId)
+                    }
             ) {
+                val formattedUpdatedAt = formatDate(note.note.updatedAt)
 
-                Text(
-                    text = note.note.title.replace("\n", " "),
-                    color = themeColors.text1,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold,
-                )
+                // Fila superior con el título y el botón de opciones
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
 
-                Box {
-                    Icon(
-                        painter = painterResource(R.drawable.baseline_more_vert_24),
-                        contentDescription = null,
-                        tint = themeColors.text1,
-                        modifier = Modifier
-                            .size(32.dp)
-                            .clickable {
-                                showMenu = true
-                                appViewModel.changeSelectedNoteId(note.note.noteId)
-                            }
+                    Text(
+                        text = note.note.title.replace("\n", " "),
+                        color = themeColors.text1,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
                     )
 
-                    // Ventana flotante con las opciones
-                    FloatingOptionsNote(
-                        showMenu = showMenu,
-                        changeShowMenu = { showMenu = it },
-                        noteViewModel = noteViewModel
+                    Box {
+                        Icon(
+                            painter = painterResource(R.drawable.baseline_more_vert_24),
+                            contentDescription = null,
+                            tint = themeColors.text1,
+                            modifier = Modifier
+                                .height(20.dp)
+                                .width(32.dp)
+                                .clickable {
+                                    showMenu = true
+                                    appViewModel.changeSelectedNoteId(note.note.noteId)
+                                }
+                        )
+
+                        // Ventana flotante con las opciones
+                        FloatingOptionsNote(
+                            showMenu = showMenu,
+                            changeShowMenu = { showMenu = it },
+                            noteViewModel = noteViewModel
+                        )
+                    }
+                }
+
+
+                Row (
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Start
+                ) {
+                    Text(
+                        text = "Modified:  ",
+                        color = themeColors.text3,
+                        fontSize = 12.sp
+                    )
+                    Text(
+                        text = formattedUpdatedAt,
+                        color = themeColors.text3,
+                        fontSize = 12.sp
                     )
                 }
-            }
 
+                // FlowRow para las categorías de la nota
+                LazyRow(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    val categories = note.categories
 
-            Row (
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Start
-            ) {
-                Text(
-                    text = "Modified:  ",
-                    color = themeColors.text3,
-                    fontSize = 12.sp
-                )
-                Text(
-                    text = formattedUpdatedAt,
-                    color = themeColors.text3,
-                    fontSize = 12.sp
-                )
-            }
-
-            // FlowRow para las categorías de la nota
-            LazyRow(
-                modifier = Modifier.padding(top = 1.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                val categories = note.categories
-
-                items(categories) { category ->
-                    CategoryBox(
-                        category = category,
-                        selectedCategory = "",
-                        onCategorySelected = {},
-                        categoryName = category.name
-                    )
+                    items(categories) { category ->
+                        CategoryBox(
+                            category = category,
+                            selectedCategory = "",
+                            onCategorySelected = {},
+                            categoryName = category.name
+                        )
+                    }
                 }
             }
         }
+
     }
 }
 

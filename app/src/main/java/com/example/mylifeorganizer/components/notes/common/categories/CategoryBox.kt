@@ -28,11 +28,7 @@ fun CategoryBox(
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
 
-    val padding4 = 4.dp
-    val padding2 = 2.dp
-    val fontSize = 16.sp
     val cornerRadius = 4.dp
-    val padding8 = 8.dp
 
     Box(
         modifier = Modifier
@@ -41,7 +37,7 @@ fun CategoryBox(
                 color = Color.Transparent,
                 shape = RoundedCornerShape(cornerRadius)
             )
-            .padding(horizontal = padding8)
+            .padding(horizontal = 4.dp)
             .drawWithContent {
                 // Dibuja el contenido primero
                 drawContent()
@@ -63,12 +59,12 @@ fun CategoryBox(
                     color = themeViewModel.getCategoryColor(category.bgColor),
                     shape = RoundedCornerShape(cornerRadius)
                 )
-                .padding(vertical = padding2, horizontal = padding4), // Espaciado adicional dentro del fondo,
+                .padding(horizontal = 8.dp), // Espaciado adicional dentro del fondo,
         ) {
             Text(
                 text = categoryName,
                 color = if (selectedCategory == categoryName) themeColors.text1 else themeColors.text3,
-                fontSize = fontSize,
+                fontSize = 12.sp,
                 fontWeight = FontWeight.Bold
             )
         }
