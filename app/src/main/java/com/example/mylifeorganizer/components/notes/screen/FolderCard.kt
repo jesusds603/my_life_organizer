@@ -1,5 +1,6 @@
 package com.example.mylifeorganizer.components.notes.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,11 +12,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.R
+import com.example.mylifeorganizer.components.AlertDialogWindow
 import com.example.mylifeorganizer.room.FolderEntity
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
@@ -49,6 +53,11 @@ fun FolderCard(
     val themeColors = themeViewModel.themeColors.value
 
     var showDialog by remember { mutableStateOf(false) }
+
+    var showRenameDialog by remember { mutableStateOf(false) } // Controla si el diálogo de renombrar está visible
+    var newName by remember { mutableStateOf("") } // Título temporal para renombrar
+
+    var showAddSubfolderDialog by remember { mutableStateOf(false) }
 
     Row(
         modifier = Modifier
@@ -121,8 +130,104 @@ fun FolderCard(
                         },
                         modifier = Modifier.background(themeColors.backGround3)
                     )
+
+                    Spacer(modifier = Modifier.size(8.dp))
+
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = "Delete Folder",
+                                color = themeColors.text1
+                            )
+                        },
+                        onClick = {
+                            noteViewModel.deleteFolder(folder)
+                            showDialog = false
+                        },
+                        modifier = Modifier.background(themeColors.backGround3),
+                    )
+
+                    Spacer(modifier = Modifier.size(8.dp))
+
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = "Rename Folder",
+                                color = themeColors.text1
+                            )
+                        },
+                        onClick = {
+                            newName = folder.name
+                            showDialog = false
+                            showRenameDialog = true
+                        },
+                        modifier = Modifier.background(themeColors.backGround3)
+                    )
+
+                    Spacer(modifier = Modifier.size(8.dp))
+
+                    DropdownMenuItem(
+                        text = {
+                            Text(
+                                text = "Add Subfolder",
+                                color = themeColors.text1
+                            )
+                        },
+                        onClick = {
+                            showDialog = false
+                            showAddSubfolderDialog = true
+                            appViewModel.changeIdFolderForAddingSubFolder(folder.folderId)
+                        },
+                        modifier = Modifier.background(themeColors.backGround3)
+                    )
+
                 }
             }
         }
+    }
+
+    if(showRenameDialog) {
+        AlertDialogWindow(
+            title = "Rename Folder",
+            confirmButtonText = "Save",
+            onConfirm = {
+                val updatedFolder = folder.copy(name = newName)
+                noteViewModel.updateFolder(updatedFolder)
+                showRenameDialog = false
+            },
+            dismissButtonText = "Cancel",
+            onDismiss = { showRenameDialog = false },
+            isConfirmButtonEnabled = newName.isNotBlank(),
+            textFieldValue = newName,
+            textFieldOnValueChange = { newName = it },
+            textFieldLabel = "New Folder Name"
+        )
+    }
+
+    if (showAddSubfolderDialog) {
+        AlertDialogWindow(
+            title = "Add Subfolder",
+            confirmButtonText = "Add",
+            onConfirm = {
+                val newSubfolder = FolderEntity(
+                    folderId = System.currentTimeMillis(),
+                    name = newName,
+                    parentFolderId = folder.folderId,
+                )
+                noteViewModel.addFolder(
+                    newSubfolder,
+                    onFolderAdded = { folderId ->
+                        Log.d("AddSubfolder", "Subfolder added with ID: $folderId and parent ID: ${folder.folderId}")
+                    }
+                )
+                showAddSubfolderDialog = false
+            },
+            dismissButtonText = "Cancel",
+            onDismiss = { showAddSubfolderDialog = false },
+            isConfirmButtonEnabled = newName.isNotBlank(),
+            textFieldValue = newName,
+            textFieldOnValueChange = { newName = it },
+            textFieldLabel = "Subfolder Name"
+        )
     }
 }

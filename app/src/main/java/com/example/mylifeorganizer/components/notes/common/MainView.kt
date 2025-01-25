@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.components.notes.common.categories.CategoriesSection
+import com.example.mylifeorganizer.components.notes.common.categories.CategoryBox
 import com.example.mylifeorganizer.room.CategoryEntity
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
@@ -112,17 +113,12 @@ fun MainView(
                     val categoryName = selectedCategories[index].name
                     val categoryColor = selectedCategories[index].bgColor
 
-                    Box(
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
-                            .background(color = themeViewModel.getCategoryColor(categoryColor))
-                            .padding(vertical = 4.dp, horizontal = 4.dp)
-                    ) {
-                        Text(
-                            text = categoryName,
-                            color = themeColors.text1
-                        )
-                    }
+                    CategoryBox(
+                        category = selectedCategories[index],
+                        selectedCategory = "",
+                        onCategorySelected = {},
+                        categoryName = categoryName
+                    )
                 }
             }
         }

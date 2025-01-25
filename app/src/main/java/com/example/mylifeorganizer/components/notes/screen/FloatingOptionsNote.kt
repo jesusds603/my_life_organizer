@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mylifeorganizer.components.AlertDialogWindow
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
@@ -84,7 +85,7 @@ fun FloatingOptionsNote(
                 color = themeColors.text1
             ) },
             onClick = {
-                // Acción para Edit
+                noteViewModel.deleteNote(noteWithCategories?.note!!)
                 changeShowMenu(false)
             },
             modifier = Modifier.background(themeColors.backGround3)
@@ -106,32 +107,23 @@ fun FloatingOptionsNote(
     }
 
     if(showRenameDialog) {
-        AlertDialog(
-            onDismissRequest = { showRenameDialog = false },
-            title = { Text("Rename Note") },
-            text = { TextField(
-                value = newTitle,
-                onValueChange = { newTitle = it }
-            ) },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        val updatedNote = noteWithCategories?.note?.copy(title = newTitle, updatedAt = System.currentTimeMillis())
-                        if (updatedNote != null) {
-                            noteViewModel.updateNote(updatedNote) {
-                                showRenameDialog = false
-                            }
-                        }
+        AlertDialogWindow(
+            title = "Rename Note",
+            confirmButtonText = "Save",
+            onConfirm = {
+                val updatedNote = noteWithCategories?.note?.copy(title = newTitle, updatedAt = System.currentTimeMillis())
+                if (updatedNote != null) {
+                    noteViewModel.updateNote(updatedNote) {
+                        showRenameDialog = false
                     }
-                ) {
-                    Text("Save")
                 }
             },
-            dismissButton = {
-                TextButton(onClick = { showRenameDialog = false }) {
-                    Text("Cancel")
-                }
-            }
+            dismissButtonText = "Cancel",
+            onDismiss = { showRenameDialog = false },
+            isConfirmButtonEnabled = newTitle.isNotBlank(),
+            textFieldValue = newTitle,
+            textFieldOnValueChange = { newTitle = it },
+            textFieldLabel = "New Note Title"
         )
     }
 }

@@ -20,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mylifeorganizer.components.notes.common.categories.CategoryBox
 import com.example.mylifeorganizer.room.CategoryEntity
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
@@ -32,17 +33,10 @@ fun RowCategories(
     onCategorySelected: (String) -> Unit,
     noteViewModel: NoteViewModel
 ) {
-    val appViewModel: AppViewModel = viewModel()
     val categories by noteViewModel.categories.collectAsState(initial = emptyList())
 
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
-
-    val padding4 = 4.dp
-    val padding2 = 2.dp
-    val fontSize = 16.sp
-    val cornerRadius = 4.dp
-    val padding8 = 8.dp
 
 
     LazyRow (
@@ -53,46 +47,12 @@ fun RowCategories(
 
         // Agregar la opción "All"
         item {
-            Box(
-                modifier = Modifier
-                    .clickable {onCategorySelected("All")}
-                    .background(
-                        color = Color.Transparent,
-                        shape = RoundedCornerShape(cornerRadius)
-                    )
-                    .padding(horizontal = padding8)
-                    .drawWithContent {
-                        // Dibuja el contenido primero
-                        drawContent()
-
-                        // Si está seleccionada, dibuja un borde verde en la parte inferior
-                        if (selectedCategory ==  "All") {
-                            drawLine(
-                                color = Color.Green,
-                                start = Offset(0f, size.height), // Comienza en el fondo de la Box
-                                end = Offset(size.width, size.height), // Termina en el fondo de la Box
-                                strokeWidth = 10f
-                            )
-                        }
-                    }
-            ) {
-                Box(
-                    modifier = Modifier
-                        .background(
-                            color = themeColors.backGround1,
-                            shape = RoundedCornerShape(cornerRadius)
-                        )
-                        .padding(vertical = padding2, horizontal = padding4), // Espaciado adicional dentro del fondo
-                ) {
-                    Text(
-                        text = "All",
-                        color = if (selectedCategory == "All") themeColors.text1 else themeColors.text3,
-                        fontSize = fontSize,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-
-            }
+            CategoryBox(
+                category = CategoryEntity(name = "All", bgColor = "backGround1"),
+                selectedCategory = selectedCategory,
+                onCategorySelected = onCategorySelected,
+                categoryName = "All"
+            )
         }
 
         if (categories.isNotEmpty()) {
@@ -100,46 +60,12 @@ fun RowCategories(
             items(categories)  { category ->
                 val categoryName = category.name
 
-                Box(
-                    modifier = Modifier
-                        .clickable { onCategorySelected(categoryName) }
-                        .background(
-                            color = Color.Transparent,
-                            shape = RoundedCornerShape(cornerRadius)
-                        )
-                        .padding(horizontal = padding8)
-                        .drawWithContent {
-                            // Dibuja el contenido primero
-                            drawContent()
-
-                            // Si está seleccionada, dibuja un borde verde en la parte inferior
-                            if (selectedCategory == categoryName) {
-                                drawLine(
-                                    color = Color.Green,
-                                    start = Offset(0f, size.height), // Comienza en el fondo de la Box
-                                    end = Offset(size.width, size.height), // Termina en el fondo de la Box
-                                    strokeWidth = 10f
-                                )
-                            }
-                        }
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .background(
-                                color = themeViewModel.getCategoryColor(category.bgColor),
-                                shape = RoundedCornerShape(cornerRadius)
-                            )
-                            .padding(vertical = padding2, horizontal = padding4), // Espaciado adicional dentro del fondo,
-                    ) {
-                        Text(
-                            text = categoryName,
-                            color = if (selectedCategory == categoryName) themeColors.text1 else themeColors.text3,
-                            fontSize = fontSize,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-
-                }
+                CategoryBox(
+                    category = category,
+                    selectedCategory = selectedCategory,
+                    onCategorySelected = onCategorySelected,
+                    categoryName = categoryName
+                )
             }
         }
     }

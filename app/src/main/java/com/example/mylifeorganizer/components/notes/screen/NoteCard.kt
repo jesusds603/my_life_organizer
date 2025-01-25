@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.R
+import com.example.mylifeorganizer.components.notes.common.categories.CategoryBox
 import com.example.mylifeorganizer.room.NoteWithoutContentWithCategories
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
@@ -67,6 +68,7 @@ fun NoteCard(
                 .clickable {
                     appViewModel.changeSelectedNoteId(note.note.noteId)
                     appViewModel.toggleShowingNote()
+                    appViewModel.changeIdFolderForAddingNote(note.note.folderId)
                 }
         ) {
             val formattedUpdatedAt = formatDate(note.note.updatedAt)
@@ -127,26 +129,18 @@ fun NoteCard(
 
             // FlowRow para las categorías de la nota
             LazyRow(
-                modifier = Modifier.padding(top = 1.dp)
+                modifier = Modifier.padding(top = 1.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 val categories = note.categories
 
                 items(categories) { category ->
-                    Box(
-                        modifier = Modifier
-                            .padding(end = 1.dp)
-                            .background(
-                                themeViewModel.getCategoryColor(category.bgColor),
-                                shape = RoundedCornerShape(16.dp)
-                            )
-                            .padding(horizontal = 12.dp, vertical = 1.dp)
-                    ) {
-                        Text(
-                            text = category.name,
-                            color = themeColors.text1,
-                            fontSize = 12.sp
-                        )
-                    }
+                    CategoryBox(
+                        category = category,
+                        selectedCategory = "",
+                        onCategorySelected = {},
+                        categoryName = category.name
+                    )
                 }
             }
         }

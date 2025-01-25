@@ -101,7 +101,6 @@ fun NotesScreen() {
             AddFolderDialog(
                 onDismiss = { showAddFolderDialog = false },
                 noteViewModel = noteViewModel,
-                folders = emptyList()
             )
         }
 

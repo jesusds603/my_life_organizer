@@ -59,6 +59,7 @@ fun NewCategoryInput(
             noteViewModel.addCategory(category)
             newCategory.value = ""  // Limpiar el campo de categoría después de crearla
             showCategoryInput.value = false  // Cerrar el campo de categoría
+            newCategoryColor.value = ""
         }) {
             Text("Add", color = themeColors.text1)
         }

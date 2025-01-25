@@ -34,7 +34,7 @@ fun DialogOptionsAdd(
     val themeColors = themeViewModel.themeColors.value
 
     val verticalPaddingOptions = 16.dp
-    val sizeTextButtons = 24.sp
+    val sizeTextButtons = 18.sp
 
 
     AlertDialog(
