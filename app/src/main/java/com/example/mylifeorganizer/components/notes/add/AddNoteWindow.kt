@@ -38,6 +38,8 @@ fun AddNoteWindow(modifier: Modifier = Modifier) {
     val showCategoryInput by remember { mutableStateOf(false) }
     var selectedCategories by remember { mutableStateOf<List<CategoryEntity>>(emptyList()) }
 
+    val idFolderForAddingNote = appViewModel.idFolderForAddingNote.value
+
 
     BackHandler {
         if(newContent.isNotEmpty()) {
@@ -52,7 +54,8 @@ fun AddNoteWindow(modifier: Modifier = Modifier) {
             noteViewModel.addNote(
                 note =  NoteEntity(
                     title = finalTitle,
-                    content = finalContent
+                    content = finalContent,
+                    folderId = idFolderForAddingNote
                 ),
                 onNoteAdded = { noteId ->
                     // Guardar las relaciones con las categorías seleccionadas

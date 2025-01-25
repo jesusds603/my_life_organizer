@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -83,25 +84,20 @@ fun NoteCard(
                 )
 
                 Box {
-                    Text(
-                        text = "⋮",
-                        color = themeColors.text1,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
+                    Icon(
+                        painter = painterResource(R.drawable.baseline_more_vert_24),
+                        contentDescription = null,
+                        tint = themeColors.text1,
                         modifier = Modifier
+                            .size(32.dp)
                             .clickable {
                                 showMenu = true
                                 appViewModel.changeSelectedNoteId(note.note.noteId)
-                            } // Al hacer clic, mostrar el menú
-                            .background(
-                                color = themeColors.backGround1,
-                                shape = RoundedCornerShape(8.dp)
-                            )
-                            .padding(vertical = 2.dp, horizontal = 8.dp)
+                            }
                     )
 
                     // Ventana flotante con las opciones
-                    FloatingOptions(
+                    FloatingOptionsNote(
                         showMenu = showMenu,
                         changeShowMenu = { showMenu = it },
                         noteViewModel = noteViewModel
