@@ -24,7 +24,7 @@ fun NotesFoldersContainer(
     val notesWithoutContentWithCategories by noteViewModel.notesWithoutContentWithCategories.collectAsState(initial = emptyList())
 
     val folders by noteViewModel.folders.collectAsState(initial = emptyList())
-    var expandedFolders by remember { mutableStateOf<Set<Long>>(emptySet()) }
+    val expandedFolders = appViewModel.expandedFolders.value
 
     val selectedOrderingNotes = appViewModel.selectedOrderingNotes.value
 
@@ -50,10 +50,6 @@ fun NotesFoldersContainer(
                 item {
                     FolderCard(
                         noteViewModel = noteViewModel,
-                        expandedFolders = expandedFolders,
-                        onFolderClick = { clickedFolders ->
-                            expandedFolders = clickedFolders
-                        },
                         folder = folder,
                         depth = depth
                     )

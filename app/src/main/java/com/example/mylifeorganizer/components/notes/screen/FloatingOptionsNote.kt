@@ -63,7 +63,8 @@ fun FloatingOptionsNote(
                 color = themeColors.text1
             ) },
             onClick = {
-                // Acción para Edit
+                appViewModel.changeSelectedNoteId(noteId)
+                appViewModel.toggleShowingNote()
                 changeShowMenu(false)
             },
             modifier = Modifier.background(themeColors.backGround3)

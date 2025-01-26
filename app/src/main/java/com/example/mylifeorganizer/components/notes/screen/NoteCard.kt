@@ -2,6 +2,7 @@ package com.example.mylifeorganizer.components.notes.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -74,11 +76,21 @@ fun NoteCard(
                 .background(themeColors.backGround4, shape = RoundedCornerShape(8.dp))
                 .padding(horizontal = 8.dp)
                 .fillMaxSize()
-                .clickable {
-                    appViewModel.changeSelectedNoteId(note.note.noteId)
-                    appViewModel.toggleShowingNote()
-                    appViewModel.changeIdFolderForAddingNote(note.note.folderId)
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onLongPress = {
+                            showMenu = true
+                            appViewModel.changeSelectedNoteId(note.note.noteId)
+                        },
+                        onTap = {
+                            // Acción al hacer clic normal
+                            appViewModel.changeSelectedNoteId(note.note.noteId)
+                            appViewModel.toggleShowingNote()
+                            appViewModel.changeIdFolderForAddingNote(note.note.folderId)
+                        }
+                    )
                 }
+
         ) {
             val formattedUpdatedAt = formatDate(note.note.updatedAt)
 

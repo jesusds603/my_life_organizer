@@ -40,14 +40,14 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 @Composable
 fun FolderCard(
     noteViewModel: NoteViewModel,
-    expandedFolders: Set<Long>,
-    onFolderClick: (Set<Long>) -> Unit,
     folder: FolderEntity,
     depth: Int
 ) {
     val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+
+    val expandedFolders = appViewModel.expandedFolders.value
 
     var showDialog by remember { mutableStateOf(false) }
 
@@ -80,7 +80,7 @@ fun FolderCard(
                 .padding(horizontal = 8.dp)
                 .fillMaxSize()
                 .clickable {
-                    onFolderClick(
+                    appViewModel.changeExpandedFolders(
                         if (expandedFolders.contains(folder.folderId)) {
                             expandedFolders - folder.folderId
                         } else {

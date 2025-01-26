@@ -1,6 +1,9 @@
 package com.example.mylifeorganizer.viewmodel
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.mylifeorganizer.room.CategoryEntity
 import com.example.mylifeorganizer.room.NoteEntity
@@ -63,5 +66,11 @@ class AppViewModel: ViewModel() {
     val selectedOrderingNotes = mutableStateOf("updatedDescending") // la mas reciente arriba
     fun changeSelectedOrderingNotes(ordering: String) {
         selectedOrderingNotes.value = ordering
+    }
+
+    // recordar los folders abiertos en la screen de notas para que al crear una nueva nota o editarla se mantenga la vista
+    var expandedFolders = mutableStateOf<Set<Long>>(emptySet())
+    fun changeExpandedFolders(folders: Set<Long>) {
+        expandedFolders.value = folders
     }
 }
