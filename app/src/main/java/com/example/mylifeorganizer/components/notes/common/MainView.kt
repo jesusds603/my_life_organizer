@@ -184,13 +184,13 @@ fun MainView(
             Icon(
                 painter = painterResource(
                     id = if (isVisualizingNote) {
-                        R.drawable.baseline_edit_note_24
+                        R.drawable.baseline_colorize_24
                     } else {
                         R.drawable.baseline_remove_red_eye_24
                     }
                 ),
                 contentDescription = null,
-                tint = themeColors.text1,
+                tint = Color.Magenta,
             )
         }
     }
