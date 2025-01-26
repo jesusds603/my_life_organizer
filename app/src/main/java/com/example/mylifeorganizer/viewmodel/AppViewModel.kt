@@ -73,4 +73,9 @@ class AppViewModel: ViewModel() {
     fun changeExpandedFolders(folders: Set<Long>) {
         expandedFolders.value = folders
     }
+
+    var isVisualizingNote = mutableStateOf(false)
+    fun toggleIsVisualizingNote() {
+        isVisualizingNote.value = !isVisualizingNote.value
+    }
 }
