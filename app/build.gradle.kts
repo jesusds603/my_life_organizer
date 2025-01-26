@@ -76,4 +76,12 @@ dependencies {
 
     // Para un mejor fluje de Rows permitiendo que el texto se acomode en lineas
     // implementation("com.google.accompanist:accompanist-flowlayout:0.36.0")
+
+    // Para markdown y latex
+    implementation("io.noties.markwon:core:4.6.2")
+    // implementation("io.github.kexanie:MathView:0.5.0")
+    implementation("com.google.accompanist:accompanist-webview:0.36.0")
+
+
+
 }
