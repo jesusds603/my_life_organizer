@@ -36,7 +36,7 @@ fun CategoriesSection(
 ) {
     val themeViewModel: ThemeViewModel = viewModel()
 
-    var themeColors = themeViewModel.themeColors.value
+    val themeColors = themeViewModel.themeColors.value
 
 
     Column (

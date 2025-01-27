@@ -26,7 +26,7 @@ fun CategoriesList(
 ) {
     val themeViewModel: ThemeViewModel = viewModel()
 
-    var themeColors = themeViewModel.themeColors.value
+    val themeColors = themeViewModel.themeColors.value
 
     Text(
         text = "Available Categories",

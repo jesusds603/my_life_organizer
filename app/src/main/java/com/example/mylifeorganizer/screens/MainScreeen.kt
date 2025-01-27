@@ -7,12 +7,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.components.ButtonTabs
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 import com.example.mylifeorganizer.components.notes.add.AddNoteWindow
 import com.example.mylifeorganizer.components.notes.edit.NoteWindow
+import com.example.mylifeorganizer.repositories.NotesRepository
+import com.example.mylifeorganizer.room.NoteDB
+import com.example.mylifeorganizer.viewmodel.NoteViewModel
 
 @Composable
 fun MainScreen() {
@@ -22,6 +26,11 @@ fun MainScreen() {
     val themeColors = themeViewModel.themeColors.value
     val isAddingNote = appViewModel.isAddingNote.value
     val isShowingNote = appViewModel.isShowingNote.value
+
+    val context = LocalContext.current
+    val noteDB = NoteDB.getInstance(context)
+    val notesRepository = NotesRepository(noteDB)
+    val noteViewModel = NoteViewModel(notesRepository)
 
 
     Box(
@@ -34,18 +43,28 @@ fun MainScreen() {
         if (isAddingNote) {
 
             // Mostrar AddNoteWindow ocupando toda la pantalla
-            AddNoteWindow(modifier = Modifier.fillMaxSize())
+            AddNoteWindow(
+                modifier = Modifier.fillMaxSize(),
+                noteViewModel = noteViewModel
+            )
         }  else if (isShowingNote) {
-            NoteWindow()
+            NoteWindow(
+                modifier = Modifier.fillMaxSize(),
+                noteViewModel = noteViewModel
+            )
         } else {
             // Mostrar ContentMainScreen cuando no se está agregando una nota
-            ContentMainScreen()
+            ContentMainScreen(
+                noteViewModel = noteViewModel
+            )
         }
     }
 }
 
 @Composable
-fun ContentMainScreen() {
+fun ContentMainScreen(
+    noteViewModel: NoteViewModel
+) {
     val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
 
@@ -61,9 +80,13 @@ fun ContentMainScreen() {
         Box(modifier = Modifier.weight(1f)) {
             when (selectedTab) {
                 "Home" -> HomeScreen()
-                "Notes" -> NotesScreen()
+                "Notes" -> NotesScreen(
+                    noteViewModel = noteViewModel
+                )
                 "Daily" -> DailyScreen()
-                "Tasks" -> TasksScreen()
+                "Tasks" -> TasksScreen(
+                    noteViewModel = noteViewModel
+                )
                 "Finance" -> FinanceScreen()
                 "Calendar" -> CalendarScreen()
                 "Dashboard" -> DashboardScreen()

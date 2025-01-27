@@ -1,11 +1,14 @@
 package com.example.mylifeorganizer.repositories
 
 import com.example.mylifeorganizer.room.CategoryEntity
+import com.example.mylifeorganizer.room.CategoryTaskEntity
 import com.example.mylifeorganizer.room.FolderEntity
 import com.example.mylifeorganizer.room.FolderWithSubfolders
 import com.example.mylifeorganizer.room.NoteCategoryCrossRef
 import com.example.mylifeorganizer.room.NoteDB
 import com.example.mylifeorganizer.room.NoteEntity
+import com.example.mylifeorganizer.room.TaskCategoryCrossRef
+import com.example.mylifeorganizer.room.TaskEntity
 
 class NotesRepository (val noteDB: NoteDB) {
 
@@ -95,6 +98,9 @@ class NotesRepository (val noteDB: NoteDB) {
     // Obtener las notas dentro de una carpeta
     fun getNotesInFolder(folderId: Long) = noteDAO.getNotesInFolder(folderId)
 
+    // Obtener todas las notas de una carpeta sin contenido
+    fun getNotesInFolderWithoutContent(folderId: Long) = noteDAO.getNotesInFolderWithoutContent(folderId)
+
     // Vincular una nota con una carpeta
     suspend fun linkNoteWithFolder(noteId: Long, folderId: Long) {
         noteDAO.updateNoteFolderId(noteId, folderId)
@@ -114,5 +120,74 @@ class NotesRepository (val noteDB: NoteDB) {
     suspend fun updateFolder(folder: FolderEntity) {
         noteDAO.updateFolder(folder)
     }
+
+
+    // ----------------------- TASKS --------------------------------
+
+    // Insertar una nueva tarea
+    suspend fun insertTask(task: TaskEntity) {
+        noteDAO.insertTask(task)
+    }
+
+    // Obtener todas las tareas
+    fun getAllTasks() = noteDAO.getAllTasks()
+
+    // Obtener todas las tareas con la misma dueDate en día
+    fun getTasksByDueDate(dueDateDay: String) = noteDAO.getTasksByDueDate(dueDateDay)
+
+    // Obtener todas las tareas con la misma prioridad
+    fun getTasksByPriority(priority: Int) = noteDAO.getTasksByPriority(priority)
+
+    // Obtener todas las tareas con el mismo progreso
+    fun getTasksByProgress(progress: Int) = noteDAO.getTasksByProgress(progress)
+
+    // Obtener todas las tareas completas
+    fun getCompletedTasks() = noteDAO.getCompletedTasks()
+
+    // Obtener todas las tareas pendientes
+    fun getPendingTasks() = noteDAO.getPendingTasks()
+
+    // Eliminar una tarea
+    suspend fun deleteTask(task: TaskEntity) {
+        noteDAO.deleteTask(task)
+    }
+
+    // Actualizar una tarea
+    suspend fun updateTask(task: TaskEntity) {
+        noteDAO.updateTask(task)
+    }
+
+    // -----
+
+
+    // Insertar una nueva categoría
+    suspend fun insertCategoryTask(category: CategoryTaskEntity) {
+        noteDAO.insertCategoryTask(category)
+    }
+
+    // Obtener todas las categorías
+    fun getAllCategoriesTasks() = noteDAO.getAllCategoriesTasks()
+
+    // Eliminar una categoría
+    suspend fun deleteCategoryTasks(category: CategoryTaskEntity) {
+        noteDAO.deleteCategoryTasks(category)
+    }
+
+    // Actualizar una categoría
+    suspend fun updateCategoryTasks(category: CategoryTaskEntity) {
+        noteDAO.updateCategoryTasks(category)
+    }
+
+    // Vincular una tarea con una categoría
+    suspend fun linkTaskWithCategory(taskId: Long, categoryId: Long) {
+        noteDAO.insertTaskCategoryCrossRef(TaskCategoryCrossRef(taskId, categoryId))
+    }
+
+    // Método para actualizar una tarea con sus categorías
+    suspend fun updateTaskWithCategories(task: TaskEntity, categoryIds: List<Long>) {
+        noteDAO.updateTaskWithCategories(task, categoryIds)
+    }
+
+
 
 }

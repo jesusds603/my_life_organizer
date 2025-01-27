@@ -11,8 +11,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Database(
-    entities = [NoteEntity::class, CategoryEntity::class, NoteCategoryCrossRef::class, FolderEntity::class],
-    version = 16, exportSchema = true
+    entities = [
+        NoteEntity::class,
+        CategoryEntity::class,
+        NoteCategoryCrossRef::class,
+        FolderEntity::class,
+        TaskEntity::class,
+        CategoryTaskEntity::class,
+        TaskCategoryCrossRef::class,
+   ],
+    version = 18, exportSchema = true
 )
 abstract class NoteDB : RoomDatabase() {
 

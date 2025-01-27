@@ -32,13 +32,11 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 
 @Composable
-fun NotesScreen() {
+fun NotesScreen(
+    noteViewModel: NoteViewModel
+) {
     val appViewModel: AppViewModel = viewModel()
 
-    val context = LocalContext.current
-    val noteDB = NoteDB.getInstance(context)
-    val notesRepository = NotesRepository(noteDB)
-    val noteViewModel = NoteViewModel(notesRepository)
 
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value

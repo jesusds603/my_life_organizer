@@ -21,13 +21,11 @@ import com.example.mylifeorganizer.viewmodel.NoteViewModel
 
 
 @Composable
-fun NoteWindow(modifier: Modifier = Modifier) {
+fun NoteWindow(
+    modifier: Modifier = Modifier,
+    noteViewModel: NoteViewModel
+) {
     val appViewModel: AppViewModel = viewModel()
-
-    val context = LocalContext.current
-    val noteDB = NoteDB.getInstance(context)
-    val notesRepository = NotesRepository(noteDB)
-    val noteViewModel = NoteViewModel(notesRepository)
 
 
     val categories by noteViewModel.categories.collectAsState(initial = emptyList())

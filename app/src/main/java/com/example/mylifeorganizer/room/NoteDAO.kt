@@ -107,7 +107,7 @@ interface NoteDao {
     }
 
 
-    // -----------------------------------------------------------------------
+    // ---------------------------  FOLDERS --------------------------------------------
 
 
     // Insertar una nueva carpeta
@@ -128,6 +128,15 @@ interface NoteDao {
     @Query("SELECT * FROM notes WHERE folderId = :folderId")
     fun getNotesInFolder(folderId: Long): Flow<List<NoteEntity>>
 
+    // Obtener todas las notas de una carpeta sin contenido
+    @Transaction
+    @Query("""
+    SELECT noteId, title, createdAt, updatedAt, isFavorite, isArchived, folderId 
+    FROM notes
+    WHERE folderId = :folderId
+    """)
+    fun getNotesInFolderWithoutContent(folderId: Long): Flow<List<NoteWithoutContentWithCategories>>
+
     // Insertar la relación de nota con carpeta
     @Query("UPDATE notes SET folderId = :folderId WHERE noteId = :noteId")
     suspend fun updateNoteFolderId(noteId: Long, folderId: Long)
@@ -143,4 +152,90 @@ interface NoteDao {
     // Actualizar una carpeta
     @Update
     suspend fun updateFolder(folder: FolderEntity)
+
+    // --------------------------- DAILY ---------------------------
+
+
+    // ---------------------------- TASKS -----------------------------
+
+    // Insertar una nueva tarea
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTask(task: TaskEntity): Long
+
+    // Obtener todas las tareas
+    @Query("SELECT * FROM tasks")
+    fun getAllTasks(): Flow<List<TaskEntity>>
+
+    // Obtener todas las tareas con la misma dueDate en día
+    @Query("SELECT * FROM tasks WHERE dueDateDay = :dueDateDay")
+    fun getTasksByDueDate(dueDateDay: String): Flow<List<TaskEntity>>
+
+    // Obtener todas lsa tareas con la misma prioridad
+    @Query("SELECT * FROM tasks WHERE priority = :priority")
+    fun getTasksByPriority(priority: Int): Flow<List<TaskEntity>>
+
+    // Obtener todas las tareas con el mismo progreso
+    @Query("SELECT * FROM tasks WHERE progress = :progress")
+    fun getTasksByProgress(progress: Int): Flow<List<TaskEntity>>
+
+    // Obtener todas las tareas completas
+    @Query("SELECT * FROM tasks WHERE isCompleted = 1")
+    fun getCompletedTasks(): Flow<List<TaskEntity>>
+
+    // Obtener todas las tareas pendientes
+    @Query("SELECT * FROM tasks WHERE isCompleted = 0")
+    fun getPendingTasks(): Flow<List<TaskEntity>>
+
+    // Eliminar una tarea
+    @Delete
+    suspend fun deleteTask(task: TaskEntity)
+
+    // Actualizar una tarea
+    @Update
+    suspend fun updateTask(task: TaskEntity)
+
+    // ------
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCategoryTask(category: CategoryTaskEntity): Long
+
+    @Query("SELECT * FROM categories_tasks")
+    fun getAllCategoriesTasks(): Flow<List<CategoryTaskEntity>>
+
+    @Delete
+    suspend fun deleteCategoryTasks(category: CategoryTaskEntity)
+
+    @Update
+    suspend fun updateCategoryTasks(categpry: CategoryTaskEntity)
+
+    // Vincular una tarea con una categoría
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTaskCategoryCrossRef(crossRef: TaskCategoryCrossRef)
+
+    // Eliminar todas las categorías relacionadas con una tarea
+    @Query("DELETE FROM task_category_cross_ref WHERE taskId = :taskId")
+    suspend fun deleteTaskCategories(taskId: Long)
+
+    // Insertar relaciones en lote
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTaskCategories(taskCategoryCrossRefs: List<TaskCategoryCrossRef>)
+
+    // Método para actualizar una tarea y sus categorías
+    @Transaction
+    suspend fun updateTaskWithCategories(task: TaskEntity, categoryIds: List<Long>) {
+        // Actualizar la tarea
+        updateTask(task)
+
+        // Eliminar las relaciones existentes de la tarea con categorías
+        deleteTaskCategories(task.taskId)
+
+        // Insertar las nuevas relaciones de la tarea con categorías
+        val taskCategoryCrossRefs = categoryIds.map { categoryId ->
+            TaskCategoryCrossRef(taskId = task.taskId, categoryId = categoryId)
+        }
+        insertTaskCategories(taskCategoryCrossRefs)
+    }
+
 }
+
+

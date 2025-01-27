@@ -1,5 +1,6 @@
 package com.example.mylifeorganizer.viewmodel
 
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -7,10 +8,13 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.mylifeorganizer.repositories.NotesRepository
 import com.example.mylifeorganizer.room.CategoryEntity
+import com.example.mylifeorganizer.room.CategoryTaskEntity
 import com.example.mylifeorganizer.room.FolderEntity
 import com.example.mylifeorganizer.room.FolderWithSubfolders
 import com.example.mylifeorganizer.room.NoteEntity
 import com.example.mylifeorganizer.room.NoteWithCategories
+import com.example.mylifeorganizer.room.NoteWithoutContentWithCategories
+import com.example.mylifeorganizer.room.TaskEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -125,6 +129,24 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
         return notesRepository.getNotesInFolder(folderId)
     }
 
+    // Obtener todas las notas de una carpeta sin contenido
+    fun getNotesInFolderWithoutContent(folderId: Long): Flow<List<NoteWithoutContentWithCategories>> {
+        return notesRepository.getNotesInFolderWithoutContent(folderId)
+    }
+
+    // Mapa que rastrea las notas de carpetas expandidas
+    private val _expandedFolderNotes = mutableStateMapOf<Long, List<NoteWithoutContentWithCategories>>()
+    val expandedFolderNotes: Map<Long, List<NoteWithoutContentWithCategories>> get() = _expandedFolderNotes
+
+    // Función para cargar las notas de una carpeta cuando se expande
+    fun loadNotesForExpandedFolder(folderId: Long) {
+        viewModelScope.launch {
+            getNotesInFolderWithoutContent(folderId).collect { notes ->
+                _expandedFolderNotes[folderId] = notes
+            }
+        }
+    }
+
     fun countSubfoldersAndNotes(
         folderId: Long,
         onResult: (Int, Int) -> Unit
@@ -218,4 +240,95 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
             notesRepository.updateFolder(folder)
         }
     }
+
+    // ----------------------------- TAREAS --------------------------------
+
+    // Insertar una nueva tarea
+    fun addTasks(task: TaskEntity) {
+        viewModelScope.launch {
+            notesRepository.insertTask(task)
+        }
+    }
+
+    // Todos los folders
+    val tasks = notesRepository.getAllTasks()
+
+    // Obtener todas las tareas con la misma dueDate en día
+    fun getTasksByDueDate(dueDateDay: String): Flow<List<TaskEntity>> {
+        return notesRepository.getTasksByDueDate(dueDateDay)
+    }
+
+    // Obtener todas las tareas con la misma prioridad
+    fun getTasksByPriority(priority: Int): Flow<List<TaskEntity>> {
+        return notesRepository.getTasksByPriority(priority)
+    }
+
+    // Obtener todas las tareas con el mismo progreso
+    fun getTasksByProgress(progress: Int): Flow<List<TaskEntity>> {
+        return notesRepository.getTasksByProgress(progress)
+    }
+
+    // Obtener todas las tareas completas
+    fun getTasksCompleted(): Flow<List<TaskEntity>> {
+        return notesRepository.getCompletedTasks()
+    }
+
+    // Obtener todas las tareas pendientes
+    fun getTasksPending(): Flow<List<TaskEntity>> {
+        return notesRepository.getPendingTasks()
+    }
+
+    // Eliminar una tarea
+    fun deleteTask(task: TaskEntity) {
+        viewModelScope.launch {
+            notesRepository.deleteTask(task)
+        }
+    }
+
+    // Actualizar una tarea
+    fun updateTask(task: TaskEntity) {
+        viewModelScope.launch {
+            notesRepository.updateTask(task)
+        }
+    }
+
+    // ------
+
+
+    fun addCategoryTask(category: CategoryTaskEntity) {
+        viewModelScope.launch {
+            notesRepository.insertCategoryTask(category)
+        }
+    }
+
+    val categoriesTasks = notesRepository.getAllCategoriesTasks()
+
+    // Eliminar una categoría
+    fun deleteCategoryTasks(category: CategoryTaskEntity) {
+        viewModelScope.launch {
+            notesRepository.deleteCategoryTasks(category)
+        }
+    }
+
+    // Actualizar una categoría
+    fun updateCategoryTask(category: CategoryTaskEntity) {
+        viewModelScope.launch {
+            notesRepository.updateCategoryTasks(category)
+        }
+
+    }
+
+    fun linkTaskWithCategory(taskId: Long, categoryId: Long) {
+        viewModelScope.launch {
+            notesRepository.linkTaskWithCategory(taskId, categoryId)
+        }
+    }
+
+    // Método para actualizar una nota con sus categorías
+    fun updateTaskWithCategories(task: TaskEntity, categoryIds: List<Long>) {
+        viewModelScope.launch {
+            notesRepository.updateTaskWithCategories(task, categoryIds)
+        }
+    }
+
 }

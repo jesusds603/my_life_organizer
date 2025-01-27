@@ -141,6 +141,9 @@ data class DailyNoteEntity(
     val improvementPlan: String,
 )
 
+
+// ------------------   TASKS --------------------------
+
 @Entity(tableName = "tasks")
 data class TaskEntity(
     @PrimaryKey(autoGenerate = true)
@@ -150,8 +153,9 @@ data class TaskEntity(
     val description: String = "",
     val priority: Int = 0,
     val progress: Int = 0,
-    val dueDate: Long,
-    val isCompleted: Boolean,
+    val dueDate: Long = 0,  // En caso de que seleccione la hora, sino se pondra 0
+    val dueDateDay: String,
+    val isCompleted: Boolean = false,
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),
     val color: String,
@@ -164,6 +168,51 @@ data class TaskEntity(
     val isNotificationSet: Boolean = false,
     val notificationTime: Long = 0,
 )
+
+@Entity(tableName = "categories_tasks")
+data class CategoryTaskEntity(
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "categoryId")
+    val categoryId: Long = 0,
+    val name: String,
+    val bgColor: String,
+)
+
+@Entity(
+    primaryKeys = ["taskId", "categoryId"],
+    tableName = "task_category_cross_ref"
+)
+data class TaskCategoryCrossRef(
+    @ColumnInfo(name = "taskId")
+    val taskId: Long,
+    @ColumnInfo(name = "categoryId")
+    val categoryId: Long
+)
+
+data class TaskWithCategories(
+    @Embedded
+    val task: TaskEntity,
+    @Relation(
+        parentColumn = "taskId",
+        entityColumn = "categoryId",
+        associateBy = androidx.room.Junction(TaskCategoryCrossRef::class)
+    )
+    val categories: List<CategoryTaskEntity>
+)
+
+data class CategoryTaskWithTasks(
+    @Embedded
+    val category: CategoryTaskEntity,
+    @Relation(
+        parentColumn = "categoryId",
+        entityColumn = "taskId",
+        associateBy = androidx.room.Junction(TaskCategoryCrossRef::class)
+    )
+    val tasks: List<TaskEntity>
+)
+
+
+// ------------------- GOALS -----------------------------------
 
 @Entity(tableName = "goals")
 data class GoalEntity(
