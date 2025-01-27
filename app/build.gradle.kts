@@ -82,6 +82,7 @@ dependencies {
     // implementation("io.github.kexanie:MathView:0.5.0")
     implementation("com.google.accompanist:accompanist-webview:0.36.0")
 
-
-
+    // Para manejar la cincompatibilidad de java.time
+//    implementation("org.threeten:threetenbp:1.6.0")
+//    implementation("com.jakewharton.threetenabp:threetenabp:1.4.4")
 }

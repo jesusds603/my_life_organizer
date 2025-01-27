@@ -13,11 +13,13 @@ import com.example.mylifeorganizer.screens.MainScreen
 import com.example.mylifeorganizer.ui.theme.MyLifeOrganizerTheme
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+//import com.jakewharton.threetenabp.AndroidThreeTen
 
 class MainActivity : ComponentActivity() {
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+//        AndroidThreeTen.init(this)
         enableEdgeToEdge()
         setContent {
             MyLifeOrganizerTheme {
