@@ -62,8 +62,9 @@ fun ContentMainScreen() {
             when (selectedTab) {
                 "Home" -> HomeScreen()
                 "Notes" -> NotesScreen()
+                "Daily" -> DailyScreen()
                 "Tasks" -> TasksScreen()
-                "Habits" -> HabitsScreen()
+                "Finance" -> FinanceScreen()
                 "Calendar" -> CalendarScreen()
                 "Dashboard" -> DashboardScreen()
             }

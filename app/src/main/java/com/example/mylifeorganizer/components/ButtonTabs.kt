@@ -1,11 +1,16 @@
 package com.example.mylifeorganizer.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -18,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,7 +32,6 @@ import com.example.mylifeorganizer.R
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
-private val ICON_SIZE = 30.dp
 
 @Composable
 fun ButtonTabs() {
@@ -39,133 +44,89 @@ fun ButtonTabs() {
 
     val heightBar = 60.dp
 
+    // Lista de pestañas con identificador, texto mostrado y recurso de ícono
+    val tabs = listOf(
+        TabItem("Home", if (isLangEng) "Home" else "Inicio", Icons.Default.Home),
+        TabItem("Notes", if (isLangEng) "Notes" else "Notas", R.drawable.baseline_edit_note_24),
+        TabItem("Daily", if (isLangEng) "Daily" else "Diario", R.drawable.baseline_today_24),
+        TabItem("Tasks", if (isLangEng) "Tasks" else "Tareas", R.drawable.baseline_checklist_24),
+        TabItem("Finance", if (isLangEng) "Finance" else "Finanzas", R.drawable.baseline_wallet_24),
+        TabItem("Calendar", if (isLangEng) "Calendar" else "Calendario", R.drawable.baseline_calendar_month_24),
+        TabItem("Dashboard", "Dashboard", R.drawable.baseline_dashboard_24),
+        TabItem("Menu", if (isLangEng) "Menu" else "Menú", R.drawable.baseline_menu_24)
+    )
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(heightBar)
             .background(themeColors.backGround1),
-        horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // TabButton for Home
-        TabButton(
-            name = if(isLangEng) "Home" else "Inicio",
-            icon = {
-                Icon(
-                    imageVector = Icons.Default.Home,
-                    contentDescription = "Home",
-                    modifier = Modifier.size(ICON_SIZE)
-                )
-            },
-            isSelected = selectedTab == "Home",
-            onClick = { appViewModel.changeTab("Home") },
-            modifier = Modifier.weight(1f) // Distribuye uniformemente el ancho
-        )
-        // TabButton for Notes
-        TabButton(
-            name = if(isLangEng) "Notes" else "Notas",
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_edit_note_24),
-                    contentDescription = "Notes",
-                    modifier = Modifier.size(ICON_SIZE)
-                )
-            },
-            isSelected = selectedTab == "Notes",
-            onClick = { appViewModel.changeTab("Notes") },
-            modifier = Modifier.weight(1f) // Distribuye uniformemente el ancho
-        )
-        // TabButton for Tasks
-        TabButton(
-            name = if(isLangEng) "Tasks" else "tareas",
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_checklist_24),
-                    contentDescription = "Tasks",
-                    modifier = Modifier.size(ICON_SIZE)
-                )
-            },
-            isSelected = selectedTab == "Tasks",
-            onClick = { appViewModel.changeTab("Tasks") },
-            modifier = Modifier.weight(1f) // Distribuye uniformemente el ancho
-        )
-        // TabButton for Habits
-        TabButton(
-            name = if(isLangEng) "Habits" else "Hábitos",
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_checklist_24),
-                    contentDescription = "Habits",
-                    modifier = Modifier.size(ICON_SIZE)
-                )
-            },
-            isSelected = selectedTab == "Habits",
-            onClick = { appViewModel.changeTab("Habits") },
-            modifier = Modifier.weight(1f) // Distribuye uniformemente el ancho
-        )
-        // TabButton for Calendar
-        TabButton(
-            name = if(isLangEng) "Calendar" else "Calendario",
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_calendar_month_24),
-                    contentDescription = "Calendar",
-                    modifier = Modifier.size(ICON_SIZE)
-                )
-            },
-            isSelected = selectedTab == "Calendar",
-            onClick = { appViewModel.changeTab("Calendar") },
-            modifier = Modifier.weight(1f) // Distribuye uniformemente el ancho
-        )
-        // TabButton for Dashboard
-        TabButton(
-            name = "Dashboard",
-            icon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_dashboard_24),
-                    contentDescription = "Dashboard",
-                    modifier = Modifier.size(ICON_SIZE)
-                )
-            },
-            isSelected = selectedTab == "Dashboard",
-            onClick = { appViewModel.changeTab("Dashboard") },
-            modifier = Modifier.weight(1f) // Distribuye uniformemente el ancho
-        )
-
+        tabs.forEach { tab ->
+            TabButton(
+                name = tab.displayName,
+                icon = {
+                    if (tab.iconResource is Int) {
+                        Icon(
+                            painter = painterResource(id = tab.iconResource),
+                            contentDescription = tab.identifier,
+                            modifier = Modifier.size(30.dp),
+                            tint =  if (selectedTab == tab.identifier) themeColors.tabButtonSelected else themeColors.tabButtonDefault,
+                        )
+                    } else if (tab.iconResource is ImageVector) {
+                        Icon(
+                            imageVector = tab.iconResource,
+                            contentDescription = tab.identifier,
+                            modifier = Modifier.size(30.dp),
+                            tint =  if (selectedTab == tab.identifier) themeColors.tabButtonSelected else themeColors.tabButtonDefault,
+                        )
+                    }
+                },
+                onClick = { appViewModel.changeTab(tab.identifier) },
+                isSelected = selectedTab == tab.identifier,
+                modifier = Modifier.weight(1f)
+            )
+        }
     }
 }
+
+// Clase de datos para representar una pestaña
+data class TabItem(
+    val identifier: String, // Identificador único, siempre en inglés
+    val displayName: String, // Texto mostrado en pantalla
+    val iconResource: Any // Recurso de ícono (ImageVector o Int)
+)
 
 @Composable
 fun TabButton(
     name: String,
-    icon: @Composable () -> Unit, // Corrected type
-    isSelected: Boolean,
+    icon: @Composable () -> Unit,
     onClick: () -> Unit,
+    isSelected: Boolean,
     modifier: Modifier = Modifier
 ) {
     val themeViewModel: ThemeViewModel = viewModel()
-
     val themeColors = themeViewModel.themeColors.value
 
-    TextButton(
-        onClick = onClick,
+    Box(
         modifier = modifier
-            .background(Color.Transparent),
-        colors = ButtonDefaults.textButtonColors(
-            contentColor = if (isSelected) themeColors.tabButtonSelected else themeColors.tabButtonDefault,
-            containerColor = Color.Transparent
-        ),
-        shape = RoundedCornerShape(4.dp)
+            .fillMaxSize()
+            .background(Color.Transparent)
+            .clickable { onClick() }
     ) {
-        Column (
+        Column(
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             icon()
-
             Text(
                 text = name,
-                fontSize = 10.sp
+                fontSize = 10.sp,
+                color = if (isSelected) themeColors.tabButtonSelected else themeColors.tabButtonDefault
             )
         }
     }

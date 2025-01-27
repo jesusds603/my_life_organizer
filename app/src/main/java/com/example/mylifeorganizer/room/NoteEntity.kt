@@ -115,13 +115,131 @@ data class FolderWithSubfolders(
     val subfolders: List<FolderEntity>
 )
 
-// Relación para obtener las notas de una carpeta
-data class FolderWithNotes(
+
+// ----------------------- NOTAS DIARIAS --------------------
+
+@Entity(tableName = "daily_notes")
+data class DailyNoteEntity(
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "dailyNoteId")
+    val dailyNoteId: Long = 0,
+    val day: String,
+    val content: String,
+    val createdAt: Long = System.currentTimeMillis(),
+    val updatedAt: Long = System.currentTimeMillis(),
+    val quote: String,
+    val hadGoodDream: Int,
+    val morningNote: String,
+    val afternoonNote: String,
+    val eveningNote: String,
+    val nightNote: String,
+    val noteForTomorrow: String,
+    val isFavorite: Boolean = false,
+    val amountStars: Int = 0,
+    val lessonLearned: String,
+    val bestOfTheDay: String,
+    val improvementPlan: String,
+)
+
+@Entity(tableName = "tasks")
+data class TaskEntity(
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "taskId")
+    val taskId: Long = 0,
+    val title: String,
+    val description: String = "",
+    val priority: Int = 0,
+    val progress: Int = 0,
+    val dueDate: Long,
+    val isCompleted: Boolean,
+    val createdAt: Long = System.currentTimeMillis(),
+    val updatedAt: Long = System.currentTimeMillis(),
+    val color: String,
+    val isRecurring: Boolean = false,
+    val recurrencePattern: String = "", // "daily", "weekly", "monthly", "yearly", "custom"
+    val recurrenceInterval: Int = 0, // en caso de que recurrence sea custom
+    val recurrenceEndDate: Long = 0,
+    val isReminderSet: Boolean = false,
+    val reminderTime: Long = 0,
+    val isNotificationSet: Boolean = false,
+    val notificationTime: Long = 0,
+)
+
+@Entity(tableName = "goals")
+data class GoalEntity(
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "goalId")
+    val goalId: Long = 0,
+    val title: String,
+    val description: String = "",
+    val priority: Int = 0,
+    val progress: Int = 0,
+    val dueDate: Long,
+    val isCompleted: Boolean,
+    val createdAt: Long = System.currentTimeMillis(),
+    val updatedAt: Long = System.currentTimeMillis(),
+    val color: String,
+    val isRecurring: Boolean = false,
+    val recurrencePattern: String = "", // "daily", "weekly", "monthly", "yearly", "custom"
+    val recurrenceInterval: Int = 0, // en caso de que recurrence sea custom
+    val recurrenceEndDate: Long = 0
+)
+
+
+// ---------------------- FINANCE -------------------------
+
+@Entity(tableName = "finance")
+data class FinanceEntity(
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "financeId")
+    val financeId: Long = 0,
+    val title: String,
+    val description: String = "",
+    val type: String, // expense or income
+    val amount: Double,
+    val date: Long,
+    val createdAt: Long = System.currentTimeMillis(),
+    val updatedAt: Long = System.currentTimeMillis(),
+)
+
+@Entity(tableName = "categories_finance")
+data class CategoryFinanceEntity(
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "categoryId")
+    val categoryId: Long = 0,
+    val name: String,
+    val bgColor: String,
+)
+
+@Entity(
+    primaryKeys = ["financeId", "categoryId"],
+    tableName = "finance_category_cross_ref"
+)
+data class FinanceCategoryCrossRef(
+    @ColumnInfo(name = "financeId")
+    val financeId: Long,
+    @ColumnInfo(name = "categoryId")
+    val categoryId: Long
+)
+
+data class FinanceWithCategories(
     @Embedded
-    val folder: FolderEntity,
+    val finance: FinanceEntity,
     @Relation(
-        parentColumn = "folderId",
-        entityColumn = "folderId",
+        parentColumn = "financeId",
+        entityColumn = "categoryId",
+        associateBy = androidx.room.Junction(FinanceCategoryCrossRef::class)
     )
-    val notes: List<NoteEntity>
+    val categories: List<CategoryFinanceEntity>
+)
+
+data class CategoryFinanceWithFinances(
+    @Embedded
+    val category: CategoryFinanceEntity,
+    @Relation(
+        parentColumn = "categoryId",
+        entityColumn = "financeId",
+        associateBy = androidx.room.Junction(FinanceCategoryCrossRef::class)
+    )
+    val finances: List<FinanceEntity>
 )
