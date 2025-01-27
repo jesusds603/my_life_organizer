@@ -27,6 +27,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -88,6 +90,9 @@ fun TasksScreen (
     var newCategoryColor by remember { mutableStateOf("") }
 
     val availableCategories by noteViewModel.categoriesTasks.collectAsState(emptyList())
+    var isRecurring by remember { mutableStateOf(false) }
+    var recurrencePattern by remember { mutableStateOf("Off") }
+    var recurrenceInterval by remember { mutableStateOf(0) }
 
     val context = LocalContext.current
 
@@ -252,6 +257,71 @@ fun TasksScreen (
 
                         Spacer(modifier = Modifier.height(8.dp))
 
+                        Box (
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    isRecurring = !isRecurring
+                                }
+                        ) {
+                            Text(
+                                text = "Recurrence: $recurrencePattern",
+                                color = themeColors.text1,
+                            )
+                        }
+                        if(isRecurring) {
+                            LazyRow (
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                            ) {
+                                items(listOf("Off", "Daily", "Weekly", "Monthly", "Yearly", "Custom")) { recurrence ->
+                                    Box(
+                                        modifier = Modifier
+                                            .padding(4.dp)
+                                            .background(color = themeColors.backGround1)
+                                            .clickable {
+                                                recurrencePattern = recurrence
+                                            }
+                                    ) {
+                                        Text(text = recurrence, color = if(recurrence == recurrencePattern) themeColors.tabButtonSelected else themeColors.tabButtonDefault)
+                                    }
+
+                                }
+                            }
+                        }
+
+                        if(recurrencePattern == "Custom") {
+                            Text(text = "Recurrence Interval (days): $recurrenceInterval", color = themeColors.text1)
+                            var expanded by remember { mutableStateOf(false) }
+                            var selectedValue by remember { mutableStateOf(recurrenceInterval) }
+
+                            Box {
+                                Button(onClick = { expanded = true }) {
+                                    Text(text = "Select Interval")
+                                }
+
+                                DropdownMenu(
+                                    expanded = expanded,
+                                    onDismissRequest = { expanded = false }
+                                ) {
+                                    // Generar números del 1 al 365
+                                    (1..365).forEach { number ->
+                                        DropdownMenuItem(
+                                            text = { Text(text = "$number") },
+                                            onClick = {
+                                                selectedValue = number
+                                                recurrenceInterval = number
+                                                expanded = false
+                                            }
+                                        )
+                                    }
+                                }
+                            }
+
+                        }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
                         // Seleccionar categorías
                         Column (
                             modifier = Modifier
@@ -267,7 +337,10 @@ fun TasksScreen (
                                         Box(
                                             modifier = Modifier
                                                 .padding(4.dp)
-                                                .background(Color.Magenta)
+                                                .background(color = themeViewModel.getCategoryColor(category.bgColor))
+                                                .clickable {
+                                                    selectedCategories = selectedCategories - category
+                                                }
                                         ) {
                                             Text(text = category.name, color = themeColors.text1)
                                         }
@@ -278,6 +351,7 @@ fun TasksScreen (
                             }
                             Text(text = "Click on a category to select it:", color = themeColors.text1)
 
+                            // Fila de categorías disponibles
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -295,6 +369,9 @@ fun TasksScreen (
                                             modifier = Modifier
                                                 .padding(4.dp)
                                                 .background(themeViewModel.getCategoryColor(category.bgColor))
+                                                .clickable {
+                                                    selectedCategories = selectedCategories + category
+                                                }
                                         ) {
                                             Text(text = category.name, color = themeColors.text1)
                                         }
@@ -351,7 +428,11 @@ fun TasksScreen (
 
         if(showCreateCategoryDialog) {
             AlertDialog(
-                onDismissRequest = { showCreateCategoryDialog = false },
+                onDismissRequest = {
+                    showCreateCategoryDialog = false
+                    newCategoryName = ""
+                    newCategoryColor = ""
+                                   },
                 confirmButton = {
                     Button(
                         onClick = {
@@ -362,6 +443,8 @@ fun TasksScreen (
                                     bgColor = newCategoryColor
                                 )
                             )
+                            newCategoryName = ""
+                            newCategoryColor = ""
                         }
                         ) {
                         Text(text = "Create Category", color = themeColors.text1)

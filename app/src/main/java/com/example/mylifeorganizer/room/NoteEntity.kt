@@ -151,23 +151,34 @@ data class TaskEntity(
     val taskId: Long = 0,
     val title: String,
     val description: String = "",
-    val priority: Int = 0,
-    val progress: Int = 0,
-    val dueDate: Long = 0,  // En caso de que seleccione la hora, sino se pondra 0
     val dueDateDay: String,
+    val dueDateTime: String,
     val isCompleted: Boolean = false,
-    val createdAt: Long = System.currentTimeMillis(),
-    val updatedAt: Long = System.currentTimeMillis(),
+    val priority: Int = 0,
+    val progress: Int = 0, // de 0% a 100%
     val color: String,
     val isRecurring: Boolean = false,
-    val recurrencePattern: String = "", // "daily", "weekly", "monthly", "yearly", "custom"
+    val recurrencePattern: String = "", // "off", "daily", "weekly", "monthly", "yearly", "custom"
     val recurrenceInterval: Int = 0, // en caso de que recurrence sea custom
-    val recurrenceEndDate: Long = 0,
+    val recurrenceEndDate: String = "",
     val isReminderSet: Boolean = false,
+    val isReminderActive: Boolean = false,
     val reminderTime: Long = 0,
+    val reminderPatern: String = "", // "off", "minute", "5min", "10min", "15min", "30min", "hour", "custom"
+    val reminderInterval: Int = 0, // (en minutos) en caso de que reminder sea custom
     val isNotificationSet: Boolean = false,
-    val notificationTime: Long = 0,
+    val createdAt: Long = System.currentTimeMillis(),
+    val updatedAt: Long = System.currentTimeMillis(),
 )
+
+//@Entity(tableName = "due_dates")
+//data class DueDateEntity(
+//    @PrimaryKey(autoGenerate = true)
+//    @ColumnInfo(name = "dueDateId")
+//    val dueDateId: Long = 0,
+//    val day: String,
+//    val time: String,
+//)
 
 @Entity(tableName = "categories_tasks")
 data class CategoryTaskEntity(

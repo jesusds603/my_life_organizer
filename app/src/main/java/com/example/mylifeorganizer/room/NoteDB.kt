@@ -20,7 +20,7 @@ import kotlinx.coroutines.launch
         CategoryTaskEntity::class,
         TaskCategoryCrossRef::class,
    ],
-    version = 18, exportSchema = true
+    version = 20, exportSchema = true
 )
 abstract class NoteDB : RoomDatabase() {
 
