@@ -8,23 +8,21 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.room.CategoryTaskEntity
+import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 @Composable
 fun ContentMainWindow(
-    selectedCategories: List<CategoryTaskEntity>,
-    onSelectedCategories: (List<CategoryTaskEntity>) -> Unit,
-    availableCategories: List<CategoryTaskEntity>,
-    title: String,
-    onTitle: (String) -> Unit,
-    description: String,
-    onDescription: (String) -> Unit,
-    onShowCreateCategoryDialog: (Boolean) -> Unit,
+    noteViewModel: NoteViewModel,
     onShowDatePicker: (Boolean) -> Unit,
     onShowTimePicker: (Boolean) -> Unit,
     dueDate: Long,
@@ -41,12 +39,16 @@ fun ContentMainWindow(
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
 
+    var title by remember { mutableStateOf("") }
+    var description by remember { mutableStateOf("") }
+
+
 
     Column {
         // Campo de título
         TextField(
             value = title,
-            onValueChange = { onTitle(it) },
+            onValueChange = { title = it },
             label = { Text("Title", color = themeColors.text1) },
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
@@ -63,7 +65,7 @@ fun ContentMainWindow(
         // Campo de descripción
         TextField(
             value = description,
-            onValueChange = { onDescription(it) },
+            onValueChange = { description = it },
             label = { Text("Description", color = themeColors.text1) },
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
@@ -107,10 +109,7 @@ fun ContentMainWindow(
 
         // Seleccionar categorías
         SelectCategories(
-            selectedCategories = selectedCategories,
-            onSelectedCategories = onSelectedCategories,
-            availableCategories = availableCategories,
-            onShowCreateCategoryDialog = onShowCreateCategoryDialog
+            noteViewModel = noteViewModel,
         )
 
     }

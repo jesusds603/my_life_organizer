@@ -9,19 +9,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.room.CategoryTaskEntity
+import com.example.mylifeorganizer.viewmodel.AppViewModel
+import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 @Composable
 fun MainWindowDialog(
-    selectedCategories: List<CategoryTaskEntity>,
-    onSelectedCategories: (List<CategoryTaskEntity>) -> Unit,
-    availableCategories: List<CategoryTaskEntity>,
-    title: String,
-    onTitle: (String) -> Unit,
-    description: String,
-    onDescription: (String) -> Unit,
-    onShowDialog: (Boolean) -> Unit,
-    onShowCreateCategoryDialog: (Boolean) -> Unit,
+    noteViewModel: NoteViewModel,
     onShowDatePicker: (Boolean) -> Unit,
     onShowTimePicker: (Boolean) -> Unit,
     dueDate: Long,
@@ -35,15 +29,15 @@ fun MainWindowDialog(
     recurrenceInterval: Int,
     onRecurrenceInterval: (Int) -> Unit,
 ) {
+    val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
 
-
     AlertDialog(
-        onDismissRequest = { onShowDialog(false) },
+        onDismissRequest = { appViewModel.toggleShowDialogCreateTask() },
         confirmButton = {
             Button(
-                onClick = { onShowDialog(false) },
+                onClick = { appViewModel.toggleShowDialogCreateTask() },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = themeColors.backGround2
                 )
@@ -53,7 +47,7 @@ fun MainWindowDialog(
         },
         dismissButton = {
             Button(
-                onClick = { onShowDialog(false) },
+                onClick = { appViewModel.toggleShowDialogCreateTask() },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = themeColors.backGround2
                 )
@@ -67,14 +61,7 @@ fun MainWindowDialog(
         ) },
         text = {
             ContentMainWindow(
-                selectedCategories = selectedCategories,
-                onSelectedCategories = onSelectedCategories,
-                availableCategories = availableCategories,
-                title = title,
-                onTitle = onTitle,
-                description = description,
-                onDescription = onDescription,
-                onShowCreateCategoryDialog = onShowCreateCategoryDialog,
+                noteViewModel = noteViewModel,
                 onShowDatePicker = onShowDatePicker,
                 onShowTimePicker = onShowTimePicker,
                 dueDate = dueDate,

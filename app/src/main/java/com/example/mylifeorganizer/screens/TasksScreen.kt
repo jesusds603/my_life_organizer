@@ -42,16 +42,14 @@ fun TasksScreen (
     val themeColors = themeViewModel.themeColors.value
 
     // Estado para controlar la visibilidad del cuadro de diálogo
-    var showDialog by remember { mutableStateOf(false) }
-    var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
+    val showDialogCreateTask = appViewModel.showDialogCreateTask.value
+    val showCreateCategoryDialogTask = appViewModel.showCreateCategoryDialogTask.value
+
     var dueDate by remember { mutableStateOf(0L) }
     var dueTime by remember { mutableStateOf(0L) }
     var priority by remember { mutableStateOf(1) }
     var showDatePicker by remember { mutableStateOf(false) }
     var showTimePicker by remember { mutableStateOf(false) }
-    var selectedCategories by remember { mutableStateOf<List<CategoryTaskEntity>>(emptyList()) }
-    var showCreateCategoryDialog by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf(LocalDate.now()) } // Fecha seleccionada
     var selectedTime by remember { mutableStateOf(Pair(12, 0)) } // Hora seleccionada (hora, minuto)
 
@@ -59,7 +57,6 @@ fun TasksScreen (
     var newCategoryName by remember { mutableStateOf("") }
     var newCategoryColor by remember { mutableStateOf("") }
 
-    val availableCategories by noteViewModel.categoriesTasks.collectAsState(emptyList())
     var isRecurring by remember { mutableStateOf(false) }
     var recurrencePattern by remember { mutableStateOf("Off") }
     var recurrenceInterval by remember { mutableStateOf(0) }
@@ -80,7 +77,7 @@ fun TasksScreen (
 
         // Botón flotante para agregar nuevas tareas
         FloatingActionButton(
-            onClick = { showDialog = true },
+            onClick = { appViewModel.toggleShowDialogCreateTask() },
             modifier = Modifier
                 .align(Alignment.BottomEnd) // Ubicación en la esquina inferior derecha
                 .padding(16.dp),
@@ -91,17 +88,9 @@ fun TasksScreen (
         }
 
         // Ventana de diálogo para agregar tareas
-        if (showDialog) {
+        if (showDialogCreateTask) {
             MainWindowDialog(
-                selectedCategories = selectedCategories,
-                onSelectedCategories = { selectedCategories = it },
-                availableCategories = availableCategories,
-                title = title,
-                onTitle = { title = it },
-                description = description,
-                onDescription = { description = it },
-                onShowDialog = { showDialog = it },
-                onShowCreateCategoryDialog = { showCreateCategoryDialog = it },
+                noteViewModel = noteViewModel,
                 onShowDatePicker = { showDatePicker = it },
                 onShowTimePicker = { showTimePicker = it },
                 dueDate = dueDate,
@@ -137,10 +126,9 @@ fun TasksScreen (
             )
         }
 
-        if(showCreateCategoryDialog) {
+        if(showCreateCategoryDialogTask) {
             CategoryDialogTask(
                 noteViewModel = noteViewModel,
-                onShowCreateCategoryDialog = { showCreateCategoryDialog = it },
                 newCategoryName = newCategoryName,
                 onNewCategoryName = { newCategoryName = it },
                 newCategoryColor = newCategoryColor,

@@ -1,5 +1,7 @@
 package com.example.mylifeorganizer.screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +20,7 @@ import com.example.mylifeorganizer.repositories.NotesRepository
 import com.example.mylifeorganizer.room.NoteDB
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainScreen() {
     val appViewModel: AppViewModel = viewModel()
@@ -61,6 +64,7 @@ fun MainScreen() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ContentMainScreen(
     noteViewModel: NoteViewModel

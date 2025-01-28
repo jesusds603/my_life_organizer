@@ -19,18 +19,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.room.CategoryTaskEntity
+import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 @Composable
 fun CategoryDialogTask (
     noteViewModel: NoteViewModel,
-    onShowCreateCategoryDialog: (Boolean) -> Unit,
     newCategoryName: String,
     onNewCategoryName: (String) -> Unit,
     newCategoryColor: String,
     onNewCategoryColor: (String) -> Unit,
 ) {
+    val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
     val namesColors = themeViewModel.namesColorCategories
@@ -38,14 +39,14 @@ fun CategoryDialogTask (
 
     AlertDialog(
         onDismissRequest = {
-            onShowCreateCategoryDialog(false)
+            appViewModel.toggleShowCreateCategoryDialogTask()
             onNewCategoryName("")
             onNewCategoryColor("")
         },
         confirmButton = {
             Button(
                 onClick = {
-                    onShowCreateCategoryDialog(false)
+                    appViewModel.toggleShowCreateCategoryDialogTask()
                     noteViewModel.addCategoryTask(
                         CategoryTaskEntity(
                             name = newCategoryName,
@@ -61,7 +62,7 @@ fun CategoryDialogTask (
         },
         dismissButton = {
             Button(
-                onClick = { onShowCreateCategoryDialog(false) }
+                onClick = { appViewModel.toggleShowCreateCategoryDialogTask() }
             ) {
                 Text(text = "Cancel", color = themeColors.text1)
             }

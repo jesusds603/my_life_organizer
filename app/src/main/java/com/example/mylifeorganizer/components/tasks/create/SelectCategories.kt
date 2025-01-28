@@ -15,6 +15,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,17 +29,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.room.CategoryTaskEntity
+import com.example.mylifeorganizer.viewmodel.AppViewModel
+import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 @Composable
 fun SelectCategories(
-    selectedCategories: List<CategoryTaskEntity>,
-    onSelectedCategories: (List<CategoryTaskEntity>) -> Unit,
-    availableCategories: List<CategoryTaskEntity>,
-    onShowCreateCategoryDialog: (Boolean) -> Unit,
+    noteViewModel: NoteViewModel,
 ) {
+    val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+
+    var selectedCategories by remember { mutableStateOf<List<CategoryTaskEntity>>(emptyList()) }
+    val availableCategories by noteViewModel.categoriesTasks.collectAsState(emptyList())
+
 
     Column (
         modifier = Modifier
@@ -52,7 +61,7 @@ fun SelectCategories(
                             .padding(4.dp)
                             .background(color = themeViewModel.getCategoryColor(category.bgColor))
                             .clickable {
-                                onSelectedCategories(selectedCategories - category)
+                                selectedCategories = selectedCategories - category
                             }
                     ) {
                         Text(text = category.name, color = themeColors.text1)
@@ -83,7 +92,7 @@ fun SelectCategories(
                             .padding(4.dp)
                             .background(themeViewModel.getCategoryColor(category.bgColor))
                             .clickable {
-                                onSelectedCategories(selectedCategories + category)
+                                selectedCategories = selectedCategories + category
                             }
                     ) {
                         Text(text = category.name, color = themeColors.text1)
@@ -96,7 +105,7 @@ fun SelectCategories(
                     .wrapContentSize() // Ajusta el Box al contenido
                     .background(Color.Magenta, shape = CircleShape) // Botón con forma circular
                     .clickable {
-                        onShowCreateCategoryDialog(true) // Acción del clic
+                        appViewModel.toggleShowCreateCategoryDialogTask()
                     }
                     .padding(8.dp) // Espaciado interno del botón
             ) {

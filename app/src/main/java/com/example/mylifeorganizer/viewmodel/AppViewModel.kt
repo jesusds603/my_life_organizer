@@ -78,4 +78,21 @@ class AppViewModel: ViewModel() {
     fun toggleIsVisualizingNote() {
         isVisualizingNote.value = !isVisualizingNote.value
     }
+
+    // ---------------------------------------
+    // ---------------------------------------
+
+    // Para la creacción de una nueva tarea
+
+    val showDialogCreateTask = mutableStateOf(false)
+    fun toggleShowDialogCreateTask() {
+        showDialogCreateTask.value = !showDialogCreateTask.value
+    }
+
+    var showCreateCategoryDialogTask = mutableStateOf(false)
+    fun toggleShowCreateCategoryDialogTask() {
+        showCreateCategoryDialogTask.value = !showCreateCategoryDialogTask.value
+    }
+
+
 }
