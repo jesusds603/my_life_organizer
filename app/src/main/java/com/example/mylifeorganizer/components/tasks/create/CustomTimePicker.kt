@@ -40,21 +40,20 @@ fun CustomTimePicker() {
 
     // Estado interno para manejar la hora y los minutos seleccionados
     var selectedHour by remember { mutableStateOf(initialTime.hour) }
-
-    // Estados para las horas y minutos seleccionados
-    var selectedHour12 by remember { mutableStateOf<Int?>(null) } // Horas del círculo interno
-    var selectedHour24 by remember { mutableStateOf<Int?>(null) } // Horas del círculo externo
     var selectedMinute by remember { mutableStateOf(initialTime.minute) }
 
     // Estado para alternar entre la selección de horas y minutos
     var isHourSelected by remember { mutableStateOf(false) }
 
+    // Normalizar valores (si es 24 -> 00 para hora; si es 60 -> 00 para minutos)
+    val normalizedHour = if (selectedHour == 24) 0 else selectedHour
+    val normalizedMinute = if (selectedMinute == 60) 0 else selectedMinute
+
     AlertDialog(
         onDismissRequest = { appViewModel.toggleShowTimePicker() },
         title = {
-            val formattedHour = selectedHour24 ?: selectedHour12 ?: selectedHour
             Text(
-                text = "Selected Time: ${"%02d".format(formattedHour)}:${"%02d".format(selectedMinute)}",
+                text = "Selected Time: ${"%02d".format(normalizedHour)}:${"%02d".format(normalizedMinute)}",
                 style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Center,
                 color = themeColors.text1
@@ -68,42 +67,16 @@ fun CustomTimePicker() {
                     .padding(16.dp)
             ) {
                 if (isHourSelected) {
-                    // Círculo de minutos (solo múltiplos de 5)
-                    CircleDial(
-                        items = (0..59).toList(),
-                        selectedValue = selectedMinute,
-                        onValueSelected = { selectedMinute = it },
-                        isActive = true,
-                        radiusFraction = 1f,
-                        isMinuteDial = true,
-                        showDotsForMissing = true
+                    // Círculo de minutos
+                    MinuteDial(
+                        selectedMinute = selectedMinute,
+                        onMinuteSelected = { selectedMinute = it }
                     )
                 } else {
-                    // Círculo de horas (dos anillos)
                     // Círculo de horas (dos anillos para 1-12 y 13-24)
-                    CircleDial(
-                        items = (1..12).toList(),
-                        selectedValue = selectedHour12 ?: selectedHour,
-                        onValueSelected = {
-                            selectedHour12 = it
-                            selectedHour24 = null // Asegurar que no se use la hora del círculo externo
-                        },
-                        isActive = true,
-                        radiusFraction = 0.5f,
-                        isMinuteDial = false,
-                        isOuterCircle = false
-                    )
-                    CircleDial(
-                        items = (13..24).toList(),
-                        selectedValue = selectedHour24 ?: selectedHour,
-                        onValueSelected = {
-                            selectedHour24 = it
-                            selectedHour12 = null // Asegurar que no se use la hora del círculo interno
-                        },
-                        isActive = true,
-                        radiusFraction = 1f,
-                        isMinuteDial = false,
-                        isOuterCircle = true
+                    HourDial(
+                        selectedHour = selectedHour,
+                        onHourSelected = { selectedHour = it }
                     )
                 }
 
@@ -114,8 +87,7 @@ fun CustomTimePicker() {
                 onClick = {
                     if (isHourSelected) {
                         // Actualizar `selectedDueTime` en el ViewModel con el valor seleccionado
-                        val finalHour = selectedHour24 ?: selectedHour12 ?: selectedHour
-                        val formattedTime = "${"%02d".format(finalHour)}:${"%02d".format(selectedMinute)}"
+                        val formattedTime = "${"%02d".format(normalizedHour)}:${"%02d".format(normalizedMinute)}"
                         appViewModel.updateSelectedDueTime(formattedTime)
                         appViewModel.toggleShowTimePicker()
                     } else {
