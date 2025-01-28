@@ -23,6 +23,8 @@ import com.example.mylifeorganizer.components.tasks.create.CategoryDialogTask
 import com.example.mylifeorganizer.components.tasks.create.CustomDatePicker
 import com.example.mylifeorganizer.components.tasks.create.CustomTimePicker
 import com.example.mylifeorganizer.components.tasks.create.MainWindowDialog
+import com.example.mylifeorganizer.components.tasks.screen.MainContent
+import com.example.mylifeorganizer.components.tasks.screen.RowCategories
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 import java.time.LocalDate
@@ -49,14 +51,14 @@ fun TasksScreen () {
         modifier = Modifier.fillMaxSize()
     ) {
 
-        // Contenido principal
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
+       Column (
+           modifier = Modifier.fillMaxSize()
+       ) {
+           // Fila superior
+           RowCategories()
 
-        ) {
-
-        }
+           MainContent()
+       }
 
         // Botón flotante para agregar nuevas tareas
         FloatingActionButton(

@@ -170,4 +170,10 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
         priorityNewTask = priority
     }
 
+    var nameSelectedCategorieTasksScreen by mutableStateOf("All")
+    fun updateNameSelectedCategorieTasksScreen(name: String) {
+        nameSelectedCategorieTasksScreen = name
+    }
+
+
 }
