@@ -9,21 +9,26 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 @Composable
 fun RowDateTimePickers(
-    onShowDatePicker: (Boolean) -> Unit,
-    onShowTimePicker: (Boolean) -> Unit,
-    dueDate: Long,
-    dueTime: Long,
 ) {
+    val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+
+    var dueDate by remember { mutableStateOf(0L) }
+    var dueTime by remember { mutableStateOf(0L) }
 
     Row (
         modifier = Modifier.fillMaxWidth(),
@@ -33,7 +38,7 @@ fun RowDateTimePickers(
         // Botón para seleccionar la fecha
         Button(
             onClick = {
-                onShowDatePicker(true)
+                appViewModel.toggleShowDatePicker()
             },
             modifier = Modifier.weight(1f),
             colors = ButtonDefaults.buttonColors(
@@ -51,7 +56,7 @@ fun RowDateTimePickers(
         // Botón para seleccionar la hora
         Button(
             onClick = {
-                onShowTimePicker(true)
+                appViewModel.toggleShowTimePicker()
             },
             modifier = Modifier.weight(1f),
             colors = ButtonDefaults.buttonColors(

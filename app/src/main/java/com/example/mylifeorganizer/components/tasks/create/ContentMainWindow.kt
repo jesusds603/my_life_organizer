@@ -22,13 +22,6 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 @Composable
 fun ContentMainWindow(
-    noteViewModel: NoteViewModel,
-    onShowDatePicker: (Boolean) -> Unit,
-    onShowTimePicker: (Boolean) -> Unit,
-    dueDate: Long,
-    dueTime: Long,
-    priority: Int,
-    onPriority: (Int) -> Unit,
     isRecurring: Boolean,
     onIsRecurring: (Boolean) -> Unit,
     recurrencePattern: String,
@@ -80,18 +73,11 @@ fun ContentMainWindow(
         Spacer(modifier = Modifier.height(8.dp))
 
         RowDateTimePickers(
-            onShowDatePicker = onShowDatePicker,
-            onShowTimePicker = onShowTimePicker,
-            dueDate = dueDate,
-            dueTime = dueTime
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        PriorityTask(
-            priority = priority,
-            onPriority = onPriority
-        )
+        PriorityTask()
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -108,9 +94,7 @@ fun ContentMainWindow(
         Spacer(modifier = Modifier.height(8.dp))
 
         // Seleccionar categorías
-        SelectCategories(
-            noteViewModel = noteViewModel,
-        )
+        SelectCategories()
 
     }
 }

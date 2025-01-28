@@ -32,9 +32,7 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 
 @Composable
-fun NotesScreen(
-    noteViewModel: NoteViewModel
-) {
+fun NotesScreen() {
     val appViewModel: AppViewModel = viewModel()
 
 
@@ -63,13 +61,11 @@ fun NotesScreen(
                 onCategorySelected = { category ->
                     selectedCategory = category // Actualizar el valor al seleccionar una categoría
                 },
-                noteViewModel = noteViewModel
             )
 
             // Mostrar las notas correspondientes a la categoría seleccionada
             NotesFoldersContainer(
                 selectedCategory = selectedCategory,
-                noteViewModel = noteViewModel
             )
         }
 
@@ -98,7 +94,6 @@ fun NotesScreen(
         if (showAddFolderDialog) {
             AddFolderDialog(
                 onDismiss = { showAddFolderDialog = false },
-                noteViewModel = noteViewModel,
             )
         }
 

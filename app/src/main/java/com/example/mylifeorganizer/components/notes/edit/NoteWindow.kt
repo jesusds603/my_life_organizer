@@ -9,23 +9,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.components.notes.common.MainView
-import com.example.mylifeorganizer.repositories.NotesRepository
 import com.example.mylifeorganizer.room.CategoryEntity
-import com.example.mylifeorganizer.room.NoteDB
 import com.example.mylifeorganizer.room.NoteEntity
 import com.example.mylifeorganizer.viewmodel.AppViewModel
-import com.example.mylifeorganizer.viewmodel.NoteViewModel
 
 
 @Composable
 fun NoteWindow(
     modifier: Modifier = Modifier,
-    noteViewModel: NoteViewModel
 ) {
     val appViewModel: AppViewModel = viewModel()
+    val noteViewModel = appViewModel.noteViewModel
 
 
     val categories by noteViewModel.categories.collectAsState(initial = emptyList())
@@ -110,7 +106,6 @@ fun NoteWindow(
             categories = categories,
             selectedCategories = selectedCategories,
             onChangeSelectedCategories = { selectedCategories = it },
-            noteViewModel = noteViewModel,
             newCategory = newCategory,
             showCategoryInput = showCategoryInput,
             newCategoryColor = newCategoryColor,

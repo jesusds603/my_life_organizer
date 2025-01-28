@@ -44,9 +44,9 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 fun RowCategories(
     selectedCategory: String,
     onCategorySelected: (String) -> Unit,
-    noteViewModel: NoteViewModel
 ) {
     val appViewModel: AppViewModel = viewModel()
+    val noteViewModel = appViewModel.noteViewModel
     val categories by noteViewModel.categories.collectAsState(initial = emptyList())
 
     val themeViewModel: ThemeViewModel = viewModel()

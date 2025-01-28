@@ -17,7 +17,6 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 @Composable
 fun FloatingOptionsFolder(
-    noteViewModel: NoteViewModel,
     folder: FolderEntity,
     showDialog: Boolean,
     onShowDialog: (Boolean) -> Unit,
@@ -27,6 +26,7 @@ fun FloatingOptionsFolder(
     onNewName: (String) -> Unit,
 ) {
     val appViewModel: AppViewModel = viewModel()
+    val noteViewModel = appViewModel.noteViewModel
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
 

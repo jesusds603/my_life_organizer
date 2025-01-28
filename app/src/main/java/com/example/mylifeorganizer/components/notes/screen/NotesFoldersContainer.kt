@@ -15,9 +15,9 @@ import com.example.mylifeorganizer.viewmodel.NoteViewModel
 @Composable
 fun NotesFoldersContainer(
     selectedCategory: String,
-    noteViewModel: NoteViewModel
 ) {
     val appViewModel: AppViewModel = viewModel()
+    val noteViewModel = appViewModel.noteViewModel
     val notesWithoutContentWithCategories by noteViewModel.notesWithoutContentWithCategories.collectAsState(initial = emptyList())
 
     val folders by noteViewModel.folders.collectAsState(initial = emptyList())
@@ -46,7 +46,6 @@ fun NotesFoldersContainer(
             sortedFolders.forEach { folder ->
                 item {
                     FolderCard(
-                        noteViewModel = noteViewModel,
                         folder = folder,
                         depth = depth
                     )
@@ -80,7 +79,6 @@ fun NotesFoldersContainer(
                     notesToShow.forEach { noteWithCategories ->
                         item {
                             NoteCard(
-                                noteViewModel = noteViewModel,
                                 note = noteWithCategories,
                                 depth = depth + 1
                             )
@@ -123,7 +121,6 @@ fun NotesFoldersContainer(
 
         items(notesToShow) { note ->
             NoteCard(
-                noteViewModel = noteViewModel,
                 note = note,
                 depth = 0
             )

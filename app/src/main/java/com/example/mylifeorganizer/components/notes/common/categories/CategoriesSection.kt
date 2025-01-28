@@ -26,7 +26,6 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 @Composable
 fun CategoriesSection(
-    noteViewModel: NoteViewModel,
     categories: List<CategoryEntity>,
     selectedCategories: List<CategoryEntity>,
     onCategoryClick: (CategoryEntity, Boolean) -> Unit, // Callback para manejar clics en categorías
@@ -75,7 +74,6 @@ fun CategoriesSection(
         // Input para añadir nueva categoría
         if(showCategoryInput.value) {
             NewCategoryInput(
-                noteViewModel = noteViewModel,
                 newCategory = newCategory,
                 showCategoryInput = showCategoryInput,
                 newCategoryColor = newCategoryColor

@@ -26,7 +26,7 @@ fun SelectedCategoriesList(
 ) {
     val themeViewModel: ThemeViewModel = viewModel()
 
-    var themeColors = themeViewModel.themeColors.value
+    val themeColors = themeViewModel.themeColors.value
 
     if(selectedCategories.isNotEmpty()) {
         Text(

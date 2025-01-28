@@ -25,13 +25,13 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 @Composable
 fun CategoryDialogTask (
-    noteViewModel: NoteViewModel,
     newCategoryName: String,
     onNewCategoryName: (String) -> Unit,
     newCategoryColor: String,
     onNewCategoryColor: (String) -> Unit,
 ) {
     val appViewModel: AppViewModel = viewModel()
+    val noteViewModel = appViewModel.noteViewModel
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
     val namesColors = themeViewModel.namesColorCategories

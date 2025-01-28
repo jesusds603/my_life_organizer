@@ -34,9 +34,9 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 fun FloatingOptionsNote(
     showMenu: Boolean = false,
     changeShowMenu: (Boolean) -> Unit,
-    noteViewModel: NoteViewModel
 ) {
     val appViewModel: AppViewModel = viewModel()
+    val noteViewModel = appViewModel.noteViewModel
     val themeViewModel: ThemeViewModel = viewModel()
 
     var themeColors = themeViewModel.themeColors.value

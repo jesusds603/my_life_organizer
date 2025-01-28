@@ -30,10 +30,6 @@ fun MainScreen() {
     val isAddingNote = appViewModel.isAddingNote.value
     val isShowingNote = appViewModel.isShowingNote.value
 
-    val context = LocalContext.current
-    val noteDB = NoteDB.getInstance(context)
-    val notesRepository = NotesRepository(noteDB)
-    val noteViewModel = NoteViewModel(notesRepository)
 
 
     Box(
@@ -48,17 +44,14 @@ fun MainScreen() {
             // Mostrar AddNoteWindow ocupando toda la pantalla
             AddNoteWindow(
                 modifier = Modifier.fillMaxSize(),
-                noteViewModel = noteViewModel
             )
         }  else if (isShowingNote) {
             NoteWindow(
                 modifier = Modifier.fillMaxSize(),
-                noteViewModel = noteViewModel
             )
         } else {
             // Mostrar ContentMainScreen cuando no se está agregando una nota
             ContentMainScreen(
-                noteViewModel = noteViewModel
             )
         }
     }
@@ -67,7 +60,6 @@ fun MainScreen() {
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ContentMainScreen(
-    noteViewModel: NoteViewModel
 ) {
     val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
@@ -84,13 +76,9 @@ fun ContentMainScreen(
         Box(modifier = Modifier.weight(1f)) {
             when (selectedTab) {
                 "Home" -> HomeScreen()
-                "Notes" -> NotesScreen(
-                    noteViewModel = noteViewModel
-                )
+                "Notes" -> NotesScreen()
                 "Daily" -> DailyScreen()
-                "Tasks" -> TasksScreen(
-                    noteViewModel = noteViewModel
-                )
+                "Tasks" -> TasksScreen()
                 "Finance" -> FinanceScreen()
                 "Calendar" -> CalendarScreen()
                 "Dashboard" -> DashboardScreen()

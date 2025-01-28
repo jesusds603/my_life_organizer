@@ -15,17 +15,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.room.CategoryEntity
+import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 
 @Composable
 fun NewCategoryInput(
-    noteViewModel: NoteViewModel,
     newCategory: MutableState<String>,
     showCategoryInput: MutableState<Boolean>,
     newCategoryColor: MutableState<String>
 ) {
+    val appViewModel: AppViewModel = viewModel()
+    val noteViewModel = appViewModel.noteViewModel
     val themeViewModel: ThemeViewModel = viewModel()
 
     var themeColors = themeViewModel.themeColors.value

@@ -39,11 +39,11 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 @Composable
 fun FolderCard(
-    noteViewModel: NoteViewModel,
     folder: FolderEntity,
     depth: Int
 ) {
     val appViewModel: AppViewModel = viewModel()
+    val noteViewModel = appViewModel.noteViewModel
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
 
@@ -138,7 +138,6 @@ fun FolderCard(
 
                 if (showDialog) {
                     FloatingOptionsFolder(
-                        noteViewModel = noteViewModel,
                         folder = folder,
                         showDialog = showDialog,
                         onShowDialog = { showDialog = it },
@@ -201,7 +200,6 @@ fun FolderCard(
 
             if (showDetailsDialog) {
                 DialogDetailsFolder(
-                    noteViewModel = noteViewModel,
                     onShowDetailsDialog = { showDetailsDialog = it },
                     folder = folder
                 )

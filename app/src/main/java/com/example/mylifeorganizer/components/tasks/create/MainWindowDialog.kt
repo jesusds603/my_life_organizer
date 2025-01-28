@@ -15,13 +15,6 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 @Composable
 fun MainWindowDialog(
-    noteViewModel: NoteViewModel,
-    onShowDatePicker: (Boolean) -> Unit,
-    onShowTimePicker: (Boolean) -> Unit,
-    dueDate: Long,
-    dueTime: Long,
-    priority: Int,
-    onPriority: (Int) -> Unit,
     isRecurring: Boolean,
     onIsRecurring: (Boolean) -> Unit,
     recurrencePattern: String,
@@ -61,13 +54,6 @@ fun MainWindowDialog(
         ) },
         text = {
             ContentMainWindow(
-                noteViewModel = noteViewModel,
-                onShowDatePicker = onShowDatePicker,
-                onShowTimePicker = onShowTimePicker,
-                dueDate = dueDate,
-                dueTime = dueTime,
-                priority = priority,
-                onPriority = onPriority,
                 isRecurring = isRecurring,
                 onIsRecurring = onIsRecurring,
                 recurrencePattern = recurrencePattern,

@@ -33,9 +33,7 @@ import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun TasksScreen (
-    noteViewModel: NoteViewModel
-) {
+fun TasksScreen () {
     val appViewModel: AppViewModel = viewModel()
 
     val themeViewModel: ThemeViewModel = viewModel()
@@ -44,12 +42,9 @@ fun TasksScreen (
     // Estado para controlar la visibilidad del cuadro de diálogo
     val showDialogCreateTask = appViewModel.showDialogCreateTask.value
     val showCreateCategoryDialogTask = appViewModel.showCreateCategoryDialogTask.value
+    val showDatePicker = appViewModel.showDatePicker.value
+    val showTimePicker = appViewModel.showTimePicker.value
 
-    var dueDate by remember { mutableStateOf(0L) }
-    var dueTime by remember { mutableStateOf(0L) }
-    var priority by remember { mutableStateOf(1) }
-    var showDatePicker by remember { mutableStateOf(false) }
-    var showTimePicker by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf(LocalDate.now()) } // Fecha seleccionada
     var selectedTime by remember { mutableStateOf(Pair(12, 0)) } // Hora seleccionada (hora, minuto)
 
@@ -90,13 +85,6 @@ fun TasksScreen (
         // Ventana de diálogo para agregar tareas
         if (showDialogCreateTask) {
             MainWindowDialog(
-                noteViewModel = noteViewModel,
-                onShowDatePicker = { showDatePicker = it },
-                onShowTimePicker = { showTimePicker = it },
-                dueDate = dueDate,
-                dueTime = dueTime,
-                priority = priority,
-                onPriority = { priority = it },
                 isRecurring = isRecurring,
                 onIsRecurring = { isRecurring = it },
                 recurrencePattern = recurrencePattern,
@@ -112,7 +100,6 @@ fun TasksScreen (
                 onDateSelected = { newDate ->
                     selectedDate = newDate
                 },
-                onDismiss = { showDatePicker = false }
             )
         }
 
@@ -122,13 +109,12 @@ fun TasksScreen (
                 onTimeSelected = { hour, minute ->
                     selectedTime = Pair(hour, minute)
                 },
-                onDismiss = { showTimePicker = false }
+
             )
         }
 
         if(showCreateCategoryDialogTask) {
             CategoryDialogTask(
-                noteViewModel = noteViewModel,
                 newCategoryName = newCategoryName,
                 onNewCategoryName = { newCategoryName = it },
                 newCategoryColor = newCategoryColor,

@@ -35,9 +35,10 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 @Composable
 fun SelectCategories(
-    noteViewModel: NoteViewModel,
+
 ) {
     val appViewModel: AppViewModel = viewModel()
+    val noteViewModel = appViewModel.noteViewModel
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
 

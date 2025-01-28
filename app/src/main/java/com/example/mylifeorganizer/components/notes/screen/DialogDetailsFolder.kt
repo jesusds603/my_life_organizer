@@ -19,15 +19,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.room.FolderEntity
+import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 @Composable
 fun DialogDetailsFolder(
-    noteViewModel: NoteViewModel,
     onShowDetailsDialog: (Boolean) -> Unit,
     folder: FolderEntity
 ) {
+    val appViewModel: AppViewModel = viewModel()
+    val noteViewModel = appViewModel.noteViewModel
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
 

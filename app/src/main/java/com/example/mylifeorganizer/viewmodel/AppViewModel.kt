@@ -1,14 +1,25 @@
 package com.example.mylifeorganizer.viewmodel
 
+import android.app.Application
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
+import com.example.mylifeorganizer.repositories.NotesRepository
 import com.example.mylifeorganizer.room.CategoryEntity
+import com.example.mylifeorganizer.room.NoteDB
 import com.example.mylifeorganizer.room.NoteEntity
 
-class AppViewModel: ViewModel() {
+class AppViewModel(application: Application) : AndroidViewModel(application)  {
+
+    private val noteDB = NoteDB.getInstance(application.applicationContext)
+    private val notesRepository = NotesRepository(noteDB)
+
+    // Aquí inicializamos NoteViewModel para compartirlo
+    val noteViewModel: NoteViewModel = NoteViewModel(notesRepository)
+
     // Language state
     val isLangEng = mutableStateOf(true)
 
@@ -93,6 +104,18 @@ class AppViewModel: ViewModel() {
     fun toggleShowCreateCategoryDialogTask() {
         showCreateCategoryDialogTask.value = !showCreateCategoryDialogTask.value
     }
+
+    var showDatePicker = mutableStateOf(false)
+    fun toggleShowDatePicker() {
+        showDatePicker.value = !showDatePicker.value
+    }
+
+    var showTimePicker = mutableStateOf(false)
+    fun toggleShowTimePicker() {
+        showTimePicker.value = !showTimePicker.value
+    }
+
+
 
 
 }

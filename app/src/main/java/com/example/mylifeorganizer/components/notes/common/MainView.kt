@@ -57,7 +57,6 @@ fun MainView(
     categories: List<CategoryEntity>, // Todas las categorías disponibles
     selectedCategories: List<CategoryEntity>, // Categorías seleccionadas para agregar o eliminar
     onChangeSelectedCategories: (List<CategoryEntity>) -> Unit,
-    noteViewModel: NoteViewModel,
     newCategory: String,
     showCategoryInput: Boolean,
     newCategoryColor: String,
@@ -147,7 +146,6 @@ fun MainView(
                             .background(themeColors.backgroundTransparent1)
                     ) {
                         CategoriesSection(
-                            noteViewModel,
                             categories,
                             selectedCategories,
                             onCategoryClick = { category, isSelected ->

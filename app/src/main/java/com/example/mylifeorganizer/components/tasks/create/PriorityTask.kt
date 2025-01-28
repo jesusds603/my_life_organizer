@@ -10,6 +10,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,12 +24,14 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 @Composable
 fun PriorityTask (
-    priority: Int,
-    onPriority: (Int) -> Unit
+
 ) {
 
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+
+    var priority by remember { mutableStateOf(1) }
+
 
     // Seleccionar prioridad
     Text(text = "Priority: $priority", color = themeColors.text1)
@@ -48,7 +54,7 @@ fun PriorityTask (
                     .fillMaxHeight(heightPercentage)
                     .background(colors[index]) // Asignar el color interpolado
                     .clickable {
-                        onPriority(index + 1)
+                        priority = index + 1
                     }
             )
         }

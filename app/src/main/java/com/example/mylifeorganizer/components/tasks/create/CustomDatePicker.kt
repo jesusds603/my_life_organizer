@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 import java.time.LocalDate
 import java.time.Year
@@ -49,8 +50,8 @@ import java.util.Locale
 fun CustomDatePicker(
     initialDate: LocalDate = LocalDate.now(),
     onDateSelected: (LocalDate) -> Unit,
-    onDismiss: () -> Unit
 ) {
+    val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
 
@@ -64,7 +65,7 @@ fun CustomDatePicker(
     val daysGrid = (1..daysInMonth).toList()
 
     AlertDialog(
-        onDismissRequest = onDismiss,
+        onDismissRequest = {appViewModel.toggleShowDatePicker()},
         title = {
             Text(
                 text = selectedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
@@ -163,14 +164,14 @@ fun CustomDatePicker(
             TextButton(
                 onClick = {
                     onDateSelected(selectedDate)
-                    onDismiss()
+                    appViewModel.toggleShowDatePicker()
                 }
             ) {
                 Text("OK")
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(onClick = {appViewModel.toggleShowDatePicker()}) {
                 Text("Cancel")
             }
         },

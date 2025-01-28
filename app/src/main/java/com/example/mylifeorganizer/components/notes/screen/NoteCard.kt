@@ -45,7 +45,6 @@ import java.util.Locale
 
 @Composable
 fun NoteCard(
-    noteViewModel: NoteViewModel,
     note: NoteWithoutContentWithCategories,
     depth: Int
 ) {
@@ -138,7 +137,6 @@ fun NoteCard(
                     FloatingOptionsNote(
                         showMenu = showMenu,
                         changeShowMenu = { showMenu = it },
-                        noteViewModel = noteViewModel
                     )
                 }
             }

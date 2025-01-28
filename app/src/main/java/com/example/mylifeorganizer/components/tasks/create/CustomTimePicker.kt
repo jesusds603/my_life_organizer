@@ -16,20 +16,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mylifeorganizer.viewmodel.AppViewModel
 
 
 @Composable
 fun CustomTimePicker(
     initialTime: Pair<Int, Int> = Pair(0, 0),
     onTimeSelected: (Int, Int) -> Unit,
-    onDismiss: () -> Unit
 ) {
+    val appViewModel: AppViewModel = viewModel()
     var selectedHour by remember { mutableStateOf(initialTime.first) }
     var selectedMinute by remember { mutableStateOf(initialTime.second) }
     var isHourSelected by remember { mutableStateOf(true) }
 
     AlertDialog(
-        onDismissRequest = onDismiss,
+        onDismissRequest = {appViewModel.toggleShowTimePicker()},
         title = {
             Text(
                 text = "Selected Time: ${"%02d".format(selectedHour)}:${"%02d".format(selectedMinute)}",
@@ -70,7 +72,7 @@ fun CustomTimePicker(
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(onClick = {appViewModel.toggleShowTimePicker()}) {
                 Text("Cancel")
             }
         }
