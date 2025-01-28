@@ -1,0 +1,56 @@
+package com.example.mylifeorganizer.components.tasks.create
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mylifeorganizer.viewmodel.ThemeViewModel
+
+@Composable
+fun PriorityTask (
+    priority: Int,
+    onPriority: (Int) -> Unit
+) {
+
+    val themeViewModel: ThemeViewModel = viewModel()
+    val themeColors = themeViewModel.themeColors.value
+
+    // Seleccionar prioridad
+    Text(text = "Priority: $priority", color = themeColors.text1)
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(40.dp),
+        verticalAlignment = Alignment.Bottom // Alineación en la parte inferior
+    ) {
+        val heights = listOf(0.2f, 0.4f, 0.6f, 0.8f, 1.0f)
+        val colors = heights.map { heightPercentage ->
+            lerp(Color.Blue, Color.Red, heightPercentage) // Interpolar entre azul y rojo
+        }
+
+        heights.forEachIndexed { index, heightPercentage ->
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 16.dp)
+                    .fillMaxHeight(heightPercentage)
+                    .background(colors[index]) // Asignar el color interpolado
+                    .clickable {
+                        onPriority(index + 1)
+                    }
+            )
+        }
+    }
+}

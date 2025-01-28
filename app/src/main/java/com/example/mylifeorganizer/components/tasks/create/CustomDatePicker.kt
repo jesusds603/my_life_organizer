@@ -160,7 +160,12 @@ fun CustomDatePicker(
             }
         },
         confirmButton = {
-            TextButton(onClick = { onDateSelected(selectedDate) }) {
+            TextButton(
+                onClick = {
+                    onDateSelected(selectedDate)
+                    onDismiss()
+                }
+            ) {
                 Text("OK")
             }
         },
