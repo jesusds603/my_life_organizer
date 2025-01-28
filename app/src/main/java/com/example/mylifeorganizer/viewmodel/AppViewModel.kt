@@ -100,6 +100,16 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
 
     // Para la creacción de una nueva tarea
 
+    val titleNewTask = mutableStateOf("")
+    fun changeTitleNewTask(title: String) {
+        titleNewTask.value = title
+    }
+
+    val descriptionNewTask = mutableStateOf("")
+    fun changeDescriptionNewTask(description: String) {
+        descriptionNewTask.value = description
+    }
+
     val showDialogCreateTask = mutableStateOf(false)
     fun toggleShowDialogCreateTask() {
         showDialogCreateTask.value = !showDialogCreateTask.value
@@ -133,6 +143,31 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
     var selectedCategoriesTask by mutableStateOf<List<CategoryTaskEntity>>(emptyList())
     fun updateSelectedCategoriesTask(categories: List<CategoryTaskEntity>) {
         selectedCategoriesTask = categories
+    }
+
+    var isTaskRecurring by mutableStateOf(false)
+    fun toggleIsTaskRecurring() {
+        isTaskRecurring = !isTaskRecurring
+    }
+
+    var recurrenceTaskPattern by mutableStateOf("Off")
+    fun updateRecurrenceTaskPattern(pattern: String) {
+        recurrenceTaskPattern = pattern
+    }
+
+    var recurrenceTaskInterval by mutableStateOf(0)
+    fun updateRecurrenceTaskInterval(interval: Int) {
+        recurrenceTaskInterval = interval
+    }
+
+    var recurrenceTaskEndDate by mutableStateOf("")
+    fun updateRecurrenceTaskEndDate(date: String) {
+        recurrenceTaskEndDate = date
+    }
+
+    var priorityNewTask by mutableStateOf(0)
+    fun updatePriorityNewTask(priority: Int) {
+        priorityNewTask = priority
     }
 
 }

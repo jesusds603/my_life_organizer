@@ -244,9 +244,10 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
     // ----------------------------- TAREAS --------------------------------
 
     // Insertar una nueva tarea
-    fun addTasks(task: TaskEntity) {
+    fun addTask(task: TaskEntity, onTaskAdded: (Long) -> Unit) {
         viewModelScope.launch {
-            notesRepository.insertTask(task)
+            val taskId = notesRepository.insertTask(task)
+            onTaskAdded(taskId) // Ejecuta una acción cuando se inserta la tarea
         }
     }
 

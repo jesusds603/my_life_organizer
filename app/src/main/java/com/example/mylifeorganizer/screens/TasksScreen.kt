@@ -44,10 +44,6 @@ fun TasksScreen () {
     var newCategoryName by remember { mutableStateOf("") }
     var newCategoryColor by remember { mutableStateOf("") }
 
-    var isRecurring by remember { mutableStateOf(false) }
-    var recurrencePattern by remember { mutableStateOf("Off") }
-    var recurrenceInterval by remember { mutableStateOf(0) }
-
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -76,25 +72,15 @@ fun TasksScreen () {
 
         // Ventana de diálogo para agregar tareas
         if (showDialogCreateTask) {
-            MainWindowDialog(
-                isRecurring = isRecurring,
-                onIsRecurring = { isRecurring = it },
-                recurrencePattern = recurrencePattern,
-                onRecurrencePattern = { recurrencePattern = it },
-                recurrenceInterval = recurrenceInterval,
-                onRecurrenceInterval = { recurrenceInterval = it }
-            )
+            MainWindowDialog()
         }
 
         if(showDatePicker) {
-            CustomDatePicker(
-            )
+            CustomDatePicker()
         }
 
         if(showTimePicker) {
-            CustomTimePicker(
-
-            )
+            CustomTimePicker()
         }
 
         if(showCreateCategoryDialogTask) {

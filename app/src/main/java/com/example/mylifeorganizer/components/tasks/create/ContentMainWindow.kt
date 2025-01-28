@@ -19,32 +19,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.room.CategoryTaskEntity
+import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ContentMainWindow(
-    isRecurring: Boolean,
-    onIsRecurring: (Boolean) -> Unit,
-    recurrencePattern: String,
-    onRecurrencePattern: (String) -> Unit,
-    recurrenceInterval: Int,
-    onRecurrenceInterval: (Int) -> Unit,
-) {
+fun ContentMainWindow() {
+    val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
 
-    var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
+    val titleNewTask = appViewModel.titleNewTask.value
+    val descriptionNewTask = appViewModel.descriptionNewTask.value
 
 
 
     Column {
         // Campo de título
         TextField(
-            value = title,
-            onValueChange = { title = it },
+            value = titleNewTask,
+            onValueChange = { appViewModel.changeTitleNewTask(it) },
             label = { Text("Title", color = themeColors.text1) },
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
@@ -60,8 +55,8 @@ fun ContentMainWindow(
 
         // Campo de descripción
         TextField(
-            value = description,
-            onValueChange = { description = it },
+            value = descriptionNewTask,
+            onValueChange = { appViewModel.changeDescriptionNewTask(it) },
             label = { Text("Description", color = themeColors.text1) },
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
@@ -84,14 +79,7 @@ fun ContentMainWindow(
         Spacer(modifier = Modifier.height(8.dp))
 
 
-        Recurrence(
-            isRecurring = isRecurring,
-            onIsRecurring = onIsRecurring,
-            recurrencePattern = recurrencePattern,
-            onRecurrencePattern = onRecurrencePattern,
-            recurrenceInterval = recurrenceInterval,
-            onRecurrenceInterval = onRecurrenceInterval,
-        )
+        Recurrence()
 
         Spacer(modifier = Modifier.height(8.dp))
 

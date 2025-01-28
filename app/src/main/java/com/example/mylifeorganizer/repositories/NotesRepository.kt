@@ -125,8 +125,8 @@ class NotesRepository (val noteDB: NoteDB) {
     // ----------------------- TASKS --------------------------------
 
     // Insertar una nueva tarea
-    suspend fun insertTask(task: TaskEntity) {
-        noteDAO.insertTask(task)
+    suspend fun insertTask(task: TaskEntity): Long {
+        return noteDAO.insertTask(task)
     }
 
     // Obtener todas las tareas

@@ -89,7 +89,6 @@ fun CategoryDialogTask (
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween // Espacio entre la LazyRow y el Box
 
                 ) {
                     items(availableCategories) { category ->
@@ -116,8 +115,6 @@ fun CategoryDialogTask (
                         .fillMaxWidth()
                         .padding(horizontal = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween // Espacio entre la LazyRow y el Box
-
                 ) {
                     items(selectedCategoriesTask) { category ->
                         Box(
@@ -151,13 +148,16 @@ fun CategoryDialogTask (
                     )
                 )
 
-                LazyRow {
+                LazyRow (
+                    modifier = Modifier.fillMaxWidth()
+                ){
                     items(namesColors) { categoryColor ->
                         Box(
                             modifier = Modifier
-                                .size(20.dp)
+                                .weight(1f)
                                 .background(themeViewModel.getCategoryColor(categoryColor))
                                 .clickable { onNewCategoryColor(categoryColor) }
+                                .size(20.dp)
                         )
                     }
                 }

@@ -1,6 +1,8 @@
 package com.example.mylifeorganizer.components.notes.add
 
+import android.os.Build
 import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -15,6 +17,7 @@ import com.example.mylifeorganizer.room.NoteEntity
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AddNoteWindow(
     modifier: Modifier = Modifier,

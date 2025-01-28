@@ -1,5 +1,7 @@
 package com.example.mylifeorganizer.components.tasks.create
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -20,21 +22,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PriorityTask (
 
 ) {
-
+    val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
 
-    var priority by remember { mutableStateOf(1) }
+    val priorityNewTask = appViewModel.priorityNewTask
 
 
     // Seleccionar prioridad
-    Text(text = "Priority: $priority", color = themeColors.text1)
+    Text(text = "Priority: $priorityNewTask", color = themeColors.text1)
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -54,7 +58,7 @@ fun PriorityTask (
                     .fillMaxHeight(heightPercentage)
                     .background(colors[index]) // Asignar el color interpolado
                     .clickable {
-                        priority = index + 1
+                        appViewModel.updatePriorityNewTask(index+1)
                     }
             )
         }

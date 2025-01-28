@@ -156,7 +156,6 @@ data class TaskEntity(
     val isCompleted: Boolean = false,
     val priority: Int = 0,
     val progress: Int = 0, // de 0% a 100%
-    val color: String,
     val isRecurring: Boolean = false,
     val recurrencePattern: String = "", // "off", "daily", "weekly", "monthly", "yearly", "custom"
     val recurrenceInterval: Int = 0, // en caso de que recurrence sea custom
