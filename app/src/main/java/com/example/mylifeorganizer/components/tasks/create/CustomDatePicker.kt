@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -32,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -65,8 +67,12 @@ fun CustomDatePicker() {
 
     val daysOfWeek = listOf("S", "M", "T", "W", "T", "F", "S")
     val daysInMonth = currentMonth.length(Year.of(currentYear).isLeap)
+    // Indice del dia de la semana de 0 a 6
     val firstDayOfMonth = LocalDate.of(currentYear, currentMonth, 1).dayOfWeek.value % 7
+    println("first day of mont ${LocalDate.of(currentYear, currentMonth, 1).dayOfWeek.value}")
     val daysGrid = (1..daysInMonth).toList()
+    // Crearemos una lista para guardar los ultimos dias de la cuadricula vacios
+    val numDaysEndMonth = (7*7 - (firstDayOfMonth + daysInMonth)) % 7 // 7 semanas
 
     AlertDialog(
         onDismissRequest = { appViewModel.toggleShowDatePicker() },
@@ -127,13 +133,22 @@ fun CustomDatePicker() {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Días de la semana
-                Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
-                    daysOfWeek.forEach { day ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 1.dp)
+                        .background(themeColors.backGround2)
+                        .padding(vertical = 8.dp)
+                    ,
+                ) {
+                    daysOfWeek.forEachIndexed { index, day ->
                         Text(
                             text = day,
                             style = MaterialTheme.typography.bodyLarge,
                             textAlign = TextAlign.Center,
-                            color = themeColors.text1
+                            color = if (selectedDate.dayOfWeek.value % 7 == index) themeColors.tabButtonSelected else themeColors.text1,
+                            modifier = Modifier.weight(1f),
+                            fontWeight = FontWeight.Bold
                         )
                     }
                 }
@@ -141,10 +156,13 @@ fun CustomDatePicker() {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 // Cuadrícula del calendario
-                val gridItems = List(firstDayOfMonth) { "" } + daysGrid.map { it.toString() }
+                // Crea una lista de "" de cantidad firstDayOfMonth que son los dias vacios
+                val gridItems = List(firstDayOfMonth) { "" } + daysGrid.map { it.toString() } + List(numDaysEndMonth) {""}
                 val rows = gridItems.chunked(7)
 
-                Column {
+                Column (
+                    modifier = Modifier.fillMaxWidth()
+                ) {
                     rows.forEach { week ->
                         Row(
                             horizontalArrangement = Arrangement.SpaceEvenly,
@@ -153,6 +171,7 @@ fun CustomDatePicker() {
                             week.forEach { day ->
                                 Box(
                                     modifier = Modifier
+                                        .weight(1f)
                                         .size(40.dp)
                                         .background(
                                             if (day.isNotEmpty() && day.toInt() == selectedDate.dayOfMonth

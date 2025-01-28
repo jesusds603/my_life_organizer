@@ -11,6 +11,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import com.example.mylifeorganizer.repositories.NotesRepository
 import com.example.mylifeorganizer.room.CategoryEntity
+import com.example.mylifeorganizer.room.CategoryTaskEntity
 import com.example.mylifeorganizer.room.NoteDB
 import com.example.mylifeorganizer.room.NoteEntity
 import java.time.LocalDate
@@ -127,6 +128,11 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
     var selectedDueTime by mutableStateOf("") // "HH:mm" en formato de 24 horas
     fun updateSelectedDueTime(time: String) {
         selectedDueTime = time
+    }
+
+    var selectedCategoriesTask by mutableStateOf<List<CategoryTaskEntity>>(emptyList())
+    fun updateSelectedCategoriesTask(categories: List<CategoryTaskEntity>) {
+        selectedCategoriesTask = categories
     }
 
 }

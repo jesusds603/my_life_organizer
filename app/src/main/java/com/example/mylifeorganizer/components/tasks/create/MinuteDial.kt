@@ -25,7 +25,7 @@ fun MinuteDial(
     onMinuteSelected: (Int) -> Unit,
 ) {
     val radiusFraction = 1f // Tamaño del círculo
-    val radiusInnerFraction = 0.9f // Tamaño del círculo interno
+    val radiusInnerFraction = 0.8f // Tamaño del círculo interno
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
     val radius = 120.dp * radiusFraction
@@ -67,12 +67,14 @@ fun MinuteDial(
                     x,
                     y,
                     Paint().apply {
-                        color = if(minute == selectedMinute) Color.Red.toArgb() else themeColors.text1.toArgb()
+                        color =
+                            if (minute == selectedMinute) Color.Red.toArgb() else themeColors.text1.toArgb()
                         textSize = 50f
                         textAlign = Paint.Align.CENTER
                     }
                 )
-            } else {
+            }
+            else {
                 // Dibujar puntos
                 drawCircle(
                     color = if(minute == selectedMinute) Color.Red else themeColors.text1,

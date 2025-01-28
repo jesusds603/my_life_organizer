@@ -1,5 +1,7 @@
 package com.example.mylifeorganizer.components.tasks.create
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +22,7 @@ import com.example.mylifeorganizer.room.CategoryTaskEntity
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ContentMainWindow(
     isRecurring: Boolean,
@@ -72,8 +75,7 @@ fun ContentMainWindow(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        RowDateTimePickers(
-        )
+        RowDateTimePickers()
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -93,8 +95,8 @@ fun ContentMainWindow(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Seleccionar categorías
-        SelectCategories()
+        // categorías
+        CategoriesTasksSection()
 
     }
 }
