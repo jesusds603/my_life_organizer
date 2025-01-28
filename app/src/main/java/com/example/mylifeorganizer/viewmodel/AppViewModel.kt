@@ -119,14 +119,14 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
         showTimePicker.value = !showTimePicker.value
     }
 
-    var selectedDueDate by mutableStateOf(LocalDate.now())
-    var selectedDueTime by mutableStateOf(Pair(12, 0)) // Hora, minuto
-    fun updateSelectedDueDate(newDate: LocalDate) {
+    var selectedDueDate by mutableStateOf("") // "yyyy/MM/dd
+    fun updateSelectedDueDate(newDate: String) {
         selectedDueDate = newDate
     }
 
-    fun updateSelectedDueTime(hour: Int, minute: Int) {
-        selectedDueTime = Pair(hour, minute)
+    var selectedDueTime by mutableStateOf("") // "HH:mm" en formato de 24 horas
+    fun updateSelectedDueTime(time: String) {
+        selectedDueTime = time
     }
 
 }

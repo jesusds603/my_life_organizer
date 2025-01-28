@@ -1,5 +1,7 @@
 package com.example.mylifeorganizer.components.tasks.create
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,6 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RowDateTimePickers(
 ) {
@@ -27,8 +30,9 @@ fun RowDateTimePickers(
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
 
-    var dueDate by remember { mutableStateOf(0L) }
-    var dueTime by remember { mutableStateOf(0L) }
+    val selectedDueDate = appViewModel.selectedDueDate
+    val selectedDueTime = appViewModel.selectedDueTime
+
 
     Row (
         modifier = Modifier.fillMaxWidth(),
@@ -46,7 +50,7 @@ fun RowDateTimePickers(
             )
         ) {
             Text(
-                text = if (dueDate > 0) formatDate(dueDate) else "Due Date",
+                text = if (selectedDueDate == "") "Due Date" else selectedDueDate,
                 color = themeColors.text1
             )
         }
@@ -64,7 +68,7 @@ fun RowDateTimePickers(
             )
         ) {
             Text(
-                text = if (dueTime > 0) formatTime(dueTime) else "Due Time",
+                text = if (selectedDueTime != "") selectedDueTime else "Due Time",
                 color = themeColors.text1
             )
         }

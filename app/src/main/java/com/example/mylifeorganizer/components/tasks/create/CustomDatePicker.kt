@@ -38,24 +38,30 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 import java.time.LocalDate
+import java.time.Month
 import java.time.Year
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.util.Locale
 
-
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CustomDatePicker(
-) {
+fun CustomDatePicker() {
     val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
 
-    var selectedDate = appViewModel.selectedDueDate
-    var currentYear = appViewModel.selectedDueDate.year
-    var currentMonth = appViewModel.selectedDueDate.month
+    // Convertir selectedDueDate a LocalDate o usar la fecha actual si está vacío
+    val initialDate = if (appViewModel.selectedDueDate.isNotEmpty()) {
+        LocalDate.parse(appViewModel.selectedDueDate, DateTimeFormatter.ofPattern("yyyy/MM/dd"))
+    } else {
+        LocalDate.now()
+    }
+
+    // Estado interno para manejar la fecha seleccionada en el DatePicker
+    var selectedDate by remember { mutableStateOf(initialDate) }
+    var currentYear by remember { mutableStateOf(selectedDate.year) }
+    var currentMonth by remember { mutableStateOf(selectedDate.month) }
 
     val daysOfWeek = listOf("S", "M", "T", "W", "T", "F", "S")
     val daysInMonth = currentMonth.length(Year.of(currentYear).isLeap)
@@ -63,7 +69,7 @@ fun CustomDatePicker(
     val daysGrid = (1..daysInMonth).toList()
 
     AlertDialog(
-        onDismissRequest = {appViewModel.toggleShowDatePicker()},
+        onDismissRequest = { appViewModel.toggleShowDatePicker() },
         title = {
             Text(
                 text = selectedDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
@@ -74,12 +80,16 @@ fun CustomDatePicker(
         },
         text = {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                // Year Selector
+                // Selector de año
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = { currentYear -= 1 }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Previous Year")
                     }
-                    Text(text = currentYear.toString(), style = MaterialTheme.typography.titleLarge, color = themeColors.text1)
+                    Text(
+                        text = currentYear.toString(),
+                        style = MaterialTheme.typography.titleLarge,
+                        color = themeColors.text1
+                    )
                     IconButton(onClick = { currentYear += 1 }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Next Year")
                     }
@@ -87,10 +97,14 @@ fun CustomDatePicker(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Month Selector
+                // Selector de mes
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     IconButton(onClick = {
                         currentMonth = currentMonth.minus(1)
+                        if (currentMonth.value < 1) {
+                            currentMonth = Month.DECEMBER
+                            currentYear -= 1
+                        }
                     }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Previous Month")
                     }
@@ -101,6 +115,10 @@ fun CustomDatePicker(
                     )
                     IconButton(onClick = {
                         currentMonth = currentMonth.plus(1)
+                        if (currentMonth.value > 12) {
+                            currentMonth = Month.JANUARY
+                            currentYear += 1
+                        }
                     }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Next Month")
                     }
@@ -108,16 +126,21 @@ fun CustomDatePicker(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Days of the Week
+                // Días de la semana
                 Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
                     daysOfWeek.forEach { day ->
-                        Text(text = day, style = MaterialTheme.typography.bodyLarge, textAlign = TextAlign.Center, color = themeColors.text1)
+                        Text(
+                            text = day,
+                            style = MaterialTheme.typography.bodyLarge,
+                            textAlign = TextAlign.Center,
+                            color = themeColors.text1
+                        )
                     }
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                // Calendar Grid
+                // Cuadrícula del calendario
                 val gridItems = List(firstDayOfMonth) { "" } + daysGrid.map { it.toString() }
                 val rows = gridItems.chunked(7)
 
@@ -150,7 +173,11 @@ fun CustomDatePicker(
                                         },
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Text(text = day, textAlign = TextAlign.Center, color = themeColors.text1)
+                                    Text(
+                                        text = day,
+                                        textAlign = TextAlign.Center,
+                                        color = themeColors.text1
+                                    )
                                 }
                             }
                         }
@@ -161,7 +188,9 @@ fun CustomDatePicker(
         confirmButton = {
             TextButton(
                 onClick = {
-                    appViewModel.updateSelectedDueDate(selectedDate)
+                    // Formatear la fecha seleccionada como "yyyy/MM/dd" y actualizar el ViewModel
+                    val formattedDate = selectedDate.format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
+                    appViewModel.updateSelectedDueDate(formattedDate)
                     appViewModel.toggleShowDatePicker()
                 }
             ) {
@@ -169,7 +198,7 @@ fun CustomDatePicker(
             }
         },
         dismissButton = {
-            TextButton(onClick = {appViewModel.toggleShowDatePicker()}) {
+            TextButton(onClick = { appViewModel.toggleShowDatePicker() }) {
                 Text("Cancel")
             }
         },
