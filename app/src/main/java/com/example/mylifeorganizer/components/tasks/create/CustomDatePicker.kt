@@ -48,16 +48,14 @@ import java.util.Locale
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CustomDatePicker(
-    initialDate: LocalDate = LocalDate.now(),
-    onDateSelected: (LocalDate) -> Unit,
 ) {
     val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
 
-    var selectedDate by remember { mutableStateOf(initialDate) }
-    var currentYear by remember { mutableStateOf(initialDate.year) }
-    var currentMonth by remember { mutableStateOf(initialDate.month) }
+    var selectedDate = appViewModel.selectedDueDate
+    var currentYear = appViewModel.selectedDueDate.year
+    var currentMonth = appViewModel.selectedDueDate.month
 
     val daysOfWeek = listOf("S", "M", "T", "W", "T", "F", "S")
     val daysInMonth = currentMonth.length(Year.of(currentYear).isLeap)
@@ -163,7 +161,7 @@ fun CustomDatePicker(
         confirmButton = {
             TextButton(
                 onClick = {
-                    onDateSelected(selectedDate)
+                    appViewModel.updateSelectedDueDate(selectedDate)
                     appViewModel.toggleShowDatePicker()
                 }
             ) {

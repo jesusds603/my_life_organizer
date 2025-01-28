@@ -1,5 +1,7 @@
 package com.example.mylifeorganizer.components.tasks.create
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,14 +22,13 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CustomTimePicker(
-    initialTime: Pair<Int, Int> = Pair(0, 0),
-    onTimeSelected: (Int, Int) -> Unit,
 ) {
     val appViewModel: AppViewModel = viewModel()
-    var selectedHour by remember { mutableStateOf(initialTime.first) }
-    var selectedMinute by remember { mutableStateOf(initialTime.second) }
+    var selectedHour = appViewModel.selectedDueTime.first // primer elemento de la pareja
+    var selectedMinute = appViewModel.selectedDueTime.second
     var isHourSelected by remember { mutableStateOf(true) }
 
     AlertDialog(
@@ -66,7 +67,7 @@ fun CustomTimePicker(
         },
         confirmButton = {
             TextButton(onClick = {
-                onTimeSelected(selectedHour, selectedMinute)
+                appViewModel.updateSelectedDueTime(selectedHour, selectedMinute)
             }) {
                 Text("Confirm")
             }

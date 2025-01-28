@@ -1,6 +1,8 @@
 package com.example.mylifeorganizer.viewmodel
 
 import android.app.Application
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -11,7 +13,9 @@ import com.example.mylifeorganizer.repositories.NotesRepository
 import com.example.mylifeorganizer.room.CategoryEntity
 import com.example.mylifeorganizer.room.NoteDB
 import com.example.mylifeorganizer.room.NoteEntity
+import java.time.LocalDate
 
+@RequiresApi(Build.VERSION_CODES.O)
 class AppViewModel(application: Application) : AndroidViewModel(application)  {
 
     private val noteDB = NoteDB.getInstance(application.applicationContext)
@@ -115,7 +119,14 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
         showTimePicker.value = !showTimePicker.value
     }
 
+    var selectedDueDate by mutableStateOf(LocalDate.now())
+    var selectedDueTime by mutableStateOf(Pair(12, 0)) // Hora, minuto
+    fun updateSelectedDueDate(newDate: LocalDate) {
+        selectedDueDate = newDate
+    }
 
-
+    fun updateSelectedDueTime(hour: Int, minute: Int) {
+        selectedDueTime = Pair(hour, minute)
+    }
 
 }

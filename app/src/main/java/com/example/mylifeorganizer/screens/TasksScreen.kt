@@ -10,14 +10,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -25,9 +23,7 @@ import com.example.mylifeorganizer.components.tasks.create.CategoryDialogTask
 import com.example.mylifeorganizer.components.tasks.create.CustomDatePicker
 import com.example.mylifeorganizer.components.tasks.create.CustomTimePicker
 import com.example.mylifeorganizer.components.tasks.create.MainWindowDialog
-import com.example.mylifeorganizer.room.CategoryTaskEntity
 import com.example.mylifeorganizer.viewmodel.AppViewModel
-import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 import java.time.LocalDate
 
@@ -44,10 +40,6 @@ fun TasksScreen () {
     val showCreateCategoryDialogTask = appViewModel.showCreateCategoryDialogTask.value
     val showDatePicker = appViewModel.showDatePicker.value
     val showTimePicker = appViewModel.showTimePicker.value
-
-    var selectedDate by remember { mutableStateOf(LocalDate.now()) } // Fecha seleccionada
-    var selectedTime by remember { mutableStateOf(Pair(12, 0)) } // Hora seleccionada (hora, minuto)
-
 
     var newCategoryName by remember { mutableStateOf("") }
     var newCategoryColor by remember { mutableStateOf("") }
@@ -96,19 +88,11 @@ fun TasksScreen () {
 
         if(showDatePicker) {
             CustomDatePicker(
-                initialDate = selectedDate,
-                onDateSelected = { newDate ->
-                    selectedDate = newDate
-                },
             )
         }
 
         if(showTimePicker) {
             CustomTimePicker(
-                initialTime = selectedTime,
-                onTimeSelected = { hour, minute ->
-                    selectedTime = Pair(hour, minute)
-                },
 
             )
         }
