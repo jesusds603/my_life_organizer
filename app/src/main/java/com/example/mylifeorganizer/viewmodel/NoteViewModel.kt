@@ -15,6 +15,9 @@ import com.example.mylifeorganizer.room.NoteEntity
 import com.example.mylifeorganizer.room.NoteWithCategories
 import com.example.mylifeorganizer.room.NoteWithoutContentWithCategories
 import com.example.mylifeorganizer.room.TaskEntity
+import com.example.mylifeorganizer.room.TaskHistoryEntity
+import com.example.mylifeorganizer.room.TaskOccurrenceEntity
+import com.example.mylifeorganizer.room.TaskWithCategories
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -256,30 +259,16 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
 
     val tasksWithCategories = notesRepository.getAllTasksWithCategories()
 
-    // Obtener todas las tareas con la misma dueDate en día
-    fun getTasksByDueDate(dueDateDay: String): Flow<List<TaskEntity>> {
-        return notesRepository.getTasksByDueDate(dueDateDay)
+    fun getTaskById(taskId: Long): TaskWithCategories {
+        return notesRepository.getTaskById(taskId)
     }
+
 
     // Obtener todas las tareas con la misma prioridad
     fun getTasksByPriority(priority: Int): Flow<List<TaskEntity>> {
         return notesRepository.getTasksByPriority(priority)
     }
 
-    // Obtener todas las tareas con el mismo progreso
-    fun getTasksByProgress(progress: Int): Flow<List<TaskEntity>> {
-        return notesRepository.getTasksByProgress(progress)
-    }
-
-    // Obtener todas las tareas completas
-    fun getTasksCompleted(): Flow<List<TaskEntity>> {
-        return notesRepository.getCompletedTasks()
-    }
-
-    // Obtener todas las tareas pendientes
-    fun getTasksPending(): Flow<List<TaskEntity>> {
-        return notesRepository.getPendingTasks()
-    }
 
     // Eliminar una tarea
     fun deleteTask(task: TaskEntity) {
@@ -332,6 +321,48 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
         viewModelScope.launch {
             notesRepository.updateTaskWithCategories(task, categoryIds)
         }
+    }
+
+    // Ocurrencias
+    fun insertOccurrence(occurrence: TaskOccurrenceEntity) {
+        viewModelScope.launch {
+            notesRepository.insertOccurrence(occurrence)
+        }
+    }
+
+    fun updateOccurrence(occurrence: TaskOccurrenceEntity) {
+        viewModelScope.launch {
+            notesRepository.updateOccurrence(occurrence)
+        }
+    }
+
+    fun deleteOccurrence(occurrence: TaskOccurrenceEntity) {
+        viewModelScope.launch {
+            notesRepository.deleteOccurrence(occurrence)
+        }
+    }
+
+    fun getAllOccurrences(): Flow<List<TaskOccurrenceEntity>> {
+        return notesRepository.getAllOccurrences()
+    }
+
+    fun getOccurrencesForTask(taskId: Long): Flow<List<TaskOccurrenceEntity>> {
+        return notesRepository.getOccurrencesForTask(taskId)
+    }
+
+    fun getOccurrencesByDate(date: String): Flow<List<TaskOccurrenceEntity>> {
+        return notesRepository.getOccurrencesByDate(date)
+    }
+
+    // Historial
+    fun insertTaskHistory(history: TaskHistoryEntity) {
+        viewModelScope.launch {
+            notesRepository.insertTaskHistory(history)
+        }
+    }
+
+    fun getHistoryForOccurrence(occurrenceId: Long): Flow<List<TaskHistoryEntity>> {
+        return notesRepository.getHistoryForOccurrence(occurrenceId)
     }
 
 }

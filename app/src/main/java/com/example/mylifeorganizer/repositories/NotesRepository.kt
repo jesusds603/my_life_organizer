@@ -9,6 +9,10 @@ import com.example.mylifeorganizer.room.NoteDB
 import com.example.mylifeorganizer.room.NoteEntity
 import com.example.mylifeorganizer.room.TaskCategoryCrossRef
 import com.example.mylifeorganizer.room.TaskEntity
+import com.example.mylifeorganizer.room.TaskHistoryEntity
+import com.example.mylifeorganizer.room.TaskOccurrenceEntity
+import com.example.mylifeorganizer.room.TaskWithCategories
+import kotlinx.coroutines.flow.Flow
 
 class NotesRepository (val noteDB: NoteDB) {
 
@@ -135,20 +139,12 @@ class NotesRepository (val noteDB: NoteDB) {
     // Obtener todas las tareas con categorías
     fun getAllTasksWithCategories() = noteDAO.getAllTasksWithCategories()
 
-    // Obtener todas las tareas con la misma dueDate en día
-    fun getTasksByDueDate(dueDateDay: String) = noteDAO.getTasksByDueDate(dueDateDay)
+
+    fun getTaskById(taskId: Long): TaskWithCategories = noteDAO.getTaskById(taskId)
+
 
     // Obtener todas las tareas con la misma prioridad
     fun getTasksByPriority(priority: Int) = noteDAO.getTasksByPriority(priority)
-
-    // Obtener todas las tareas con el mismo progreso
-    fun getTasksByProgress(progress: Int) = noteDAO.getTasksByProgress(progress)
-
-    // Obtener todas las tareas completas
-    fun getCompletedTasks() = noteDAO.getCompletedTasks()
-
-    // Obtener todas las tareas pendientes
-    fun getPendingTasks() = noteDAO.getPendingTasks()
 
     // Eliminar una tarea
     suspend fun deleteTask(task: TaskEntity) {
@@ -190,6 +186,26 @@ class NotesRepository (val noteDB: NoteDB) {
     suspend fun updateTaskWithCategories(task: TaskEntity, categoryIds: List<Long>) {
         noteDAO.updateTaskWithCategories(task, categoryIds)
     }
+
+
+    // 📌 ───────── Ocurrencias ─────────
+    suspend fun insertOccurrence(occurrence: TaskOccurrenceEntity) = noteDAO.insertOccurrence(occurrence)
+
+    suspend fun updateOccurrence(occurrence: TaskOccurrenceEntity) = noteDAO.updateOccurrence(occurrence)
+
+    suspend fun deleteOccurrence(occurrence: TaskOccurrenceEntity) = noteDAO.deleteOccurrence(occurrence)
+
+    fun getAllOccurrences(): Flow<List<TaskOccurrenceEntity>> = noteDAO.getAllOccurrences()
+
+    fun getOccurrencesForTask(taskId: Long): Flow<List<TaskOccurrenceEntity>> = noteDAO.getOccurrencesForTask(taskId)
+
+    fun getOccurrencesByDate(date: String): Flow<List<TaskOccurrenceEntity>> = noteDAO.getOccurrencesByDate(date)
+
+    // 📌 ───────── Historial ─────────
+    suspend fun insertTaskHistory(history: TaskHistoryEntity) = noteDAO.insertTaskHistory(history)
+
+    fun getHistoryForOccurrence(occurrenceId: Long): Flow<List<TaskHistoryEntity>> = noteDAO.getHistoryForOccurrence(occurrenceId)
+
 
 
 

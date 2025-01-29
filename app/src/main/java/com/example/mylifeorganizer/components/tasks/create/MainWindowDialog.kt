@@ -45,8 +45,6 @@ fun MainWindowDialog() {
                         task = TaskEntity(
                             title = titleNewTask,
                             description = descriptionNewTask,
-                            dueDateDay = selectedDueDate,
-                            dueDateTime = selectedDueTime,
                             priority = priorityNewTask,
                             isRecurring = isTaskRecurring,
                             recurrencePattern = recurrenceTaskPattern,

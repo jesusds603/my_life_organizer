@@ -49,16 +49,17 @@ class TaskNotificationWorker(
             val currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
 
             // Recoger las tareas del día de forma sincronizada
-            val tasksForToday = runBlocking {
-                repository.getTasksByDueDate(currentDate).first()
+            val ocurrencesForToday = runBlocking {
+                repository.getOccurrencesByDate(currentDate).first()
             }
 
-            Log.d("TaskNotificationWorker", "Tareas encontradas: ${tasksForToday.size} ${currentDate}")
+            Log.d("TaskNotificationWorker", "Tareas encontradas: ${ocurrencesForToday.size} ${currentDate}")
 
             // Enviar notificaciones solo si hay tareas
-            if (tasksForToday.isNotEmpty()) {
-                tasksForToday.forEach { task ->
-                    showNotification(task.title, task.description)
+            if (ocurrencesForToday.isNotEmpty()) {
+                ocurrencesForToday.forEach { ocurrence ->
+                    val task = repository.getTaskById(ocurrence.taskId)
+                    showNotification(task.task.title, task.task.description)
                 }
             }
 

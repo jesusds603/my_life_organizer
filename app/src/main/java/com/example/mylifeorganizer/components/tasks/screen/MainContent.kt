@@ -47,15 +47,18 @@ fun MainContent() {
     val themeViewModel: ThemeViewModel = viewModel()
 
     val themeColors = themeViewModel.themeColors.value
+    val ocurrenceTasks = noteViewModel.getAllOccurrences().collectAsState(initial = emptyList()).value
     val tasksWithCategories = noteViewModel.tasksWithCategories.collectAsState(initial = emptyList()).value
 
     val nameSelectedCategoryTasksScreen = appViewModel.nameSelectedCategorieTasksScreen
 
     // Filtrar categorías por nombre
-    val filteredTasks = if(nameSelectedCategoryTasksScreen == "All") {
-        tasksWithCategories
+    val filteredOcurrences = if(nameSelectedCategoryTasksScreen == "All") {
+        ocurrenceTasks
     } else {
-        tasksWithCategories.filter { task ->
+        ocurrenceTasks.filter { ocurrence ->
+            val taskId = ocurrence.taskId
+            val task = noteViewModel.getTaskById(taskId)
             task.categories.any { category ->
                 category.name == nameSelectedCategoryTasksScreen
             }
@@ -67,28 +70,28 @@ fun MainContent() {
 
 //    println("currentDate: $currentDate")
 
-    val sortedTasks = filteredTasks.sortedBy { it.task.dueDateDay }
+    val sortedOcurrences = filteredOcurrences.sortedBy { it.dueDate }
 
 
     // Agrupar tareas por día
-    val tasksGroupedByDay = sortedTasks.groupBy { it.task.dueDateDay }
+    val ocurrencesGroupedByDay = sortedOcurrences.groupBy { it.dueDate }
 
     // Separar tareas no hechas (fecha anterior a la actual y no completadas)
-    val notDoneTasks = tasksGroupedByDay.mapValues { (date, tasks) ->
-        tasks.filter { task ->
-            !task.task.isCompleted && task.task.dueDateDay < currentDate
+    val notDoneOcurrences = ocurrencesGroupedByDay.mapValues { (date, ocurrences) ->
+        ocurrences.filter { ocurrence ->
+            !ocurrence.isCompleted && ocurrence.dueDate < currentDate
         }
     }.filterValues { it.isNotEmpty() }
 
     // Separar tareas pendientes (fecha mayor o igual a la actual y no completadas)
-    val pendingTasks = tasksGroupedByDay.mapValues { (date, tasks) ->
-        tasks.filter { task ->
-            !task.task.isCompleted && task.task.dueDateDay >= currentDate
+    val pendingOcurrences = ocurrencesGroupedByDay.mapValues { (date, ocurrences) ->
+        ocurrences.filter { ocurrence ->
+            !ocurrence.isCompleted && ocurrence.dueDate >= currentDate
         }
     }.filterValues { it.isNotEmpty() }
 
-    val completedTasks = tasksGroupedByDay.mapValues { (_, tasks) ->
-        tasks.filter { it.task.isCompleted }
+    val completedOcurrences = ocurrencesGroupedByDay.mapValues { (_, ocurrences) ->
+        ocurrences.filter { it.isCompleted }
     }.filterValues { it.isNotEmpty() }
 
 
@@ -159,15 +162,15 @@ fun MainContent() {
         ) {
 
             // Seleccionar las tareas a mostrar (pendientes o completadas)
-            val tasksToShow = when(selectedDueOrCompleted) {
-                "due" -> pendingTasks
-                "completed" -> completedTasks
-                "notDone" -> notDoneTasks
-                else -> pendingTasks
+            val ocurrencesToShow = when(selectedDueOrCompleted) {
+                "due" -> pendingOcurrences
+                "completed" -> completedOcurrences
+                "notDone" -> notDoneOcurrences
+                else -> pendingOcurrences
             }
 
             // Iterar sobre los grupos de tareas por día
-            tasksToShow.forEach { (date, tasks) ->
+            ocurrencesToShow.forEach { (date, ocurrences) ->
                 // Mostrar la fecha como un separador
                 item {
                     Text(
@@ -180,11 +183,11 @@ fun MainContent() {
                     HorizontalDivider(thickness = 1.dp, color = Color.Gray)
                 }
 
-                val sortedTasksByHour = tasks.sortedBy { it.task.dueDateTime }
+                val sortedOcurrencesByHour = ocurrences.sortedBy { it.dueTime }
 
                 // Mostrar las tareas para este día
-                items(sortedTasksByHour) { task ->
-                    TaskCard(task = task)
+                items(sortedOcurrencesByHour) { ocurrence ->
+                    TaskCard(ocurrence = ocurrence)
                 }
             }
         }

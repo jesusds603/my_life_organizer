@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.R
 import com.example.mylifeorganizer.room.TaskEntity
+import com.example.mylifeorganizer.room.TaskOccurrenceEntity
 import com.example.mylifeorganizer.room.TaskWithCategories
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
@@ -39,12 +40,14 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TaskCard(
-    task: TaskWithCategories
+    ocurrence: TaskOccurrenceEntity
 ) {
     val appViewModel: AppViewModel = viewModel()
     val noteViewModel: NoteViewModel = appViewModel.noteViewModel
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+
+    val task = noteViewModel.getTaskById(ocurrence.taskId)
 
     val heights = listOf(0.2f, 0.4f, 0.6f, 0.8f, 1.0f)
     val colors = heights.map { heightPercentage ->
@@ -69,21 +72,23 @@ fun TaskCard(
         ) {
             IconButton(
                 onClick = {
-                    noteViewModel.updateTask(
-                        task = task.task.copy(isCompleted = !task.task.isCompleted)
+                    noteViewModel.updateOccurrence(
+                        ocurrence.copy(
+                            isCompleted = !ocurrence.isCompleted
+                        )
                     )
                 }
             ) {
                 Icon(
                     painter = painterResource(
-                        id = if(task.task.isCompleted) {
+                        id = if(ocurrence.isCompleted) {
                             R.drawable.baseline_check_box_24
                         } else {
                             R.drawable.baseline_check_box_outline_blank_24
                         }
                     ),
                     contentDescription = null,
-                    tint = if(task.task.isCompleted) {
+                    tint = if(ocurrence.isCompleted) {
                         Color.Green
                     } else {
                         Color.Gray
@@ -97,6 +102,7 @@ fun TaskCard(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
+
                 Text(
                     text = task.task.title,
                     color = themeColors.text1,
@@ -161,7 +167,7 @@ fun TaskCard(
 //                fontSize = 12.sp
 //            )
             Text(
-                text = task.task.dueDateTime,
+                text = ocurrence.dueTime,
                 color = themeColors.text2,
                 fontSize = 12.sp
             )

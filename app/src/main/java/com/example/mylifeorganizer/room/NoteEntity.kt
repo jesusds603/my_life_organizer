@@ -3,6 +3,8 @@ package com.example.mylifeorganizer.room
 import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.PrimaryKey
 import androidx.room.Relation
 
@@ -151,33 +153,50 @@ data class TaskEntity(
     val taskId: Long = 0,
     val title: String,
     val description: String = "",
-    val dueDateDay: String,
-    val dueDateTime: String,
-    val isCompleted: Boolean = false,
-    val priority: Int = 0,
-    val progress: Int = 0, // de 0% a 100%
     val isRecurring: Boolean = false,
     val recurrencePattern: String = "", // "off", "daily", "weekly", "monthly", "yearly", "custom"
-    val recurrenceInterval: Int = 0, // en caso de que recurrence sea custom
-    val recurrenceEndDate: String = "",
+    val recurrenceInterval: Int = 0, // Para "custom", en días o semanas
+    val recurrenceDays: String = "", // JSON: ["Monday", "Wednesday", "Friday"] para días específicos
+    val recurrenceEndDate: String = "", // Última fecha de recurrencia
+    val priority: Int = 0,
     val isReminderSet: Boolean = false,
-    val isReminderActive: Boolean = false,
     val reminderTime: Long = 0,
-    val reminderPatern: String = "", // "off", "minute", "5min", "10min", "15min", "30min", "hour", "custom"
-    val reminderInterval: Int = 0, // (en minutos) en caso de que reminder sea custom
-    val isNotificationSet: Boolean = false,
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),
 )
 
-//@Entity(tableName = "due_dates")
-//data class DueDateEntity(
-//    @PrimaryKey(autoGenerate = true)
-//    @ColumnInfo(name = "dueDateId")
-//    val dueDateId: Long = 0,
-//    val day: String,
-//    val time: String,
-//)
+
+@Entity(
+    tableName = "task_occurrences",
+    foreignKeys = [ForeignKey(entity = TaskEntity::class, parentColumns = ["taskId"], childColumns = ["taskId"], onDelete = CASCADE)]
+)
+data class TaskOccurrenceEntity(
+    @PrimaryKey(autoGenerate = true)
+    val occurrenceId: Long = 0,
+    val taskId: Long,  // Relación con `tasks`
+    val dueDate: String, // Fecha específica de la ocurrencia (YYYY-MM-DD)
+    val dueTime: String = "", // Hora de la tarea
+    val isCompleted: Boolean = false,
+    val progress: Int = 0, // 0 - 100%
+    val isReminderActive: Boolean = false,
+    val reminderTime: Long = 0,
+    val createdAt: Long = System.currentTimeMillis(),
+)
+
+@Entity(
+    tableName = "task_history",
+    foreignKeys = [ForeignKey(entity = TaskOccurrenceEntity::class, parentColumns = ["occurrenceId"], childColumns = ["occurrenceId"], onDelete = CASCADE)]
+)
+data class TaskHistoryEntity(
+    @PrimaryKey(autoGenerate = true)
+    val historyId: Long = 0,
+    val occurrenceId: Long, // Referencia a `task_occurrences`
+    val action: String, // "completed", "updated", "deleted"
+    val timestamp: Long = System.currentTimeMillis(),
+    val notes: String = "" // Opcional: detalles de la acción
+)
+
+
 
 @Entity(tableName = "categories_tasks")
 data class CategoryTaskEntity(

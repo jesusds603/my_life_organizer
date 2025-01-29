@@ -171,25 +171,13 @@ interface NoteDao {
     @Query("SELECT * FROM tasks")
     fun getAllTasksWithCategories() : Flow<List<TaskWithCategories>>
 
-    // Obtener todas las tareas con la misma dueDate en día
-    @Query("SELECT * FROM tasks WHERE dueDateDay = :dueDateDay")
-    fun getTasksByDueDate(dueDateDay: String): Flow<List<TaskEntity>>
+    @Transaction
+    @Query("SELECT * FROM tasks WHERE taskId = :taskId")
+    fun getTaskById(taskId: Long): TaskWithCategories
 
     // Obtener todas lsa tareas con la misma prioridad
     @Query("SELECT * FROM tasks WHERE priority = :priority")
     fun getTasksByPriority(priority: Int): Flow<List<TaskEntity>>
-
-    // Obtener todas las tareas con el mismo progreso
-    @Query("SELECT * FROM tasks WHERE progress = :progress")
-    fun getTasksByProgress(progress: Int): Flow<List<TaskEntity>>
-
-    // Obtener todas las tareas completas
-    @Query("SELECT * FROM tasks WHERE isCompleted = 1")
-    fun getCompletedTasks(): Flow<List<TaskEntity>>
-
-    // Obtener todas las tareas pendientes
-    @Query("SELECT * FROM tasks WHERE isCompleted = 0")
-    fun getPendingTasks(): Flow<List<TaskEntity>>
 
     // Eliminar una tarea
     @Delete
@@ -240,6 +228,34 @@ interface NoteDao {
         }
         insertTaskCategories(taskCategoryCrossRefs)
     }
+
+
+    // 📌 ───────── Ocurrencias de Tareas ─────────
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertOccurrence(occurrence: TaskOccurrenceEntity): Long
+
+    @Update
+    suspend fun updateOccurrence(occurrence: TaskOccurrenceEntity)
+
+    @Delete
+    suspend fun deleteOccurrence(occurrence: TaskOccurrenceEntity)
+
+    @Query("SELECT * FROM task_occurrences")
+    fun getAllOccurrences(): Flow<List<TaskOccurrenceEntity>>
+
+    @Query("SELECT * FROM task_occurrences WHERE taskId = :taskId ORDER BY dueDate ASC")
+    fun getOccurrencesForTask(taskId: Long): Flow<List<TaskOccurrenceEntity>>
+
+    @Query("SELECT * FROM task_occurrences WHERE dueDate = :date ORDER BY dueTime ASC")
+    fun getOccurrencesByDate(date: String): Flow<List<TaskOccurrenceEntity>>
+
+    // 📌 ───────── Historial de Tareas ─────────
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTaskHistory(history: TaskHistoryEntity)
+
+    @Query("SELECT * FROM task_history WHERE occurrenceId = :occurrenceId ORDER BY timestamp DESC")
+    fun getHistoryForOccurrence(occurrenceId: Long): Flow<List<TaskHistoryEntity>>
+
 
 }
 
