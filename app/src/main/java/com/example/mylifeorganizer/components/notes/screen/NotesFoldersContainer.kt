@@ -1,5 +1,7 @@
 package com.example.mylifeorganizer.components.notes.screen
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -12,6 +14,7 @@ import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NotesFoldersContainer(
     selectedCategory: String,
