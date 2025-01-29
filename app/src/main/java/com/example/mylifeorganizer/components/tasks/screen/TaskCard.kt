@@ -1,5 +1,7 @@
 package com.example.mylifeorganizer.components.tasks.screen
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,13 +31,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.R
 import com.example.mylifeorganizer.room.TaskEntity
 import com.example.mylifeorganizer.room.TaskWithCategories
+import com.example.mylifeorganizer.viewmodel.AppViewModel
+import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TaskCard(
     task: TaskWithCategories
 ) {
+    val appViewModel: AppViewModel = viewModel()
+    val noteViewModel: NoteViewModel = appViewModel.noteViewModel
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
 
@@ -61,7 +68,11 @@ fun TaskCard(
             horizontalArrangement = Arrangement.Start
         ) {
             IconButton(
-                onClick = { }
+                onClick = {
+                    noteViewModel.updateTask(
+                        task = task.task.copy(isCompleted = !task.task.isCompleted)
+                    )
+                }
             ) {
                 Icon(
                     painter = painterResource(

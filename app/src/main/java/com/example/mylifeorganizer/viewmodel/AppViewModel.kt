@@ -165,7 +165,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
         recurrenceTaskEndDate = date
     }
 
-    var priorityNewTask by mutableStateOf(0)
+    var priorityNewTask by mutableStateOf(1)
     fun updatePriorityNewTask(priority: Int) {
         priorityNewTask = priority
     }

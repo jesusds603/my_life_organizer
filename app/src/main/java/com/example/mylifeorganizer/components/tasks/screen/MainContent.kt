@@ -36,6 +36,8 @@ import com.example.mylifeorganizer.room.TaskEntity
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -60,22 +62,38 @@ fun MainContent() {
         }
     }
 
+    // Obtener la fecha actual
+    val currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")) // Formato: "yyyy/MM/dd"
+
+    println("currentDate: $currentDate")
+
     val sortedTasks = filteredTasks.sortedBy { it.task.dueDateDay }
 
 
     // Agrupar tareas por día
     val tasksGroupedByDay = sortedTasks.groupBy { it.task.dueDateDay }
 
-    // Separar tareas pendientes y completadas
-    val pendingTasks = tasksGroupedByDay.mapValues { (_, tasks) ->
-        tasks.filter { !it.task.isCompleted }
+    // Separar tareas no hechas (fecha anterior a la actual y no completadas)
+    val notDoneTasks = tasksGroupedByDay.mapValues { (date, tasks) ->
+        tasks.filter { task ->
+            !task.task.isCompleted && task.task.dueDateDay < currentDate
+        }
+    }.filterValues { it.isNotEmpty() }
+
+    // Separar tareas pendientes (fecha mayor o igual a la actual y no completadas)
+    val pendingTasks = tasksGroupedByDay.mapValues { (date, tasks) ->
+        tasks.filter { task ->
+            !task.task.isCompleted && task.task.dueDateDay >= currentDate
+        }
     }.filterValues { it.isNotEmpty() }
 
     val completedTasks = tasksGroupedByDay.mapValues { (_, tasks) ->
         tasks.filter { it.task.isCompleted }
     }.filterValues { it.isNotEmpty() }
 
-    var selectedDueOrCompleted by remember { mutableStateOf("due") } // "due" or "completed"
+
+
+    var selectedDueOrCompleted by remember { mutableStateOf("due") } // "due" or "completed" or "notDone"
 
 
     Column (
@@ -90,7 +108,8 @@ fun MainContent() {
         ) {
             TextButton(
                 modifier = Modifier
-                    .weight(1f),
+                    .weight(1f)
+                    .background(color = themeColors.backGround3),
                 onClick = {
                     selectedDueOrCompleted = "due"
                 }
@@ -104,13 +123,29 @@ fun MainContent() {
 
             TextButton(
                 modifier = Modifier
-                    .weight(1f),
+                    .weight(1f)
+                    .background(color = themeColors.backGround3),
                 onClick = {
                     selectedDueOrCompleted = "completed"
                 }
             ) {
                 Text(
                     text = "Completed",
+                    color = themeColors.text1,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+
+            TextButton(
+                modifier = Modifier
+                    .weight(1f)
+                    .background(color = themeColors.backGround3),
+                onClick = {
+                    selectedDueOrCompleted = "notDone"
+                }
+            ) {
+                Text(
+                    text = "Not Done",
                     color = themeColors.text1,
                     fontWeight = FontWeight.Bold
                 )
@@ -124,7 +159,12 @@ fun MainContent() {
         ) {
 
             // Seleccionar las tareas a mostrar (pendientes o completadas)
-            val tasksToShow = if (selectedDueOrCompleted == "due") pendingTasks else completedTasks
+            val tasksToShow = when(selectedDueOrCompleted) {
+                "due" -> pendingTasks
+                "completed" -> completedTasks
+                "notDone" -> notDoneTasks
+                else -> pendingTasks
+            }
 
             // Iterar sobre los grupos de tareas por día
             tasksToShow.forEach { (date, tasks) ->
@@ -140,8 +180,10 @@ fun MainContent() {
                     HorizontalDivider(thickness = 1.dp, color = Color.Gray)
                 }
 
+                val sortedTasksByHour = tasks.sortedBy { it.task.dueDateTime }
+
                 // Mostrar las tareas para este día
-                items(tasks) { task ->
+                items(sortedTasksByHour) { task ->
                     TaskCard(task = task)
                 }
             }

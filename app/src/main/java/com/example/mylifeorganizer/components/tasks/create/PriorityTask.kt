@@ -1,15 +1,18 @@
 package com.example.mylifeorganizer.components.tasks.create
 
 import android.os.Build
+import android.widget.Space
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -36,19 +39,34 @@ fun PriorityTask (
 
     val priorityNewTask = appViewModel.priorityNewTask
 
+    val heights = listOf(0.2f, 0.4f, 0.6f, 0.8f, 1.0f)
+    val colors = heights.map { heightPercentage ->
+        lerp(Color.Blue, Color.Red, heightPercentage) // Interpolar entre azul y rojo
+    }
 
     // Seleccionar prioridad
-    Text(text = "Priority: $priorityNewTask", color = themeColors.text1)
+    Row {
+        Text(text = "Priority: $priorityNewTask  ", color = themeColors.text1)
+
+        Box(
+            modifier = Modifier
+                .size(15.dp)
+                .background(
+                    color = if(priorityNewTask > 0) {
+                        colors[priorityNewTask - 1]
+                    } else {
+                        Color.Gray
+                    }
+                )
+        )
+    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(40.dp),
         verticalAlignment = Alignment.Bottom // Alineación en la parte inferior
     ) {
-        val heights = listOf(0.2f, 0.4f, 0.6f, 0.8f, 1.0f)
-        val colors = heights.map { heightPercentage ->
-            lerp(Color.Blue, Color.Red, heightPercentage) // Interpolar entre azul y rojo
-        }
+
 
         heights.forEachIndexed { index, heightPercentage ->
             Box(
