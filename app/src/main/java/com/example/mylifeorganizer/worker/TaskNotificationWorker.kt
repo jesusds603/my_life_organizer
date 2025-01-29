@@ -9,6 +9,8 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.runBlocking
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.work.Constraints
@@ -87,6 +89,7 @@ class TaskNotificationWorker(
             .setContentTitle(title)
             .setContentText(description)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setColor(Color.Magenta.toArgb())
             .build()
 
         // Mostrar la notificación con un ID único
@@ -100,7 +103,7 @@ class TaskNotificationWorker(
 fun scheduleDailyTaskWorker(context: Context) {
     val calendar = Calendar.getInstance().apply {
         set(Calendar.HOUR_OF_DAY, 12) // Hora de ejecución (12 PM)
-        set(Calendar.MINUTE, 35)
+        set(Calendar.MINUTE, 38)
         set(Calendar.SECOND, 30)
     }
 
