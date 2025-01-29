@@ -65,7 +65,7 @@ fun MainContent() {
     // Obtener la fecha actual
     val currentDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")) // Formato: "yyyy/MM/dd"
 
-    println("currentDate: $currentDate")
+//    println("currentDate: $currentDate")
 
     val sortedTasks = filteredTasks.sortedBy { it.task.dueDateDay }
 

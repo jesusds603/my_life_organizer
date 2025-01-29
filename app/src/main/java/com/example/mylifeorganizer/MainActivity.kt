@@ -14,6 +14,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.screens.MainScreen
 import com.example.mylifeorganizer.ui.theme.MyLifeOrganizerTheme
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
+import com.example.mylifeorganizer.worker.scheduleDailyTaskWorker
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 //import com.jakewharton.threetenabp.AndroidThreeTen
 
@@ -23,6 +24,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 //        AndroidThreeTen.init(this)
+        scheduleDailyTaskWorker(this)
         enableEdgeToEdge()
         setContent {
             MyLifeOrganizerTheme {
