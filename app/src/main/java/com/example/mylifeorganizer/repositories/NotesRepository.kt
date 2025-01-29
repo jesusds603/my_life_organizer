@@ -132,6 +132,9 @@ class NotesRepository (val noteDB: NoteDB) {
     // Obtener todas las tareas
     fun getAllTasks() = noteDAO.getAllTasks()
 
+    // Obtener todas las tareas con categorías
+    fun getAllTasksWithCategories() = noteDAO.getAllTasksWithCategories()
+
     // Obtener todas las tareas con la misma dueDate en día
     fun getTasksByDueDate(dueDateDay: String) = noteDAO.getTasksByDueDate(dueDateDay)
 

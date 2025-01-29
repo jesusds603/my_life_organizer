@@ -254,6 +254,8 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
     // Todos los folders
     val tasks = notesRepository.getAllTasks()
 
+    val tasksWithCategories = notesRepository.getAllTasksWithCategories()
+
     // Obtener todas las tareas con la misma dueDate en día
     fun getTasksByDueDate(dueDateDay: String): Flow<List<TaskEntity>> {
         return notesRepository.getTasksByDueDate(dueDateDay)

@@ -37,14 +37,14 @@ fun MainContent() {
     val noteViewModel: NoteViewModel = appViewModel.noteViewModel
     val themeViewModel: ThemeViewModel = viewModel()
 
-    val tasks = noteViewModel.tasks.collectAsState(initial = emptyList()).value
+    val tasksWithCategories = noteViewModel.tasksWithCategories.collectAsState(initial = emptyList()).value
 
     LazyColumn  (
         modifier = Modifier
             .fillMaxSize()
             .padding(top = 2.dp)
     ) {
-        items(tasks) { task ->
+        items(tasksWithCategories) { task ->
             TaskCard(task = task)
         }
     }

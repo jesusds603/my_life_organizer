@@ -166,6 +166,11 @@ interface NoteDao {
     @Query("SELECT * FROM tasks")
     fun getAllTasks(): Flow<List<TaskEntity>>
 
+    // Obtener todas las tareas con sus categorías
+    @Transaction
+    @Query("SELECT * FROM tasks")
+    fun getAllTasksWithCategories() : Flow<List<TaskWithCategories>>
+
     // Obtener todas las tareas con la misma dueDate en día
     @Query("SELECT * FROM tasks WHERE dueDateDay = :dueDateDay")
     fun getTasksByDueDate(dueDateDay: String): Flow<List<TaskEntity>>
