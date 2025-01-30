@@ -47,23 +47,28 @@ fun MainContent() {
     val themeViewModel: ThemeViewModel = viewModel()
 
     val themeColors = themeViewModel.themeColors.value
-    val ocurrenceTasks = noteViewModel.getAllOccurrences().collectAsState(initial = emptyList()).value
+    val occurrenceTasks = noteViewModel.getAllOccurrences().collectAsState(initial = emptyList()).value
     val tasksWithCategories = noteViewModel.tasksWithCategories.collectAsState(initial = emptyList()).value
 
     val nameSelectedCategoryTasksScreen = appViewModel.nameSelectedCategorieTasksScreen
 
+    // Create a map of taskId to TaskWithCategories for quick lookup
+    val taskMap = tasksWithCategories.associateBy { it.task.taskId }
+
+    // Associate each occurrence with its task
+    val occurrencesWithTasks = occurrenceTasks.map { occurrence ->
+        occurrence to taskMap[occurrence.taskId]
+    }
 
 
     // Filtrar categorías por nombre
-    val filteredOcurrences = if(nameSelectedCategoryTasksScreen == "All") {
-        ocurrenceTasks
+    val filteredOccurrences = if(nameSelectedCategoryTasksScreen == "All") {
+        occurrencesWithTasks
     } else {
-        ocurrenceTasks.filter { ocurrence ->
-            val taskId = ocurrence.taskId
-            val task = noteViewModel.getTaskById(taskId)
-            task.categories.any { category ->
+        occurrencesWithTasks.filter { (occurrence, task) ->
+            task?.categories?.any { category ->
                 category.name == nameSelectedCategoryTasksScreen
-            }
+            } ?: false
         }
     }
 
@@ -72,28 +77,28 @@ fun MainContent() {
 
 //    println("currentDate: $currentDate")
 
-    val sortedOcurrences = filteredOcurrences.sortedBy { it.dueDate }
+    val sortedOcurrences = filteredOccurrences.sortedBy { it.first.dueDate }
 
 
     // Agrupar tareas por día
-    val ocurrencesGroupedByDay = sortedOcurrences.groupBy { it.dueDate }
+    val ocurrencesGroupedByDay = sortedOcurrences.groupBy { it.first.dueDate }
 
     // Separar tareas no hechas (fecha anterior a la actual y no completadas)
     val notDoneOcurrences = ocurrencesGroupedByDay.mapValues { (date, ocurrences) ->
         ocurrences.filter { ocurrence ->
-            !ocurrence.isCompleted && ocurrence.dueDate < currentDate
+            !ocurrence.first.isCompleted && ocurrence.first.dueDate < currentDate
         }
     }.filterValues { it.isNotEmpty() }
 
     // Separar tareas pendientes (fecha mayor o igual a la actual y no completadas)
     val pendingOcurrences = ocurrencesGroupedByDay.mapValues { (date, ocurrences) ->
         ocurrences.filter { ocurrence ->
-            !ocurrence.isCompleted && ocurrence.dueDate >= currentDate
+            !ocurrence.first.isCompleted && ocurrence.first.dueDate >= currentDate
         }
     }.filterValues { it.isNotEmpty() }
 
     val completedOcurrences = ocurrencesGroupedByDay.mapValues { (_, ocurrences) ->
-        ocurrences.filter { it.isCompleted }
+        ocurrences.filter { it.first.isCompleted }
     }.filterValues { it.isNotEmpty() }
 
 
@@ -172,7 +177,7 @@ fun MainContent() {
             }
 
             // Iterar sobre los grupos de tareas por día
-            ocurrencesToShow.forEach { (date, ocurrences) ->
+            ocurrencesToShow.forEach { (date, occurrences) ->
                 // Mostrar la fecha como un separador
                 item {
                     Text(
@@ -185,11 +190,11 @@ fun MainContent() {
                     HorizontalDivider(thickness = 1.dp, color = Color.Gray)
                 }
 
-                val sortedOcurrencesByHour = ocurrences.sortedBy { it.dueTime }
+                val sortedOccurrencesByHour = occurrences.sortedBy { it.first.dueTime }
 
                 // Mostrar las tareas para este día
-                items(sortedOcurrencesByHour) { ocurrence ->
-                    TaskCard(ocurrence = ocurrence)
+                items(sortedOccurrencesByHour) { occurrence ->
+                    TaskCard(occurrence = occurrence)
                 }
             }
         }

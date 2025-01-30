@@ -40,14 +40,14 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TaskCard(
-    ocurrence: TaskOccurrenceEntity
+    occurrence: Pair<TaskOccurrenceEntity, TaskWithCategories?>
 ) {
     val appViewModel: AppViewModel = viewModel()
     val noteViewModel: NoteViewModel = appViewModel.noteViewModel
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
 
-    val task = noteViewModel.getTaskById(ocurrence.taskId)
+    val task = occurrence.second!!
 
     val heights = listOf(0.2f, 0.4f, 0.6f, 0.8f, 1.0f)
     val colors = heights.map { heightPercentage ->
@@ -73,22 +73,22 @@ fun TaskCard(
             IconButton(
                 onClick = {
                     noteViewModel.updateOccurrence(
-                        ocurrence.copy(
-                            isCompleted = !ocurrence.isCompleted
+                        occurrence.first.copy(
+                            isCompleted = !occurrence.first.isCompleted
                         )
                     )
                 }
             ) {
                 Icon(
                     painter = painterResource(
-                        id = if(ocurrence.isCompleted) {
+                        id = if(occurrence.first.isCompleted) {
                             R.drawable.baseline_check_box_24
                         } else {
                             R.drawable.baseline_check_box_outline_blank_24
                         }
                     ),
                     contentDescription = null,
-                    tint = if(ocurrence.isCompleted) {
+                    tint = if(occurrence.first.isCompleted) {
                         Color.Green
                     } else {
                         Color.Gray
@@ -167,7 +167,7 @@ fun TaskCard(
 //                fontSize = 12.sp
 //            )
             Text(
-                text = ocurrence.dueTime,
+                text = occurrence.first.dueTime,
                 color = themeColors.text2,
                 fontSize = 12.sp
             )
