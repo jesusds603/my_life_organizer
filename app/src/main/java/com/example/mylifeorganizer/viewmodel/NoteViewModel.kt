@@ -324,6 +324,12 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
         }
     }
 
+    fun deleteTaskCategories(taskId: Long) {
+        viewModelScope.launch {
+            notesRepository.deleteTaskCategories(taskId)
+        }
+    }
+
     // Ocurrencias
     fun insertOccurrence(occurrence: TaskOccurrenceEntity) {
         viewModelScope.launch {

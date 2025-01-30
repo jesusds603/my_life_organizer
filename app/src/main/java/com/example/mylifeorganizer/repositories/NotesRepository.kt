@@ -191,6 +191,10 @@ class NotesRepository (val noteDB: NoteDB) {
         noteDAO.updateTaskWithCategories(task, categoryIds)
     }
 
+    suspend fun deleteTaskCategories(taskId: Long) {
+        noteDAO.deleteTaskCategories(taskId)
+    }
+
 
     // 📌 ───────── Ocurrencias ─────────
     suspend fun insertOccurrence(occurrence: TaskOccurrenceEntity) = noteDAO.insertOccurrence(occurrence)

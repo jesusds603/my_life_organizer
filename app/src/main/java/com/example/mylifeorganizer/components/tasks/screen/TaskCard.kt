@@ -182,11 +182,6 @@ fun TaskCard(
 
             }
 
-//            Text(
-//                text = task.task.dueDateDay,
-//                color = themeColors.text2,
-//                fontSize = 12.sp
-//            )
             Text(
                 text = occurrence.first.dueTime,
                 color = themeColors.text2,

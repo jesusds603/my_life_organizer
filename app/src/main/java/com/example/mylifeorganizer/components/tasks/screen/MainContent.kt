@@ -45,6 +45,7 @@ import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -260,15 +261,16 @@ fun MainContent() {
                     val localDate = LocalDate.parse(date, dateFormatter)
 
                     // Get the day of the week (e.g., Monday, Tuesday)
-                    val dayOfWeek = localDate.dayOfWeek.toString().lowercase().replaceFirstChar { it.uppercase() }
+                    val dayOfWeek = localDate.dayOfWeek.toString()
+                        .lowercase().replaceFirstChar { it.uppercase() }
 
                     // Calculate the difference in days between the current date and the task date
                     val currentDateText = LocalDate.now()
-                    val daysDifference = currentDateText.until(localDate).days
+                    val daysDifference = ChronoUnit.DAYS.between(currentDateText, localDate)
 
                     // Determine the text to display based on the difference in days
                     val daysText = when {
-                        daysDifference == 0 -> "Today"
+                        daysDifference == 0L -> "Today"
                         daysDifference > 0 -> "in $daysDifference days"
                         else -> "past ${-daysDifference} days"
                     }

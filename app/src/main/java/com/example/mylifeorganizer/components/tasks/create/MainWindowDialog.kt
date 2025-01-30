@@ -108,6 +108,10 @@ fun MainWindowDialog() {
                                     noteViewModel.insertOccurrence(occurrence)
                                 }
 
+
+                                // Eliminar todas las relaciones anteriores entre la tarea y las categorías
+                                noteViewModel.deleteTaskCategories(taskId)
+
                                 // Actualizar las categorías asociadas
                                 selectedCategoriesTask.forEach { categoryTaskEntity ->
                                     noteViewModel.linkTaskWithCategory(
