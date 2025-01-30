@@ -100,16 +100,6 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
 
     // Para la creacción de una nueva tarea
 
-    val titleNewTask = mutableStateOf("")
-    fun changeTitleNewTask(title: String) {
-        titleNewTask.value = title
-    }
-
-    val descriptionNewTask = mutableStateOf("")
-    fun changeDescriptionNewTask(description: String) {
-        descriptionNewTask.value = description
-    }
-
     val showDialogCreateTask = mutableStateOf(false)
     fun toggleShowDialogCreateTask() {
         showDialogCreateTask.value = !showDialogCreateTask.value
@@ -128,6 +118,16 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
     var showTimePicker = mutableStateOf(false)
     fun toggleShowTimePicker() {
         showTimePicker.value = !showTimePicker.value
+    }
+
+    val titleNewTask = mutableStateOf("")
+    fun changeTitleNewTask(title: String) {
+        titleNewTask.value = title
+    }
+
+    val descriptionNewTask = mutableStateOf("")
+    fun changeDescriptionNewTask(description: String) {
+        descriptionNewTask.value = description
     }
 
     var selectedDueDate by mutableStateOf("") // "yyyy/MM/dd

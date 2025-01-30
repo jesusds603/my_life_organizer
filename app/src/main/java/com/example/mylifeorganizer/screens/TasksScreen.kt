@@ -62,7 +62,27 @@ fun TasksScreen () {
 
         // Botón flotante para agregar nuevas tareas
         FloatingActionButton(
-            onClick = { appViewModel.toggleShowDialogCreateTask() },
+            onClick = {
+                appViewModel.changeTitleNewTask("")
+                appViewModel.changeDescriptionNewTask("")
+                appViewModel.updateSelectedDueDate("")
+                appViewModel.updateSelectedDueTime("")
+                appViewModel.updateSelectedCategoriesTask(emptyList())
+                appViewModel.updatePriorityNewTask( 1)
+                appViewModel.toggleIsTaskRecurring()
+                appViewModel.updateRecurrenceTaskPattern("")
+                appViewModel.updateNumDaysNewTask(0)
+                appViewModel.updateSelectedWeekDaysNewTask( emptyList() )
+                appViewModel.updateNumWeeksNewTask( 0)
+                appViewModel.updateSelectedMonthDaysNewTask( emptyList() )
+                appViewModel.updateNumMonthsNewTask(0)
+                appViewModel.updateSelectedYearDaysNewTask( emptySet() )
+                appViewModel.updateNumYearsNewTask(0)
+                appViewModel.updateSelectedCustomIntervalNewTask(1)
+                appViewModel.updateNumTimesNewTask(0)
+
+                appViewModel.toggleShowDialogCreateTask()
+                      },
             modifier = Modifier
                 .align(Alignment.BottomEnd) // Ubicación en la esquina inferior derecha
                 .padding(16.dp),

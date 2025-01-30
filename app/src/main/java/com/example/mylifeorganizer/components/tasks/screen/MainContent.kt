@@ -131,7 +131,42 @@ fun MainContent() {
                     text= "Edit Task",
                     color = themeColors.text1
                 ) },
-                onClick = { appViewModel.updateTaskIdSelectedScreen(null) }
+                onClick = {
+                    appViewModel.changeTitleNewTask(taskMap[taskIdSelectedScreen]?.task?.title ?: "")
+                    appViewModel.changeDescriptionNewTask(taskMap[taskIdSelectedScreen]?.task?.description ?: "")
+                    appViewModel.updateSelectedDueDate(taskMap[taskIdSelectedScreen]?.task?.dueDate ?: "")
+                    appViewModel.updateSelectedDueTime(taskMap[taskIdSelectedScreen]?.task?.dueTime ?: "")
+                    appViewModel.updateSelectedCategoriesTask(taskMap[taskIdSelectedScreen]?.categories ?: emptyList())
+                    appViewModel.updatePriorityNewTask(taskMap[taskIdSelectedScreen]?.task?.priority ?: 1)
+                    appViewModel.toggleIsTaskRecurring()
+                    appViewModel.updateRecurrenceTaskPattern(taskMap[taskIdSelectedScreen]?.task?.recurrencePattern ?: "")
+                    appViewModel.updateNumDaysNewTask(taskMap[taskIdSelectedScreen]?.task?.numDays ?: 0)
+                    appViewModel.updateSelectedWeekDaysNewTask(
+                        taskMap[taskIdSelectedScreen]?.task?.recurrenceWeekDays
+                            ?.split(",")  // Divide la cadena en una lista de Strings
+                            ?.mapNotNull { it.toIntOrNull() } // Convierte cada elemento a Int, ignorando errores
+                            ?: emptyList() // Si es null, devuelve una lista vacía
+                    )
+                    appViewModel.updateNumWeeksNewTask(taskMap[taskIdSelectedScreen]?.task?.numWeeks ?: 0)
+                    appViewModel.updateSelectedMonthDaysNewTask(
+                        taskMap[taskIdSelectedScreen]?.task?.recurrenceMonthDays
+                            ?.split(",")  // Divide la cadena en una lista de Strings
+                            ?.mapNotNull { it.toIntOrNull() } // Convierte cada elemento a Int, ignorando errores
+                            ?: emptyList()
+                    )
+                    appViewModel.updateNumMonthsNewTask(taskMap[taskIdSelectedScreen]?.task?.numMonths ?: 0)
+                    appViewModel.updateSelectedYearDaysNewTask(
+                        taskMap[taskIdSelectedScreen]?.task?.recurrenceYearDays
+                            ?.split(",")  // Divide la cadena en una lista de Strings
+                            ?.toSet() ?: emptySet() // Convierte a Set
+                    )
+                    appViewModel.updateNumYearsNewTask(taskMap[taskIdSelectedScreen]?.task?.numYears ?: 0)
+                    appViewModel.updateSelectedCustomIntervalNewTask(taskMap[taskIdSelectedScreen]?.task?.recurrenceInterval ?: 1)
+                    appViewModel.updateNumTimesNewTask(taskMap[taskIdSelectedScreen]?.task?.numTimes ?: 0)
+
+                    appViewModel.updateTaskIdSelectedScreen(null)
+                    appViewModel.toggleShowDialogCreateTask()
+                }
             )
 
             DropdownMenuItem(

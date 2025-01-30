@@ -157,6 +157,8 @@ data class TaskEntity(
     val taskId: Long = 0,
     val title: String,
     val description: String = "",
+    val dueDate: String, // Fecha unica o inicial de la tarea (YYYY/MM/DD)
+    val dueTime: String = "", // Hora de la tarea...
 
     val isRecurring: Boolean = false,
     val recurrencePattern: String = "", // "daily", "weekly", "monthly", "yearly", "custom"
