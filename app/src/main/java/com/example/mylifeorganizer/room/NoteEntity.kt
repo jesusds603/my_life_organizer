@@ -7,6 +7,10 @@ import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.PrimaryKey
 import androidx.room.Relation
+import androidx.room.TypeConverter
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+
 
 // Entidad para las notas
 @Entity(tableName = "notes")
@@ -153,11 +157,19 @@ data class TaskEntity(
     val taskId: Long = 0,
     val title: String,
     val description: String = "",
+
     val isRecurring: Boolean = false,
-    val recurrencePattern: String = "", // "off", "daily", "weekly", "monthly", "yearly", "custom"
-    val recurrenceInterval: Int = 0, // Para "custom", en días o semanas
-    val recurrenceDays: String = "", // JSON: ["Monday", "Wednesday", "Friday"] para días específicos
-    val recurrenceEndDate: String = "", // Última fecha de recurrencia
+    val recurrencePattern: String = "", // "daily", "weekly", "monthly", "yearly", "custom"
+    val numDays: Int = 0, // Número de días para el daily
+    val recurrenceWeekDays: String = "", // indices del 0 al 67
+    val numWeeks: Int = 0, // Número de semanas para el weekly
+    val recurrenceMonthDays: String = "", // [1, 15, -1] (último día)
+    val numMonths: Int = 0, // Número de meses para el monthly
+    val recurrenceYearDays: String = "", // ["MM/DD", "MM/DD"]
+    val numYears: Int = 0, // Número de años para el yearly
+    val recurrenceInterval: Int = 0, // Para "custom", en días
+    val numTimes: Int = 0, // Número de veces para el custom
+
     val priority: Int = 0,
     val isReminderSet: Boolean = false,
     val reminderTime: Long = 0,
@@ -175,7 +187,7 @@ data class TaskOccurrenceEntity(
     val occurrenceId: Long = 0,
     val taskId: Long,  // Relación con `tasks`
     val dueDate: String, // Fecha específica de la ocurrencia (YYYY-MM-DD)
-    val dueTime: String = "", // Hora de la tarea
+    val dueTime: String = "", // Hora de la tarea...
     val isCompleted: Boolean = false,
     val progress: Int = 0, // 0 - 100%
     val isReminderActive: Boolean = false,

@@ -88,4 +88,6 @@ dependencies {
 
     implementation("androidx.work:work-runtime-ktx:2.10.0") // Para WorkManager
     implementation("androidx.core:core-ktx:1.15.0") // Para NotificationCompat
+
+    implementation(libs.gson)
 }

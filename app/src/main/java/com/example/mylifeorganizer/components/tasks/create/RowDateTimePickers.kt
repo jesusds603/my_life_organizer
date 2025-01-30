@@ -3,6 +3,7 @@ package com.example.mylifeorganizer.components.tasks.create
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -40,37 +41,55 @@ fun RowDateTimePickers(
         horizontalArrangement = Arrangement.SpaceBetween
     ){
         // Botón para seleccionar la fecha
-        Button(
-            onClick = {
-                appViewModel.toggleShowDatePicker()
-            },
+        Column (
             modifier = Modifier.weight(1f),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = themeColors.backGround2
-            )
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = if (selectedDueDate == "") "Due Date" else selectedDueDate,
+                text = "Due Date",
                 color = themeColors.text1
             )
+            Button(
+                onClick = {
+                    appViewModel.toggleShowDatePicker()
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = themeColors.backGround2
+                )
+            ) {
+                Text(
+                    text = if (selectedDueDate == "") "----/--/--" else selectedDueDate,
+                    color = themeColors.text1
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
         // Botón para seleccionar la hora
-        Button(
-            onClick = {
-                appViewModel.toggleShowTimePicker()
-            },
+        Column (
             modifier = Modifier.weight(1f),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = themeColors.backGround2
-            )
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = if (selectedDueTime != "") selectedDueTime else "Due Time",
+                text = "Time (Optional)",
                 color = themeColors.text1
             )
+            Button(
+                onClick = {
+                    appViewModel.toggleShowTimePicker()
+                },
+                modifier = Modifier.fillMaxWidth(),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = themeColors.backGround2
+                )
+            ) {
+                Text(
+                    text = if (selectedDueTime != "") selectedDueTime else "--:--",
+                    color = themeColors.text1
+                )
+            }
         }
     }
 }

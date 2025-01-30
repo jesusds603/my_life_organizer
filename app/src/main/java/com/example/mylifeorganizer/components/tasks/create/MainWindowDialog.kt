@@ -24,16 +24,26 @@ fun MainWindowDialog() {
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
 
-    val titleNewTask = appViewModel.titleNewTask.value
-    val descriptionNewTask = appViewModel.descriptionNewTask.value
     val selectedDueDate = appViewModel.selectedDueDate
     val selectedDueTime = appViewModel.selectedDueTime
+
+    val titleNewTask = appViewModel.titleNewTask.value
+    val descriptionNewTask = appViewModel.descriptionNewTask.value
     val selectedCategoriesTask = appViewModel.selectedCategoriesTask
-    val isTaskRecurring = appViewModel.isTaskRecurring
-    val recurrenceTaskPattern = appViewModel.recurrenceTaskPattern
-    val recurrenceTaskInterval = appViewModel.recurrenceTaskInterval
-    val recurrenceTaskEndDate = appViewModel.recurrenceTaskEndDate
     val priorityNewTask = appViewModel.priorityNewTask
+
+    val isTaskRecurring = appViewModel.isTaskRecurring  // Booleano para determinar si la tarea es recurrente
+    val recurrenceTaskPattern = appViewModel.recurrenceTaskPattern // "daily", "weekly", "monthly", "yearly", "custom"
+    val numDaysNewTask = appViewModel.numDaysNewTask  // Número de días para el daily
+    val selectedWeekDaysNewTask = appViewModel.selectedWeekDaysNewTask // Indices de los días de la semana para el weekly
+    val numWeeksNewTask = appViewModel.numWeeksNewTask // Número de semanas para el weekly
+    val selectedMonthDaysNewTask = appViewModel.selectedMonthDaysNewTask // Numeros de los dias del mes para el monthly
+    val numMonthsNewTask = appViewModel.numMonthsNewTask // Número de meses para el monthly
+    val selectedYearDaysNewTask = appViewModel.selectedYearDaysNewTask // Fechas del año en formato "MM/DD" para el yearly
+    val numYearsNewTask = appViewModel.numYearsNewTask // Número de años para el yearly
+    val selectedCustomIntervalNewTask = appViewModel.selectedCustomIntervalNewTask // Entero para el numero de dias que se espacia
+    val numTimesNewTask = appViewModel.numTimesNewTask // Numero de veces que se repite la tarea
+
 
 
     AlertDialog(
@@ -45,11 +55,21 @@ fun MainWindowDialog() {
                         task = TaskEntity(
                             title = titleNewTask,
                             description = descriptionNewTask,
-                            priority = priorityNewTask,
+
                             isRecurring = isTaskRecurring,
                             recurrencePattern = recurrenceTaskPattern,
-                            recurrenceInterval = recurrenceTaskInterval,
-                            recurrenceEndDate = recurrenceTaskEndDate,
+                            numDays = numDaysNewTask,
+                            recurrenceWeekDays = selectedWeekDaysNewTask.joinToString(","),
+                            numWeeks = numWeeksNewTask,
+                            recurrenceMonthDays = selectedMonthDaysNewTask.joinToString(","),
+                            numMonths = numMonthsNewTask,
+                            recurrenceYearDays = selectedYearDaysNewTask.joinToString(","),
+                            numYears = numYearsNewTask,
+                            recurrenceInterval = selectedCustomIntervalNewTask,
+                            numTimes = numTimesNewTask,
+
+                            priority = priorityNewTask,
+
                         ),
                         onTaskAdded = { taskId ->
                             selectedCategoriesTask.forEach { categoryTaskEntity ->

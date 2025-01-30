@@ -145,26 +145,6 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
         selectedCategoriesTask = categories
     }
 
-    var isTaskRecurring by mutableStateOf(false)
-    fun toggleIsTaskRecurring() {
-        isTaskRecurring = !isTaskRecurring
-    }
-
-    var recurrenceTaskPattern by mutableStateOf("Off")
-    fun updateRecurrenceTaskPattern(pattern: String) {
-        recurrenceTaskPattern = pattern
-    }
-
-    var recurrenceTaskInterval by mutableStateOf(0)
-    fun updateRecurrenceTaskInterval(interval: Int) {
-        recurrenceTaskInterval = interval
-    }
-
-    var recurrenceTaskEndDate by mutableStateOf("")
-    fun updateRecurrenceTaskEndDate(date: String) {
-        recurrenceTaskEndDate = date
-    }
-
     var priorityNewTask by mutableStateOf(1)
     fun updatePriorityNewTask(priority: Int) {
         priorityNewTask = priority
@@ -173,6 +153,62 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
     var nameSelectedCategorieTasksScreen by mutableStateOf("All")
     fun updateNameSelectedCategorieTasksScreen(name: String) {
         nameSelectedCategorieTasksScreen = name
+    }
+
+    // Recurrence
+    var isTaskRecurring by mutableStateOf(false)
+    fun toggleIsTaskRecurring() {
+        isTaskRecurring = !isTaskRecurring
+    }
+
+    var recurrenceTaskPattern by mutableStateOf("daily")
+    fun updateRecurrenceTaskPattern(pattern: String) {
+        recurrenceTaskPattern = pattern
+    }
+
+    var numDaysNewTask by mutableStateOf(0)
+    fun updateNumDaysNewTask(days: Int) {
+        numDaysNewTask = days
+    }
+
+    var selectedWeekDaysNewTask by mutableStateOf<List<Int>>(emptyList())
+    fun updateSelectedWeekDaysNewTask(days: List<Int>) {
+        selectedWeekDaysNewTask = days
+    }
+
+    var numWeeksNewTask by mutableStateOf(0)
+    fun updateNumWeeksNewTask(weeks: Int) {
+        numWeeksNewTask = weeks
+    }
+
+    var selectedMonthDaysNewTask by mutableStateOf<List<Int>>(emptyList())
+    fun updateSelectedMonthDaysNewTask(days: List<Int>) {
+        selectedMonthDaysNewTask = days
+    }
+
+    var numMonthsNewTask by mutableStateOf(0)
+    fun updateNumMonthsNewTask(months: Int) {
+        numMonthsNewTask = months
+    }
+
+    var selectedYearDaysNewTask by mutableStateOf<Set<String>>(emptySet())
+    fun updateSelectedYearDaysNewTask(days: Set<String>) {
+        selectedYearDaysNewTask = days
+    }
+
+    var numYearsNewTask by mutableStateOf(0)
+    fun updateNumYearsNewTask(years: Int) {
+        numYearsNewTask = years
+    }
+
+    var selectedCustomIntervalNewTask by mutableStateOf(1)
+    fun updateSelectedCustomIntervalNewTask(interval: Int) {
+        selectedCustomIntervalNewTask = interval
+    }
+
+    var numTimesNewTask by mutableStateOf(0)
+    fun updateNumTimesNewTask(times: Int) {
+        numTimesNewTask = times
     }
 
 
