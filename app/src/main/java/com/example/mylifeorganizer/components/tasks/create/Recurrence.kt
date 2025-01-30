@@ -65,10 +65,22 @@ fun Recurrence() {
     Column (
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {
-                appViewModel.toggleIsTaskRecurring()
-            }
     ) {
+        Row {
+            Text(
+                text = "Recurring",
+                color = themeColors.text1
+            )
+
+            Text(
+                text = if (isTaskRecurring) "ON" else "OFF",
+                modifier = Modifier
+                    .clickable {
+                        appViewModel.toggleIsTaskRecurring()
+                        Log.d("isTaskRecurring", isTaskRecurring.toString())
+                    }
+            )
+        }
         Text(
             text = "Recurrence: $recurrenceTaskPattern",
             color = themeColors.text1,
