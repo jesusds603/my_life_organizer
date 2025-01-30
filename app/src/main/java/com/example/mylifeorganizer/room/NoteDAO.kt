@@ -190,6 +190,7 @@ interface NoteDao {
     @Update
     suspend fun updateTask(task: TaskEntity)
 
+
     // ------
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -242,6 +243,10 @@ interface NoteDao {
 
     @Delete
     suspend fun deleteOccurrence(occurrence: TaskOccurrenceEntity)
+
+    @Query("DELETE FROM task_occurrences WHERE taskId = :taskId")
+    suspend fun deleteOccurrencesForTask(taskId: Long)
+
 
     @Query("SELECT * FROM task_occurrences")
     fun getAllOccurrences(): Flow<List<TaskOccurrenceEntity>>

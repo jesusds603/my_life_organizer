@@ -164,8 +164,7 @@ fun MainContent() {
                     appViewModel.updateSelectedCustomIntervalNewTask(taskMap[taskIdSelectedScreen]?.task?.recurrenceInterval ?: 1)
                     appViewModel.updateNumTimesNewTask(taskMap[taskIdSelectedScreen]?.task?.numTimes ?: 0)
 
-                    appViewModel.updateTaskIdSelectedScreen(null)
-                    appViewModel.toggleShowDialogCreateTask()
+                    appViewModel.toggleIsEditingTask()
                 }
             )
 

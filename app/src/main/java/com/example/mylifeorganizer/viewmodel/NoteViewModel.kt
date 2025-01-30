@@ -278,9 +278,10 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
     }
 
     // Actualizar una tarea
-    fun updateTask(task: TaskEntity) {
+    fun updateTask(task: TaskEntity, onTaskUpdated: (Long) -> Unit) {
         viewModelScope.launch {
             notesRepository.updateTask(task)
+            onTaskUpdated(task.taskId) // Ejecuta una acción cuando se actualiza la tarea
         }
     }
 
@@ -347,6 +348,14 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
             val occurrences = notesRepository.getOccurrencesForTask(taskId).first() // Obtener ocurrencias asociadas
             occurrences.forEach { notesRepository.deleteOccurrence(it) } // Eliminar cada ocurrencia
             notesRepository.deleteTaskById(taskId) // Finalmente, eliminar la tarea
+        }
+    }
+
+    fun updateTaskById(task: TaskEntity, onTaskUpdated: (Long) -> Unit) {
+        viewModelScope.launch {
+            notesRepository.deleteOccurrencesForTask(task.taskId)
+            notesRepository.updateTask(task)
+            onTaskUpdated(task.taskId)
         }
     }
 

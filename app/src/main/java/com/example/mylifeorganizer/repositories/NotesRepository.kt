@@ -199,6 +199,10 @@ class NotesRepository (val noteDB: NoteDB) {
 
     suspend fun deleteOccurrence(occurrence: TaskOccurrenceEntity) = noteDAO.deleteOccurrence(occurrence)
 
+    suspend fun deleteOccurrencesForTask(taskId: Long) {
+        noteDAO.deleteOccurrencesForTask(taskId)
+    }
+
     fun getAllOccurrences(): Flow<List<TaskOccurrenceEntity>> = noteDAO.getAllOccurrences()
 
     fun getOccurrencesForTask(taskId: Long): Flow<List<TaskOccurrenceEntity>> = noteDAO.getOccurrencesForTask(taskId)

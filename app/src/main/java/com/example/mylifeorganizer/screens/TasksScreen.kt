@@ -40,6 +40,7 @@ fun TasksScreen () {
     // Estado para controlar la visibilidad del cuadro de diálogo
     val showDialogCreateTask = appViewModel.showDialogCreateTask.value
     val showCreateCategoryDialogTask = appViewModel.showCreateCategoryDialogTask.value
+    val isEditingTask = appViewModel.isEditingTask.value
     val showDatePicker = appViewModel.showDatePicker.value
     val showTimePicker = appViewModel.showTimePicker.value
 
@@ -93,7 +94,7 @@ fun TasksScreen () {
         }
 
         // Ventana de diálogo para agregar tareas
-        if (showDialogCreateTask) {
+        if (showDialogCreateTask || isEditingTask) {
             MainWindowDialog()
         }
 

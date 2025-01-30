@@ -56,7 +56,7 @@ fun TaskCard(
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
 
-    val task = occurrence.second!!
+    val task = occurrence.second ?: return
 
     val taskIdSelectedScreen = appViewModel.taskIdSelectedScreen
     val isSelected = taskIdSelectedScreen == task.task.taskId

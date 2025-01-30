@@ -105,6 +105,11 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
         showDialogCreateTask.value = !showDialogCreateTask.value
     }
 
+    val isEditingTask = mutableStateOf(false)
+    fun toggleIsEditingTask() {
+        isEditingTask.value = !isEditingTask.value
+    }
+
     var showCreateCategoryDialogTask = mutableStateOf(false)
     fun toggleShowCreateCategoryDialogTask() {
         showCreateCategoryDialogTask.value = !showCreateCategoryDialogTask.value
