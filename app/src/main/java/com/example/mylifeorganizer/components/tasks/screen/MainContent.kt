@@ -3,7 +3,9 @@ package com.example.mylifeorganizer.components.tasks.screen
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +15,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,9 +30,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.R
@@ -101,100 +108,171 @@ fun MainContent() {
         ocurrences.filter { it.first.isCompleted }
     }.filterValues { it.isNotEmpty() }
 
-
-
     var selectedDueOrCompleted by remember { mutableStateOf("due") } // "due" or "completed" or "notDone"
 
+    val taskIdSelectedScreen = appViewModel.taskIdSelectedScreen
 
-    Column (
+
+
+    Box(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Row (
+        DropdownMenu(
+            expanded = taskIdSelectedScreen != null,
+            onDismissRequest = { appViewModel.updateTaskIdSelectedScreen(null) }, // Cierra el menú al hacer clic afuera
             modifier = Modifier
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+                .background(themeColors.backGround1)
+                .border(width = 1.dp, color = themeColors.text3),
+            offset = DpOffset(x = 0.dp, y = 0.dp)
         ) {
-            TextButton(
-                modifier = Modifier
-                    .weight(1f)
-                    .background(color = themeColors.backGround3),
-                onClick = {
-                    selectedDueOrCompleted = "due"
-                }
-            ) {
-                Text(
-                    text = "Pending",
-                    color = themeColors.text1,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            DropdownMenuItem(
+                text = { Text(
+                    text= "Edit Task",
+                    color = themeColors.text1
+                ) },
+                onClick = { appViewModel.updateTaskIdSelectedScreen(null) }
+            )
 
-            TextButton(
-                modifier = Modifier
-                    .weight(1f)
-                    .background(color = themeColors.backGround3),
+            DropdownMenuItem(
+                text = { Text(
+                    text= "Delete Task",
+                    color = themeColors.text1
+                ) },
                 onClick = {
-                    selectedDueOrCompleted = "completed"
+                    appViewModel.updateTaskIdSelectedScreen(null)
+                    noteViewModel.deleteTaskWithOccurrences(taskId = taskIdSelectedScreen!!)
                 }
-            ) {
-                Text(
-                    text = "Completed",
-                    color = themeColors.text1,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            TextButton(
-                modifier = Modifier
-                    .weight(1f)
-                    .background(color = themeColors.backGround3),
-                onClick = {
-                    selectedDueOrCompleted = "notDone"
-                }
-            ) {
-                Text(
-                    text = "Not Done",
-                    color = themeColors.text1,
-                    fontWeight = FontWeight.Bold
-                )
-            }
+            )
         }
 
-        LazyColumn  (
+
+        Column (
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 2.dp)
         ) {
 
-            // Seleccionar las tareas a mostrar (pendientes o completadas)
-            val ocurrencesToShow = when(selectedDueOrCompleted) {
-                "due" -> pendingOcurrences
-                "completed" -> completedOcurrences
-                "notDone" -> notDoneOcurrences
-                else -> pendingOcurrences
-            }
 
-            // Iterar sobre los grupos de tareas por día
-            ocurrencesToShow.forEach { (date, occurrences) ->
-                // Mostrar la fecha como un separador
-                item {
+            Row (
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                TextButton(
+                    modifier = Modifier
+                        .weight(1f)
+                        .background(color = themeColors.backGround3),
+                    onClick = {
+                        selectedDueOrCompleted = "due"
+                    }
+                ) {
                     Text(
-                        text = date,
+                        text = "Pending",
                         color = themeColors.text1,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier
-                            .padding(vertical = 8.dp, horizontal = 16.dp)
+                        fontWeight = FontWeight.Bold
                     )
-                    HorizontalDivider(thickness = 1.dp, color = Color.Gray)
                 }
 
-                val sortedOccurrencesByHour = occurrences.sortedBy { it.first.dueTime }
+                TextButton(
+                    modifier = Modifier
+                        .weight(1f)
+                        .background(color = themeColors.backGround3),
+                    onClick = {
+                        selectedDueOrCompleted = "completed"
+                    }
+                ) {
+                    Text(
+                        text = "Completed",
+                        color = themeColors.text1,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
 
-                // Mostrar las tareas para este día
-                items(sortedOccurrencesByHour) { occurrence ->
-                    TaskCard(occurrence = occurrence)
+                TextButton(
+                    modifier = Modifier
+                        .weight(1f)
+                        .background(color = themeColors.backGround3),
+                    onClick = {
+                        selectedDueOrCompleted = "notDone"
+                    }
+                ) {
+                    Text(
+                        text = "Not Done",
+                        color = themeColors.text1,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+
+            LazyColumn  (
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 2.dp)
+            ) {
+
+                // Seleccionar las tareas a mostrar (pendientes o completadas)
+                val ocurrencesToShow = when(selectedDueOrCompleted) {
+                    "due" -> pendingOcurrences
+                    "completed" -> completedOcurrences
+                    "notDone" -> notDoneOcurrences
+                    else -> pendingOcurrences
+                }
+
+                // Iterar sobre los grupos de tareas por día
+                ocurrencesToShow.forEach { (date, occurrences) ->
+                    // Parse the date string to LocalDate
+                    val dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")
+                    val localDate = LocalDate.parse(date, dateFormatter)
+
+                    // Get the day of the week (e.g., Monday, Tuesday)
+                    val dayOfWeek = localDate.dayOfWeek.toString().lowercase().replaceFirstChar { it.uppercase() }
+
+                    // Calculate the difference in days between the current date and the task date
+                    val currentDateText = LocalDate.now()
+                    val daysDifference = currentDateText.until(localDate).days
+
+                    // Determine the text to display based on the difference in days
+                    val daysText = when {
+                        daysDifference == 0 -> "Today"
+                        daysDifference > 0 -> "in $daysDifference days"
+                        else -> "past ${-daysDifference} days"
+                    }
+
+                    // Mostrar la fecha como un separador
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp, horizontal = 16.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = date,
+                                color = themeColors.text1,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = dayOfWeek,
+                                color = themeColors.text1,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = daysText,
+                                color = themeColors.text1,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        HorizontalDivider(thickness = 1.dp, color = Color.Gray)
+                    }
+
+                    val sortedOccurrencesByHour = occurrences.sortedBy { it.first.dueTime }
+
+                    // Mostrar las tareas para este día
+                    items(sortedOccurrencesByHour) { occurrence ->
+                        TaskCard(occurrence = occurrence)
+                    }
                 }
             }
         }

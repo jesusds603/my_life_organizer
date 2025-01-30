@@ -161,7 +161,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
         isTaskRecurring = !isTaskRecurring
     }
 
-    var recurrenceTaskPattern by mutableStateOf("daily")
+    var recurrenceTaskPattern by mutableStateOf("")
     fun updateRecurrenceTaskPattern(pattern: String) {
         recurrenceTaskPattern = pattern
     }
@@ -209,6 +209,12 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
     var numTimesNewTask by mutableStateOf(0)
     fun updateNumTimesNewTask(times: Int) {
         numTimesNewTask = times
+    }
+
+    // para editar tareas
+    var taskIdSelectedScreen by mutableStateOf<Long?>(null)
+    fun updateTaskIdSelectedScreen(taskId: Long?) {
+        taskIdSelectedScreen = taskId
     }
 
 

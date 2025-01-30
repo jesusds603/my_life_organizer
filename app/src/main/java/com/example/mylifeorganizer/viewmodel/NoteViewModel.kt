@@ -342,6 +342,15 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
         }
     }
 
+    fun deleteTaskWithOccurrences(taskId: Long) {
+        viewModelScope.launch {
+            val occurrences = notesRepository.getOccurrencesForTask(taskId).first() // Obtener ocurrencias asociadas
+            occurrences.forEach { notesRepository.deleteOccurrence(it) } // Eliminar cada ocurrencia
+            notesRepository.deleteTaskById(taskId) // Finalmente, eliminar la tarea
+        }
+    }
+
+
     fun getAllOccurrences(): Flow<List<TaskOccurrenceEntity>> {
         return notesRepository.getAllOccurrences()
     }

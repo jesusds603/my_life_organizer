@@ -81,12 +81,13 @@ fun Recurrence() {
                     }
             )
         }
-        Text(
-            text = "Recurrence: $recurrenceTaskPattern",
-            color = themeColors.text1,
-        )
 
         if(isTaskRecurring) {
+            Text(
+                text = "Recurrence: $recurrenceTaskPattern",
+                color = themeColors.text1,
+            )
+
             LazyRow (
                 modifier = Modifier
                     .fillMaxWidth()

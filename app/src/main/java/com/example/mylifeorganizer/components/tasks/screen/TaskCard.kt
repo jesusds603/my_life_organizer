@@ -1,8 +1,14 @@
 package com.example.mylifeorganizer.components.tasks.screen
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,10 +25,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -37,6 +45,7 @@ import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TaskCard(
@@ -49,6 +58,9 @@ fun TaskCard(
 
     val task = occurrence.second!!
 
+    val taskIdSelectedScreen = appViewModel.taskIdSelectedScreen
+    val isSelected = taskIdSelectedScreen == task.task.taskId
+
     val heights = listOf(0.2f, 0.4f, 0.6f, 0.8f, 1.0f)
     val colors = heights.map { heightPercentage ->
         lerp(Color.Blue, Color.Red, heightPercentage) // Interpolar entre azul y rojo
@@ -58,8 +70,17 @@ fun TaskCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(1.dp)
-            .background(color = themeColors.backGround1)
-            .padding(vertical = 2.dp),
+            .background(
+                color =  if (isSelected) themeColors.backGround4 else themeColors.backGround1
+            )
+            .padding(vertical = 2.dp)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onLongPress = {
+                        appViewModel.updateTaskIdSelectedScreen(task.task.taskId)
+                    }
+                )
+            },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

@@ -151,6 +151,10 @@ class NotesRepository (val noteDB: NoteDB) {
         noteDAO.deleteTask(task)
     }
 
+    suspend fun deleteTaskById(taskId: Long) {
+        noteDAO.deleteTaskById(taskId)
+    }
+
     // Actualizar una tarea
     suspend fun updateTask(task: TaskEntity) {
         noteDAO.updateTask(task)

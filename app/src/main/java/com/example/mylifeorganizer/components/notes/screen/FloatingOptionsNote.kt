@@ -1,5 +1,7 @@
 package com.example.mylifeorganizer.components.notes.screen
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -30,6 +32,7 @@ import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun FloatingOptionsNote(
     showMenu: Boolean = false,

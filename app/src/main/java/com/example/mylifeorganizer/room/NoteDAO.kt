@@ -183,6 +183,9 @@ interface NoteDao {
     @Delete
     suspend fun deleteTask(task: TaskEntity)
 
+    @Query("DELETE FROM tasks WHERE taskId = :taskId")
+    suspend fun deleteTaskById(taskId: Long)
+
     // Actualizar una tarea
     @Update
     suspend fun updateTask(task: TaskEntity)
