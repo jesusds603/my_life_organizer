@@ -10,6 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mylifeorganizer.components.tasks.generateTaskOccurrences
 import com.example.mylifeorganizer.room.CategoryTaskEntity
 import com.example.mylifeorganizer.room.TaskEntity
 import com.example.mylifeorganizer.viewmodel.AppViewModel
@@ -77,6 +78,28 @@ fun MainWindowDialog() {
                                     categoryId = categoryTaskEntity.categoryId,
                                     taskId = taskId
                                 )
+                            }
+
+                            val occurrences =  generateTaskOccurrences(
+                                taskId = taskId,
+                                dueDate = selectedDueDate,
+                                dueTime = selectedDueTime,
+                                isRecurring = isTaskRecurring,
+                                recurrencePattern = recurrenceTaskPattern,
+                                numDays = numDaysNewTask,
+                                recurrenceWeekDays = selectedWeekDaysNewTask,
+                                numWeeks = numWeeksNewTask,
+                                recurrenceMonthDays = selectedMonthDaysNewTask,
+                                numMonths = numMonthsNewTask,
+                                recurrenceYearDays = selectedYearDaysNewTask,
+                                numYears = numYearsNewTask,
+                                recurrenceInterval = selectedCustomIntervalNewTask,
+                                numTimes = numTimesNewTask
+                            )
+
+                            // Guardar las ocurrencias en la base de datos
+                            occurrences.forEach { occurrence ->
+                                noteViewModel.insertOccurrence(occurrence)
                             }
                         }
                     )

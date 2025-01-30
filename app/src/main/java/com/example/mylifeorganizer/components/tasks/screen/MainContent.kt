@@ -52,6 +52,8 @@ fun MainContent() {
 
     val nameSelectedCategoryTasksScreen = appViewModel.nameSelectedCategorieTasksScreen
 
+
+
     // Filtrar categorías por nombre
     val filteredOcurrences = if(nameSelectedCategoryTasksScreen == "All") {
         ocurrenceTasks
