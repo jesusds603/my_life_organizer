@@ -129,7 +129,7 @@ data class DailyNoteEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "dailyNoteId")
     val dailyNoteId: Long = 0,
-    val day: String,
+    val day: String,  // "yyyy/MM/dd"
     val content: String,
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),
