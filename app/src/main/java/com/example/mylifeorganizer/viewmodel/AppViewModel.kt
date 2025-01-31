@@ -11,9 +11,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import com.example.mylifeorganizer.repositories.NotesRepository
 import com.example.mylifeorganizer.room.CategoryEntity
+import com.example.mylifeorganizer.room.CategoryFinanceEntity
 import com.example.mylifeorganizer.room.CategoryTaskEntity
 import com.example.mylifeorganizer.room.NoteDB
 import com.example.mylifeorganizer.room.NoteEntity
+import com.example.mylifeorganizer.room.PaymentMethodEntity
 import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -229,6 +231,55 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
     val isAddingFinance = mutableStateOf(false)
     fun toggleAddingFinance() {
         isAddingFinance.value = !isAddingFinance.value
+    }
+
+    val isAddingDateForFinance = mutableStateOf(false)
+    fun toggleAddingDateForFinance() {
+        isAddingDateForFinance.value = !isAddingDateForFinance.value
+    }
+
+    val isAddingCategoryForFinance = mutableStateOf(false)
+    fun toggleAddingCategoryForFinance() {
+        isAddingCategoryForFinance.value = !isAddingCategoryForFinance.value
+    }
+
+    val isAddingPaymentMethodForFinance = mutableStateOf(false)
+    fun toggleAddingPaymentMethodForFinance() {
+        isAddingPaymentMethodForFinance.value = !isAddingPaymentMethodForFinance.value
+    }
+
+    val isCreatingCategoryForFinance = mutableStateOf(false)
+    fun toggleCreatingCategoryForFinance() {
+        isCreatingCategoryForFinance.value = !isCreatingCategoryForFinance.value
+    }
+
+    var titleForNewFinance by mutableStateOf("")
+    fun updateTitleForNewFinance(title: String) {
+        titleForNewFinance = title
+    }
+    var descriptionForNewFinance by mutableStateOf("")
+    fun updateDescriptionForNewFinance(description: String) {
+        descriptionForNewFinance = description
+    }
+    var amountForNewFinance by mutableStateOf(0L)
+    fun updateAmountForNewFinance(amount: Long) {
+        amountForNewFinance = amount
+    }
+    var dateForNewFinance by mutableStateOf("Today")
+    fun updateDateForNewFinance(date: String) {
+        dateForNewFinance = date
+    }
+    var isExpenseForNewFinance by mutableStateOf(true)
+    fun toggleIsExpenseForNewFinance() {
+        isExpenseForNewFinance = !isExpenseForNewFinance
+    }
+    var selectedCategoriesForNewFinance by mutableStateOf<List<CategoryFinanceEntity>>(emptyList())
+    fun updateSelectedCategoriesForNewFinance(categories: List<CategoryFinanceEntity>) {
+        selectedCategoriesForNewFinance = categories
+    }
+    var paymentMethodForNewFinance by mutableStateOf<PaymentMethodEntity?>(null)
+    fun updatePaymentMethodForNewFinance(paymentMethod: PaymentMethodEntity) {
+        paymentMethodForNewFinance = paymentMethod
     }
 
 

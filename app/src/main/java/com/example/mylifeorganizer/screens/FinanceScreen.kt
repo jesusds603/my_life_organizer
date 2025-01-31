@@ -2,10 +2,13 @@ package com.example.mylifeorganizer.screens
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CircleShape
@@ -19,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,6 +36,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mylifeorganizer.components.finance.create.WindowDialog
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
@@ -68,115 +73,7 @@ fun FinanceScreen() {
         }
 
         if (isAddingFinance) {
-            var title by remember { mutableStateOf("") }
-            var description by remember { mutableStateOf("") }
-            var amount by remember { mutableStateOf("") }
-            var date by remember { mutableStateOf("Today") }
-            var isExpense by remember { mutableStateOf(true) } // Estado para alternar tipo
-
-            AlertDialog(
-                onDismissRequest = {
-
-                },
-                confirmButton = {
-                    Button(
-                        onClick = { appViewModel.toggleAddingFinance() },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = themeColors.backGround2
-                        )
-                    ) {
-                        Text(text = "Add Finance", color = themeColors.text1)
-                    }
-                },
-                dismissButton = {
-                    Button(
-                        onClick = { appViewModel.toggleAddingFinance() },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = themeColors.backGround2
-                        )
-                    ) {
-                        Text(text = "Cancel", color = themeColors.text1)
-                    }
-                },
-                title = {
-                    Text(
-                        text = "Add New Finance",
-                        color = themeColors.text1
-                    )
-                },
-                text = {
-                    Column (
-                    ) {
-                        TextField(
-                            value = title,
-                            onValueChange = { title = it },
-                            label = { Text("Title", color = themeColors.text1) },
-                            singleLine = true,
-                            colors = TextFieldDefaults.colors(
-                                focusedTextColor = themeColors.text1,
-                                unfocusedTextColor = themeColors.text1,
-                                focusedContainerColor = themeColors.backGround1,
-                                unfocusedContainerColor = themeColors.backGround1,
-                            )
-                        )
-                        TextField(
-                            value = description,
-                            onValueChange = { description = it },
-                            label = { Text("Description", color = themeColors.text1) },
-                            colors = TextFieldDefaults.colors(
-                                focusedTextColor = themeColors.text1,
-                                unfocusedTextColor = themeColors.text1,
-                                focusedContainerColor = themeColors.backGround1,
-                                unfocusedContainerColor = themeColors.backGround1,
-                            )
-                        )
-                        TextField(
-                            value = amount,
-                            onValueChange = { amount = it.filter { c -> c.isDigit() || c == '.' } },
-                            label = { Text("Amount $", color = themeColors.text1) },
-                            singleLine = true,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                            colors = TextFieldDefaults.colors(
-                                focusedTextColor = themeColors.text1,
-                                unfocusedTextColor = themeColors.text1,
-                                focusedContainerColor = themeColors.backGround1,
-                                unfocusedContainerColor = themeColors.backGround1,
-                            )
-                        )
-                        Text("Date (yyyy/MM/dd)", color = themeColors.text1)
-                        TextField(
-                            value = date,
-                            onValueChange = { date = it },
-                            singleLine = true,
-                            colors = TextFieldDefaults.colors(
-                                focusedTextColor = themeColors.text1,
-                                unfocusedTextColor = themeColors.text1,
-                                focusedContainerColor = themeColors.backGround1,
-                                unfocusedContainerColor = themeColors.backGround1,
-                            )
-                        )
-
-                        Spacer(modifier = Modifier.height(16.dp))
-
-                        // Botón para alternar entre Expense e Income
-                        Button(
-                            onClick = { isExpense = !isExpense },
-                            colors = ButtonDefaults.buttonColors(
-                                contentColor = if(isExpense) themeColors.text1 else Color.Black,
-                                containerColor = if (isExpense) Color.Red else Color.Green
-                            )
-                        ) {
-                            Text(
-                                text = if (isExpense) "Expense" else "Income",
-                                color = if(isExpense) Color.White else Color.Black
-                            )
-                        }
-                    }
-                },
-                containerColor = themeColors.backGround3,
-                tonalElevation = 8.dp,
-                shape = MaterialTheme.shapes.large // Bordes más redondeados
-            )
+            WindowDialog()
         }
 
     }

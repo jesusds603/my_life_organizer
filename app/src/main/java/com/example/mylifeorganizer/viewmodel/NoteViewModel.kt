@@ -11,7 +11,7 @@ import com.example.mylifeorganizer.room.CategoryEntity
 import com.example.mylifeorganizer.room.CategoryFinanceEntity
 import com.example.mylifeorganizer.room.CategoryTaskEntity
 import com.example.mylifeorganizer.room.FinanceEntity
-import com.example.mylifeorganizer.room.FinanceWithDetails
+import com.example.mylifeorganizer.room.FinanceWithCategories
 import com.example.mylifeorganizer.room.FolderEntity
 import com.example.mylifeorganizer.room.FolderWithSubfolders
 import com.example.mylifeorganizer.room.NoteEntity
@@ -19,7 +19,6 @@ import com.example.mylifeorganizer.room.NoteWithCategories
 import com.example.mylifeorganizer.room.NoteWithoutContentWithCategories
 import com.example.mylifeorganizer.room.PaymentMethodEntity
 import com.example.mylifeorganizer.room.TaskEntity
-import com.example.mylifeorganizer.room.TaskHistoryEntity
 import com.example.mylifeorganizer.room.TaskOccurrenceEntity
 import com.example.mylifeorganizer.room.TaskWithCategories
 import kotlinx.coroutines.flow.Flow
@@ -382,17 +381,6 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
         return notesRepository.getOccurrencesByDate(date)
     }
 
-    // Historial
-    fun insertTaskHistory(history: TaskHistoryEntity) {
-        viewModelScope.launch {
-            notesRepository.insertTaskHistory(history)
-        }
-    }
-
-    fun getHistoryForOccurrence(occurrenceId: Long): Flow<List<TaskHistoryEntity>> {
-        return notesRepository.getHistoryForOccurrence(occurrenceId)
-    }
-
 
     // ----------------------------------------------------------------------
     // -------------------------------------------------------------------------
@@ -400,15 +388,16 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
     //                                  FINANZAS
 
     // LiveData para observar datos en la UI
-    val finances: LiveData<List<FinanceEntity>> = notesRepository.getAllFinances().asLiveData()
-    val categoriesFinance: LiveData<List<CategoryFinanceEntity>> = notesRepository.getAllCategoriesFinance().asLiveData()
-    val paymentMethods: LiveData<List<PaymentMethodEntity>> = notesRepository.getAllPaymentMethods().asLiveData()
-    val financesWithDetails: LiveData<List<FinanceWithDetails>> = notesRepository.getAllFinancesWithDetails().asLiveData()
+    val finances: Flow<List<FinanceEntity>> = notesRepository.getAllFinances()
+    val categoriesFinance: Flow<List<CategoryFinanceEntity>> = notesRepository.getAllCategoriesFinance()
+    val paymentMethods: Flow<List<PaymentMethodEntity>> = notesRepository.getAllPaymentMethods()
+    val financesWithCategories: Flow<List<FinanceWithCategories>> = notesRepository.getAllFinancesWithCategories()
 
     // Agregar finanza, categoría, método de pago y relaciones
-    fun addFinance(finance: FinanceEntity) {
+    fun addFinance(finance: FinanceEntity, onFinanceAdded: (Long) -> Unit) {
         viewModelScope.launch {
-            notesRepository.insertFinance(finance)
+            val financeId = notesRepository.insertFinance(finance)
+            onFinanceAdded(financeId)
         }
     }
 
@@ -427,12 +416,6 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
     fun linkFinanceToCategory(financeId: Long, categoryId: Long) {
         viewModelScope.launch {
             notesRepository.addFinanceToCategory(financeId, categoryId)
-        }
-    }
-
-    fun linkFinanceToPaymentMethod(financeId: Long, paymentId: Long) {
-        viewModelScope.launch {
-            notesRepository.addFinanceToPaymentMethod(financeId, paymentId)
         }
     }
 

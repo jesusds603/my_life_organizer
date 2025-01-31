@@ -5,8 +5,7 @@ import com.example.mylifeorganizer.room.CategoryFinanceEntity
 import com.example.mylifeorganizer.room.CategoryTaskEntity
 import com.example.mylifeorganizer.room.FinanceCategoryCrossRef
 import com.example.mylifeorganizer.room.FinanceEntity
-import com.example.mylifeorganizer.room.FinancePaymentCrossRef
-import com.example.mylifeorganizer.room.FinanceWithDetails
+import com.example.mylifeorganizer.room.FinanceWithCategories
 import com.example.mylifeorganizer.room.FolderEntity
 import com.example.mylifeorganizer.room.FolderWithSubfolders
 import com.example.mylifeorganizer.room.NoteCategoryCrossRef
@@ -15,7 +14,6 @@ import com.example.mylifeorganizer.room.NoteEntity
 import com.example.mylifeorganizer.room.PaymentMethodEntity
 import com.example.mylifeorganizer.room.TaskCategoryCrossRef
 import com.example.mylifeorganizer.room.TaskEntity
-import com.example.mylifeorganizer.room.TaskHistoryEntity
 import com.example.mylifeorganizer.room.TaskOccurrenceEntity
 import com.example.mylifeorganizer.room.TaskWithCategories
 import kotlinx.coroutines.flow.Flow
@@ -219,12 +217,6 @@ class NotesRepository (val noteDB: NoteDB) {
 
     fun getOccurrencesByDate(date: String): Flow<List<TaskOccurrenceEntity>> = noteDAO.getOccurrencesByDate(date)
 
-    // 📌 ───────── Historial ─────────
-    suspend fun insertTaskHistory(history: TaskHistoryEntity) = noteDAO.insertTaskHistory(history)
-
-    fun getHistoryForOccurrence(occurrenceId: Long): Flow<List<TaskHistoryEntity>> = noteDAO.getHistoryForOccurrence(occurrenceId)
-
-
 
     // ----------------------------------------------------------------------
     // -------------------------------------------------------------------------
@@ -244,10 +236,6 @@ class NotesRepository (val noteDB: NoteDB) {
         noteDAO.insertFinanceCategoryCrossRef(FinanceCategoryCrossRef(financeId, categoryId))
     }
 
-    suspend fun addFinanceToPaymentMethod(financeId: Long, paymentId: Long) {
-        noteDAO.insertFinancePaymentCrossRef(FinancePaymentCrossRef(financeId, paymentId))
-    }
-
     // Obtener listas individuales
     fun getAllFinances(): Flow<List<FinanceEntity>> = noteDAO.getAllFinances()
 
@@ -256,12 +244,10 @@ class NotesRepository (val noteDB: NoteDB) {
     fun getAllPaymentMethods(): Flow<List<PaymentMethodEntity>> = noteDAO.getAllPaymentMethods()
 
     // Obtener finanzas con detalles
-    fun getAllFinancesWithDetails(): Flow<List<FinanceWithDetails>> = noteDAO.getAllFinancesWithDetails()
+    fun getAllFinancesWithCategories(): Flow<List<FinanceWithCategories>> = noteDAO.getAllFinancesWithCategories()
 
     // Obtener finanzas filtradas
     fun getFinancesByCategory(categoryId: Long): Flow<List<FinanceEntity>> = noteDAO.getFinancesByCategory(categoryId)
-
-    fun getFinancesByPaymentMethod(paymentId: Long): Flow<List<FinanceEntity>> = noteDAO.getFinancesByPaymentMethod(paymentId)
 
     // Actualizar datos
     suspend fun updateFinance(finance: FinanceEntity) = noteDAO.updateFinance(finance)

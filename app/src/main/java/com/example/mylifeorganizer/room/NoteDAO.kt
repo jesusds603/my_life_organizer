@@ -257,12 +257,6 @@ interface NoteDao {
     @Query("SELECT * FROM task_occurrences WHERE dueDate = :date ORDER BY dueTime ASC")
     fun getOccurrencesByDate(date: String): Flow<List<TaskOccurrenceEntity>>
 
-    // 📌 ───────── Historial de Tareas ─────────
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTaskHistory(history: TaskHistoryEntity)
-
-    @Query("SELECT * FROM task_history WHERE occurrenceId = :occurrenceId ORDER BY timestamp DESC")
-    fun getHistoryForOccurrence(occurrenceId: Long): Flow<List<TaskHistoryEntity>>
 
 
     // ----------------------------------------------------------------------
@@ -284,8 +278,6 @@ interface NoteDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertFinanceCategoryCrossRef(crossRef: FinanceCategoryCrossRef)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFinancePaymentCrossRef(crossRef: FinancePaymentCrossRef)
 
     // Obtener listas individuales
     @Query("SELECT * FROM finance")
@@ -300,7 +292,7 @@ interface NoteDao {
     // Obtener finanzas con todas sus categorías y métodos de pago
     @Transaction
     @Query("SELECT * FROM finance")
-    fun getAllFinancesWithDetails(): Flow<List<FinanceWithDetails>>
+    fun getAllFinancesWithCategories(): Flow<List<FinanceWithCategories>>
 
     // Obtener finanzas filtradas por categoría o método de pago
     @Transaction
@@ -312,14 +304,6 @@ interface NoteDao {
     """)
     fun getFinancesByCategory(categoryId: Long): Flow<List<FinanceEntity>>
 
-    @Transaction
-    @Query("""
-        SELECT * FROM finance 
-        INNER JOIN finance_payment_cross_ref 
-        ON finance.financeId = finance_payment_cross_ref.financeId 
-        WHERE finance_payment_cross_ref.paymentId = :paymentId
-    """)
-    fun getFinancesByPaymentMethod(paymentId: Long): Flow<List<FinanceEntity>>
 
     // Actualizar datos
     @Update

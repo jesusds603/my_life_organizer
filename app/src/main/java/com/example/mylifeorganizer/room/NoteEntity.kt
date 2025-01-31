@@ -197,20 +197,6 @@ data class TaskOccurrenceEntity(
     val createdAt: Long = System.currentTimeMillis(),
 )
 
-@Entity(
-    tableName = "task_history",
-    foreignKeys = [ForeignKey(entity = TaskOccurrenceEntity::class, parentColumns = ["occurrenceId"], childColumns = ["occurrenceId"], onDelete = CASCADE)]
-)
-data class TaskHistoryEntity(
-    @PrimaryKey(autoGenerate = true)
-    val historyId: Long = 0,
-    val occurrenceId: Long, // Referencia a `task_occurrences`
-    val action: String, // "completed", "updated", "deleted"
-    val timestamp: Long = System.currentTimeMillis(),
-    val notes: String = "" // Opcional: detalles de la acción
-)
-
-
 
 @Entity(tableName = "categories_tasks")
 data class CategoryTaskEntity(
@@ -279,6 +265,7 @@ data class FinanceEntity(
     val type: String, // expense or income
     val amount: Double,
     val date: String, // "yyyy/MM/dd"
+    val paymentId: Long? = null,
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),
 )
@@ -313,19 +300,8 @@ data class PaymentMethodEntity(
     val bgColor: String,
 )
 
-@Entity(
-    primaryKeys = ["financeId", "paymentId"],
-    tableName = "finance_payment_cross_ref"
-)
-data class FinancePaymentCrossRef(
-    @ColumnInfo(name = "financeId")
-    val financeId: Long,
-    @ColumnInfo(name = "paymentId")
-    val paymentId: Long
-)
 
-
-data class FinanceWithDetails(
+data class FinanceWithCategories(
     @Embedded
     val finance: FinanceEntity,
     @Relation(
@@ -334,10 +310,4 @@ data class FinanceWithDetails(
         associateBy = androidx.room.Junction(FinanceCategoryCrossRef::class)
     )
     val categories: List<CategoryFinanceEntity>,
-    @Relation(
-        parentColumn = "financeId",
-        entityColumn = "paymentId",
-        associateBy = androidx.room.Junction(FinancePaymentCrossRef::class)
-    )
-    val paymentMethods: List<PaymentMethodEntity>
 )
