@@ -324,6 +324,6 @@ interface NoteDao {
 
     @Delete
     suspend fun deletePaymentMethod(paymentMethod: PaymentMethodEntity)
-}
 
+}
 

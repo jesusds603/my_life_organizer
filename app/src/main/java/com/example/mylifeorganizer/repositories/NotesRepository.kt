@@ -263,4 +263,5 @@ class NotesRepository (val noteDB: NoteDB) {
 
     suspend fun deletePaymentMethod(paymentMethod: PaymentMethodEntity) = noteDAO.deletePaymentMethod(paymentMethod)
 
+
 }

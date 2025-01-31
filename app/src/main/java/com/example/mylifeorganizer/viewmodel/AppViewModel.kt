@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.example.mylifeorganizer.repositories.NotesRepository
 import com.example.mylifeorganizer.room.CategoryEntity
 import com.example.mylifeorganizer.room.CategoryFinanceEntity
@@ -293,4 +294,14 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
     }
 
 
+}
+
+class AppViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(AppViewModel::class.java)) {
+            return AppViewModel(application) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
 }
