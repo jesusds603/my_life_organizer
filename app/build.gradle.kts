@@ -90,4 +90,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.15.0") // Para NotificationCompat
 
     implementation(libs.gson)
+
+    // Para gráficos
+    //implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }

@@ -282,5 +282,15 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
         paymentMethodForNewFinance = paymentMethod
     }
 
+    var selectedCategoryForFinanceScreen by mutableStateOf("")
+    fun updateSelectedCategoryForFinanceScreen(category: String) {
+        selectedCategoryForFinanceScreen = category
+    }
+
+    var selectedPaymentMethodForFinanceScreen by mutableStateOf("")
+    fun updateSelectedPaymentMethodForFinanceScreen(paymentMethod: String) {
+        selectedPaymentMethodForFinanceScreen = paymentMethod
+    }
+
 
 }
