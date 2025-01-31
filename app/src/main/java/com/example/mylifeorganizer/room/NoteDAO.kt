@@ -265,6 +265,81 @@ interface NoteDao {
     fun getHistoryForOccurrence(occurrenceId: Long): Flow<List<TaskHistoryEntity>>
 
 
+    // ----------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+
+    //                                  FINANZAS
+
+    // Insertar finanza, categoría y método de pago
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertFinance(finance: FinanceEntity): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCategoryFinance(category: CategoryFinanceEntity): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPaymentMethod(paymentMethod: PaymentMethodEntity): Long
+
+    // Relacionar finanza con categoría y método de pago
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertFinanceCategoryCrossRef(crossRef: FinanceCategoryCrossRef)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertFinancePaymentCrossRef(crossRef: FinancePaymentCrossRef)
+
+    // Obtener listas individuales
+    @Query("SELECT * FROM finance")
+    fun getAllFinances(): Flow<List<FinanceEntity>>
+
+    @Query("SELECT * FROM categories_finance")
+    fun getAllCategoriesFinance(): Flow<List<CategoryFinanceEntity>>
+
+    @Query("SELECT * FROM payment_methods")
+    fun getAllPaymentMethods(): Flow<List<PaymentMethodEntity>>
+
+    // Obtener finanzas con todas sus categorías y métodos de pago
+    @Transaction
+    @Query("SELECT * FROM finance")
+    fun getAllFinancesWithDetails(): Flow<List<FinanceWithDetails>>
+
+    // Obtener finanzas filtradas por categoría o método de pago
+    @Transaction
+    @Query("""
+        SELECT * FROM finance 
+        INNER JOIN finance_category_cross_ref 
+        ON finance.financeId = finance_category_cross_ref.financeId 
+        WHERE finance_category_cross_ref.categoryId = :categoryId
+    """)
+    fun getFinancesByCategory(categoryId: Long): Flow<List<FinanceEntity>>
+
+    @Transaction
+    @Query("""
+        SELECT * FROM finance 
+        INNER JOIN finance_payment_cross_ref 
+        ON finance.financeId = finance_payment_cross_ref.financeId 
+        WHERE finance_payment_cross_ref.paymentId = :paymentId
+    """)
+    fun getFinancesByPaymentMethod(paymentId: Long): Flow<List<FinanceEntity>>
+
+    // Actualizar datos
+    @Update
+    suspend fun updateFinance(finance: FinanceEntity)
+
+    @Update
+    suspend fun updateCategoryFinance(category: CategoryFinanceEntity)
+
+    @Update
+    suspend fun updatePaymentMethod(paymentMethod: PaymentMethodEntity)
+
+    // Eliminar datos
+    @Delete
+    suspend fun deleteFinance(finance: FinanceEntity)
+
+    @Delete
+    suspend fun deleteCategoryFinance(category: CategoryFinanceEntity)
+
+    @Delete
+    suspend fun deletePaymentMethod(paymentMethod: PaymentMethodEntity)
 }
 
 

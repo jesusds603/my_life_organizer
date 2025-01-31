@@ -17,8 +17,13 @@ import androidx.room.RoomDatabase
         TaskHistoryEntity::class,
         CategoryTaskEntity::class,
         TaskCategoryCrossRef::class,
+        FinanceEntity::class,
+        CategoryFinanceEntity::class,
+        FinanceCategoryCrossRef::class,
+        PaymentMethodEntity::class,
+        FinancePaymentCrossRef::class,
    ],
-    version = 27, exportSchema = true
+    version = 29, exportSchema = true
 )
 abstract class NoteDB : RoomDatabase() {
 

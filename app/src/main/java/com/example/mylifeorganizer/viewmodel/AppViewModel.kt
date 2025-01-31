@@ -223,4 +223,13 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
     }
 
 
+    // ------------------------------------------
+    //                   FINANCES
+
+    val isAddingFinance = mutableStateOf(false)
+    fun toggleAddingFinance() {
+        isAddingFinance.value = !isAddingFinance.value
+    }
+
+
 }

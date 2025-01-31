@@ -1,11 +1,20 @@
 package com.example.mylifeorganizer.utils.parsers
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 @Composable
 fun formatText(text: String): AnnotatedString {
+    val themeViewModel: ThemeViewModel = viewModel()
+    val themeColors = themeViewModel.themeColors.value
+
     val annotatedString = buildAnnotatedString {
         // Expresión regular para detectar bloques de código (```)
         val regex = Regex("```([\\s\\S]*?)```|~~~([\\s\\S]*?)~~~", RegexOption.DOT_MATCHES_ALL)
@@ -43,34 +52,43 @@ fun formatText(text: String): AnnotatedString {
                 val lines = content.split("\n")
 
                 lines.forEach { line ->
-                    // Procesar separadores (***, ---, ___) primero
-                    val separatorLine = processSeparators(line)
-
-                    if (separatorLine.text != line) {
-                        // Si es un separador, agregar la línea formateada
-                        append(separatorLine)
-                    } else {
-                        // Si no es un separador, procesar títulos, citas, asteriscos y listas
-                        val titleLine = processTitles(line)
-
-                        if (titleLine.text != line) {
-                            // Si es un título, agregar la línea formateada
-                            append(titleLine)
-                        } else {
-                            // Procesar citas (líneas que comienzan con >)
-                            val quoteLine = processQuotes(line)
-
-                            if (quoteLine.text != line) {
-                                // Si es una cita, agregar la línea formateada
-                                append(quoteLine)
-                            } else {
-                                // Si no es una cita, procesar asteriscos y listas
-                                val asterisksLine = processAsterisks(line)
-                                val listLine = processLists(asterisksLine)
-                                append(listLine)
+                    // Primero verificamos si la línea es un comentario de código
+                        if (line.trim().startsWith("//")) {
+                            // Si es un comentario de código, aplicar color gris
+                            withStyle(SpanStyle(color = themeColors.textComment)) {
+                                append(line)
                             }
+                        } else {
+                            // Procesar separadores (***, ---, ___) primero
+                            val separatorLine = processSeparators(line)
+
+                            if (separatorLine.text != line) {
+                                // Si es un separador, agregar la línea formateada
+                                append(separatorLine)
+                            } else {
+                                // Si no es un separador, procesar títulos, citas, asteriscos y listas
+                                val titleLine = processTitles(line)
+
+                                if (titleLine.text != line) {
+                                    // Si es un título, agregar la línea formateada
+                                    append(titleLine)
+                                } else {
+                                    // Procesar citas (líneas que comienzan con >)
+                                    val quoteLine = processQuotes(line)
+
+                                    if (quoteLine.text != line) {
+                                        // Si es una cita, agregar la línea formateada
+                                        append(quoteLine)
+                                    } else {
+                                        // Si no es una cita, procesar asteriscos y listas
+                                        val asterisksLine = processAsterisks(line)
+                                        val listLine = processLists(asterisksLine)
+                                        append(listLine)
+                                    }
+                                }
+                            }
+
                         }
-                    }
 
                     // Agregar un salto de línea después de cada línea
                     append("\n")

@@ -8,12 +8,16 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.mylifeorganizer.repositories.NotesRepository
 import com.example.mylifeorganizer.room.CategoryEntity
+import com.example.mylifeorganizer.room.CategoryFinanceEntity
 import com.example.mylifeorganizer.room.CategoryTaskEntity
+import com.example.mylifeorganizer.room.FinanceEntity
+import com.example.mylifeorganizer.room.FinanceWithDetails
 import com.example.mylifeorganizer.room.FolderEntity
 import com.example.mylifeorganizer.room.FolderWithSubfolders
 import com.example.mylifeorganizer.room.NoteEntity
 import com.example.mylifeorganizer.room.NoteWithCategories
 import com.example.mylifeorganizer.room.NoteWithoutContentWithCategories
+import com.example.mylifeorganizer.room.PaymentMethodEntity
 import com.example.mylifeorganizer.room.TaskEntity
 import com.example.mylifeorganizer.room.TaskHistoryEntity
 import com.example.mylifeorganizer.room.TaskOccurrenceEntity
@@ -387,6 +391,87 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
 
     fun getHistoryForOccurrence(occurrenceId: Long): Flow<List<TaskHistoryEntity>> {
         return notesRepository.getHistoryForOccurrence(occurrenceId)
+    }
+
+
+    // ----------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+
+    //                                  FINANZAS
+
+    // LiveData para observar datos en la UI
+    val finances: LiveData<List<FinanceEntity>> = notesRepository.getAllFinances().asLiveData()
+    val categoriesFinance: LiveData<List<CategoryFinanceEntity>> = notesRepository.getAllCategoriesFinance().asLiveData()
+    val paymentMethods: LiveData<List<PaymentMethodEntity>> = notesRepository.getAllPaymentMethods().asLiveData()
+    val financesWithDetails: LiveData<List<FinanceWithDetails>> = notesRepository.getAllFinancesWithDetails().asLiveData()
+
+    // Agregar finanza, categoría, método de pago y relaciones
+    fun addFinance(finance: FinanceEntity) {
+        viewModelScope.launch {
+            notesRepository.insertFinance(finance)
+        }
+    }
+
+    fun addCategoryFinance(category: CategoryFinanceEntity) {
+        viewModelScope.launch {
+            notesRepository.insertCategoryFinance(category)
+        }
+    }
+
+    fun addPaymentMethod(paymentMethod: PaymentMethodEntity) {
+        viewModelScope.launch {
+            notesRepository.insertPaymentMethod(paymentMethod)
+        }
+    }
+
+    fun linkFinanceToCategory(financeId: Long, categoryId: Long) {
+        viewModelScope.launch {
+            notesRepository.addFinanceToCategory(financeId, categoryId)
+        }
+    }
+
+    fun linkFinanceToPaymentMethod(financeId: Long, paymentId: Long) {
+        viewModelScope.launch {
+            notesRepository.addFinanceToPaymentMethod(financeId, paymentId)
+        }
+    }
+
+    // Actualizar datos
+    fun updateFinance(finance: FinanceEntity) {
+        viewModelScope.launch {
+            notesRepository.updateFinance(finance)
+        }
+    }
+
+    fun updateCategoryFinance(category: CategoryFinanceEntity) {
+        viewModelScope.launch {
+            notesRepository.updateCategoryFinance(category)
+        }
+    }
+
+    fun updatePaymentMethod(paymentMethod: PaymentMethodEntity) {
+        viewModelScope.launch {
+            notesRepository.updatePaymentMethod(paymentMethod)
+        }
+    }
+
+    // Eliminar datos
+    fun deleteFinance(finance: FinanceEntity) {
+        viewModelScope.launch {
+            notesRepository.deleteFinance(finance)
+        }
+    }
+
+    fun deleteCategoryFinance(category: CategoryFinanceEntity) {
+        viewModelScope.launch {
+            notesRepository.deleteCategoryFinance(category)
+        }
+    }
+
+    fun deletePaymentMethod(paymentMethod: PaymentMethodEntity) {
+        viewModelScope.launch {
+            notesRepository.deletePaymentMethod(paymentMethod)
+        }
     }
 
 }

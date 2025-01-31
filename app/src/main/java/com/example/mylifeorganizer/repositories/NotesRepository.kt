@@ -1,12 +1,18 @@
 package com.example.mylifeorganizer.repositories
 
 import com.example.mylifeorganizer.room.CategoryEntity
+import com.example.mylifeorganizer.room.CategoryFinanceEntity
 import com.example.mylifeorganizer.room.CategoryTaskEntity
+import com.example.mylifeorganizer.room.FinanceCategoryCrossRef
+import com.example.mylifeorganizer.room.FinanceEntity
+import com.example.mylifeorganizer.room.FinancePaymentCrossRef
+import com.example.mylifeorganizer.room.FinanceWithDetails
 import com.example.mylifeorganizer.room.FolderEntity
 import com.example.mylifeorganizer.room.FolderWithSubfolders
 import com.example.mylifeorganizer.room.NoteCategoryCrossRef
 import com.example.mylifeorganizer.room.NoteDB
 import com.example.mylifeorganizer.room.NoteEntity
+import com.example.mylifeorganizer.room.PaymentMethodEntity
 import com.example.mylifeorganizer.room.TaskCategoryCrossRef
 import com.example.mylifeorganizer.room.TaskEntity
 import com.example.mylifeorganizer.room.TaskHistoryEntity
@@ -220,5 +226,55 @@ class NotesRepository (val noteDB: NoteDB) {
 
 
 
+    // ----------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+
+    //                                  FINANZAS
+
+
+    // Insertar datos
+    suspend fun insertFinance(finance: FinanceEntity): Long = noteDAO.insertFinance(finance)
+
+    suspend fun insertCategoryFinance(category: CategoryFinanceEntity): Long = noteDAO.insertCategoryFinance(category)
+
+    suspend fun insertPaymentMethod(paymentMethod: PaymentMethodEntity): Long = noteDAO.insertPaymentMethod(paymentMethod)
+
+    // Relacionar finanza con categorías y métodos de pago
+    suspend fun addFinanceToCategory(financeId: Long, categoryId: Long) {
+        noteDAO.insertFinanceCategoryCrossRef(FinanceCategoryCrossRef(financeId, categoryId))
+    }
+
+    suspend fun addFinanceToPaymentMethod(financeId: Long, paymentId: Long) {
+        noteDAO.insertFinancePaymentCrossRef(FinancePaymentCrossRef(financeId, paymentId))
+    }
+
+    // Obtener listas individuales
+    fun getAllFinances(): Flow<List<FinanceEntity>> = noteDAO.getAllFinances()
+
+    fun getAllCategoriesFinance(): Flow<List<CategoryFinanceEntity>> = noteDAO.getAllCategoriesFinance()
+
+    fun getAllPaymentMethods(): Flow<List<PaymentMethodEntity>> = noteDAO.getAllPaymentMethods()
+
+    // Obtener finanzas con detalles
+    fun getAllFinancesWithDetails(): Flow<List<FinanceWithDetails>> = noteDAO.getAllFinancesWithDetails()
+
+    // Obtener finanzas filtradas
+    fun getFinancesByCategory(categoryId: Long): Flow<List<FinanceEntity>> = noteDAO.getFinancesByCategory(categoryId)
+
+    fun getFinancesByPaymentMethod(paymentId: Long): Flow<List<FinanceEntity>> = noteDAO.getFinancesByPaymentMethod(paymentId)
+
+    // Actualizar datos
+    suspend fun updateFinance(finance: FinanceEntity) = noteDAO.updateFinance(finance)
+
+    suspend fun updateCategoryFinance(category: CategoryFinanceEntity) = noteDAO.updateCategoryFinance(category)
+
+    suspend fun updatePaymentMethod(paymentMethod: PaymentMethodEntity) = noteDAO.updatePaymentMethod(paymentMethod)
+
+    // Eliminar datos
+    suspend fun deleteFinance(finance: FinanceEntity) = noteDAO.deleteFinance(finance)
+
+    suspend fun deleteCategoryFinance(category: CategoryFinanceEntity) = noteDAO.deleteCategoryFinance(category)
+
+    suspend fun deletePaymentMethod(paymentMethod: PaymentMethodEntity) = noteDAO.deletePaymentMethod(paymentMethod)
 
 }

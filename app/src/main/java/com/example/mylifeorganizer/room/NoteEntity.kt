@@ -243,17 +243,6 @@ data class TaskWithCategories(
     val categories: List<CategoryTaskEntity>
 )
 
-data class CategoryTaskWithTasks(
-    @Embedded
-    val category: CategoryTaskEntity,
-    @Relation(
-        parentColumn = "categoryId",
-        entityColumn = "taskId",
-        associateBy = androidx.room.Junction(TaskCategoryCrossRef::class)
-    )
-    val tasks: List<TaskEntity>
-)
-
 
 // ------------------- GOALS -----------------------------------
 
@@ -289,7 +278,7 @@ data class FinanceEntity(
     val description: String = "",
     val type: String, // expense or income
     val amount: Double,
-    val date: Long,
+    val date: String, // "yyyy/MM/dd"
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),
 )
@@ -314,7 +303,29 @@ data class FinanceCategoryCrossRef(
     val categoryId: Long
 )
 
-data class FinanceWithCategories(
+
+@Entity(tableName = "payment_methods")
+data class PaymentMethodEntity(
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "paymentId")
+    val paymentId: Long = 0,
+    val name: String = "",
+    val bgColor: String,
+)
+
+@Entity(
+    primaryKeys = ["financeId", "paymentId"],
+    tableName = "finance_payment_cross_ref"
+)
+data class FinancePaymentCrossRef(
+    @ColumnInfo(name = "financeId")
+    val financeId: Long,
+    @ColumnInfo(name = "paymentId")
+    val paymentId: Long
+)
+
+
+data class FinanceWithDetails(
     @Embedded
     val finance: FinanceEntity,
     @Relation(
@@ -322,16 +333,11 @@ data class FinanceWithCategories(
         entityColumn = "categoryId",
         associateBy = androidx.room.Junction(FinanceCategoryCrossRef::class)
     )
-    val categories: List<CategoryFinanceEntity>
-)
-
-data class CategoryFinanceWithFinances(
-    @Embedded
-    val category: CategoryFinanceEntity,
+    val categories: List<CategoryFinanceEntity>,
     @Relation(
-        parentColumn = "categoryId",
-        entityColumn = "financeId",
-        associateBy = androidx.room.Junction(FinanceCategoryCrossRef::class)
+        parentColumn = "financeId",
+        entityColumn = "paymentId",
+        associateBy = androidx.room.Junction(FinancePaymentCrossRef::class)
     )
-    val finances: List<FinanceEntity>
+    val paymentMethods: List<PaymentMethodEntity>
 )
