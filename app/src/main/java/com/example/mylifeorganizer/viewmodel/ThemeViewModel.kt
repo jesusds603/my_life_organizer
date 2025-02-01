@@ -82,7 +82,9 @@ class ThemeViewModel : ViewModel() {
                 Color(0xFFF51BD8),
                 Color(0xFFF63939),
                 Color(0xFF7D30F8)
-            )
+            ),
+            bgExpense = Color(0xFFC90926),
+            bgIncome = Color(0xFF219E05)
         )
     )
 
@@ -137,7 +139,9 @@ class ThemeViewModel : ViewModel() {
                     Color(0xFFF51BD8),
                     Color(0xFFF63939),
                     Color(0xFF7D30F8)
-                )
+                ),
+                bgExpense = Color(0xFFC90926),
+                bgIncome = Color(0xFF219E05)
             )
         } else {
             ThemeColors(
@@ -187,7 +191,9 @@ class ThemeViewModel : ViewModel() {
                     Color(0xFFB8159D),
                     Color(0xFFE91E63),
                     Color(0xFF7D30F8)
-                )
+                ),
+                bgExpense = Color(0xFFF33450),
+                bgIncome = Color(0xFF6BFC4B)
             )
         }
     }
@@ -211,7 +217,9 @@ data class ThemeColors(
     val quickCard: QuickCardColors,
     val backgroundTransparent1: Color,
     val categoriesNotes: CategoriesNotes,
-    val verticalLinesNotes: List<Color>
+    val verticalLinesNotes: List<Color>,
+    val bgExpense: Color,
+    val bgIncome: Color,
 ) {
     data class QuickCardColors(
         val addNote: Color,

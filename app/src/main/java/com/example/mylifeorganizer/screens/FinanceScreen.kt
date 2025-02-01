@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -18,7 +19,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.components.finance.create.WindowDialog
 import com.example.mylifeorganizer.components.finance.screen.MainContent
 import com.example.mylifeorganizer.components.finance.screen.RowCategoriesFinance
+import com.example.mylifeorganizer.components.finance.screen.RowDates
 import com.example.mylifeorganizer.components.finance.screen.RowPaymentMethods
+import com.example.mylifeorganizer.room.FinanceWithCategories
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
@@ -26,8 +29,11 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 @Composable
 fun FinanceScreen() {
     val appViewModel: AppViewModel = viewModel()
+    val noteViewModel = appViewModel.noteViewModel
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+
+    val financeWithCategories: List<FinanceWithCategories> = noteViewModel.financesWithCategories.collectAsState(initial = emptyList()).value
 
     val isAddingFinance = appViewModel.isAddingFinance.value
 
@@ -41,7 +47,13 @@ fun FinanceScreen() {
 
             RowPaymentMethods()
 
-            MainContent()
+            RowDates(
+                financeWithCategories = financeWithCategories
+            )
+
+            MainContent(
+                financeWithCategories = financeWithCategories
+            )
         }
 
         FloatingActionButton(

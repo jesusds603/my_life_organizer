@@ -18,6 +18,7 @@ import com.example.mylifeorganizer.room.NoteDB
 import com.example.mylifeorganizer.room.NoteEntity
 import com.example.mylifeorganizer.room.PaymentMethodEntity
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 class AppViewModel(application: Application) : AndroidViewModel(application)  {
@@ -283,25 +284,28 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
         paymentMethodForNewFinance = paymentMethod
     }
 
-    var selectedCategoryForFinanceScreen by mutableStateOf("")
+    var selectedCategoryForFinanceScreen by mutableStateOf("All")
     fun updateSelectedCategoryForFinanceScreen(category: String) {
         selectedCategoryForFinanceScreen = category
     }
 
-    var selectedPaymentMethodForFinanceScreen by mutableStateOf("")
+    var selectedPaymentMethodForFinanceScreen by mutableStateOf("All")
     fun updateSelectedPaymentMethodForFinanceScreen(paymentMethod: String) {
         selectedPaymentMethodForFinanceScreen = paymentMethod
     }
 
-
-}
-
-class AppViewModelFactory(private val application: Application) : ViewModelProvider.Factory {
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(AppViewModel::class.java)) {
-            return AppViewModel(application) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
+    // Función para obtener el mes actual en formato "yyyy/MM"
+    private fun getCurrentMonth(): String {
+        val currentDate = LocalDate.now()
+        val monthFormatter = DateTimeFormatter.ofPattern("yyyy/MM")
+        return currentDate.format(monthFormatter)
     }
+
+    var selectedMonthScreen by mutableStateOf(getCurrentMonth())
+    fun updateSelectedMonthScreen(month: String) {
+        selectedMonthScreen = month
+    }
+
+
+
 }
