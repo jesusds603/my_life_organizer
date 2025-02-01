@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -76,10 +77,11 @@ fun MainContent(
         }
     }
 
-    // 🔹 Ordenar las finanzas por fecha (más reciente arriba)
-    val sortedFinances = filteredFinances.sortedByDescending {
-        LocalDate.parse(it.finance.date, dateFormatter)
-    }
+    // 🔹 Agrupar las finanzas por fecha
+    val groupedFinances = filteredFinances
+        .groupBy { LocalDate.parse(it.finance.date, dateFormatter).toString() }
+        .toSortedMap(reverseOrder()) // Esto ordena las fechas de forma ascendente
+
 
 
     Column (
@@ -92,17 +94,26 @@ fun MainContent(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
-            items(sortedFinances) { financeItem ->
-                // Obtener solo el name y bgColor del paymentMethod
-                val paymentMethod = paymentMethods.find { it.paymentId == financeItem.finance.paymentId }
-                val paymentName = paymentMethod?.name ?: ""
-                val paymentColor = paymentMethod?.bgColor ?: ""
-
-                FinanceCard(
-                    finance = financeItem,
-                    paymentName = paymentName,
-                    paymentColor = paymentColor
+            items(groupedFinances.toList()) { (date, financesForDay) ->
+                // Mostrar la fecha
+                Text(
+                    text = date, // Este es el día en formato yyyy/MM/dd
+                    color = themeColors.text1,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 1.dp)
                 )
+
+                // Mostrar las finanzas de ese día
+                financesForDay.forEach { financeItem ->
+                    val paymentMethod = paymentMethods.find { it.paymentId == financeItem.finance.paymentId }
+                    val paymentName = paymentMethod?.name ?: ""
+                    val paymentColor = paymentMethod?.bgColor ?: ""
+
+                    FinanceCard(
+                        finance = financeItem,
+                        paymentName = paymentName,
+                        paymentColor = paymentColor
+                    )
+                }
             }
         }
     }

@@ -3,8 +3,10 @@ package com.example.mylifeorganizer.components.finance.screen
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,6 +16,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
@@ -55,33 +58,39 @@ fun FinanceCard(
             .background(backgroundColor)
             .padding(16.dp)
     ) {
-        // Título de la tarjeta
-        Text(
-            text = finance.finance.title,
-            color = themeColors.text1,
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp
-        )
+        Row (
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            // Título de la tarjeta
+            Text(
+                text = finance.finance.title,
+                color = themeColors.text1,
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp
+            )
+
+
+            // Monto de la tarjeta
+            Box(
+                modifier = Modifier
+                    .padding(1.dp)
+                    .background(themeColors.backGround1)
+                    .padding(2.dp)
+
+            ) {
+                Text(
+                    text = "\$ ${finance.finance.amount}",
+                    color = themeColors.text1,
+                    fontSize = 16.sp
+                )
+            }
+
+        }
 
         Spacer(modifier = Modifier.height(4.dp))
-
-        // Fecha de la tarjeta
-        Text(
-            text = LocalDate.parse(finance.finance.date, dateFormatter).format(monthFormatter),
-            color = themeColors.text1,
-            fontSize = 14.sp
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        // Monto de la tarjeta
-        Text(
-            text = "Amount: \$${finance.finance.amount}",
-            color = themeColors.text1,
-            fontSize = 16.sp
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
 
         // Método de pago de la tarjeta
         Box(
@@ -93,9 +102,11 @@ fun FinanceCard(
             Text(
                 text = paymentName,
                 color = themeColors.text1,
-                fontSize = 16.sp
             )
         }
+
+
+        Spacer(modifier = Modifier.height(4.dp))
 
         // Categorias
         LazyRow {
