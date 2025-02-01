@@ -36,6 +36,7 @@ fun FinanceScreen() {
     val financeWithCategories: List<FinanceWithCategories> = noteViewModel.financesWithCategories.collectAsState(initial = emptyList()).value
 
     val isAddingFinance = appViewModel.isAddingFinance.value
+    val isEditingFinance = appViewModel.isEditingFinance.value
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -69,7 +70,7 @@ fun FinanceScreen() {
             Text("+", fontSize = 24.sp, color = themeColors.text1)
         }
 
-        if (isAddingFinance) {
+        if (isAddingFinance || isEditingFinance) {
             WindowDialog()
         }
 

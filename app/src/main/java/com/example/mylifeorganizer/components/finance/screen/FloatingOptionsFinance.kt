@@ -41,7 +41,7 @@ fun FloatingOptionsFinance(
                 )
             },
             onClick = {
-                appViewModel.toggleAddingFinance()
+                appViewModel.toggleEditingFinance()
                 appViewModel.updateTitleForNewFinance(finance.finance.title)
                 appViewModel.updateDescriptionForNewFinance(finance.finance.description)
                 appViewModel.updateAmountForNewFinance(finance.finance.amount.toLong())
@@ -58,7 +58,10 @@ fun FloatingOptionsFinance(
                     color = themeColors.text1
                 )
             },
-            onClick = {},
+            onClick = {
+                noteViewModel.deleteFinance(finance.finance)
+                changeShowMenu(false)
+            },
             modifier = Modifier.background(themeColors.backGround3)
         )
     }

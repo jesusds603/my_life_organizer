@@ -22,7 +22,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -100,7 +102,10 @@ fun MainContent(
                 Text(
                     text = date, // Este es el día en formato yyyy/MM/dd
                     color = themeColors.text1,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 1.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 1.dp),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.Monospace,
                 )
 
                 // Mostrar las finanzas de ese día

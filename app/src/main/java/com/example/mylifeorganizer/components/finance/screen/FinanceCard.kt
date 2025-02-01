@@ -64,10 +64,10 @@ fun FinanceCard(
     Column (
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(4.dp)
             .clip(RoundedCornerShape(8.dp))
             .background(backgroundColor)
-            .padding(16.dp)
+            .padding(4.dp)
             .pointerInput(Unit) {
                 detectTapGestures(
                     onLongPress = { showMenu = true},
@@ -89,6 +89,50 @@ fun FinanceCard(
                 fontSize = 18.sp
             )
 
+            // Método de pago de la tarjeta
+            Box(
+                modifier = Modifier
+                    .padding(1.dp)
+                    .background(themeViewModel.getCategoryColor(paymentMethod.bgColor))
+                    .padding(1.dp)
+            ) {
+                Text(
+                    text = paymentMethod.name,
+                    color = themeColors.text1,
+                )
+            }
+
+        }
+
+        Spacer(modifier = Modifier.height(2.dp))
+
+        Row (
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            // Categorias
+            LazyRow (
+                modifier = Modifier
+                    .weight(1f)
+            ) {
+                items(finance.categories) { category ->
+                    Box(
+                        modifier = Modifier
+                            .padding(1.dp)
+                            .background(themeViewModel.getCategoryColor(category.bgColor))
+                            .padding(1.dp)
+
+                    ) {
+                        Text(
+                            text = category.name,
+                            color = themeColors.text1,
+                            fontSize = 12.sp
+                        )
+                    }
+                }
+            }
 
             // Monto de la tarjeta
             Box(
@@ -104,45 +148,9 @@ fun FinanceCard(
                     fontSize = 16.sp
                 )
             }
-
-        }
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        // Método de pago de la tarjeta
-        Box(
-            modifier = Modifier
-                .padding(1.dp)
-                .background(themeViewModel.getCategoryColor(paymentMethod.bgColor))
-                .padding(1.dp)
-        ) {
-            Text(
-                text = paymentMethod.name,
-                color = themeColors.text1,
-            )
         }
 
 
-        Spacer(modifier = Modifier.height(4.dp))
-
-        // Categorias
-        LazyRow {
-            items(finance.categories) { category ->
-                Box(
-                    modifier = Modifier
-                        .padding(1.dp)
-                        .background(themeViewModel.getCategoryColor(category.bgColor))
-                        .padding(1.dp)
-
-                ) {
-                    Text(
-                        text = category.name,
-                        color = themeColors.text1,
-                        fontSize = 12.sp
-                    )
-                }
-            }
-        }
 
         FloatingOptionsFinance(
             finance = finance,

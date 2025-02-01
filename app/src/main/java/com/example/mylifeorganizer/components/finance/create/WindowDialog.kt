@@ -94,6 +94,9 @@ fun WindowDialog() {
 
                             }
                         )
+
+                        appViewModel.toggleAddingFinance()
+
                     }
                     if(isEditingFinance && !isAddingFinance) {
                         noteViewModel.updateFinance(
@@ -119,8 +122,9 @@ fun WindowDialog() {
                                 }
                             }
                         )
+
+                        appViewModel.toggleEditingFinance()
                     }
-                    appViewModel.toggleAddingFinance()
                     appViewModel.updateTitleForNewFinance("")
                     appViewModel.updateDescriptionForNewFinance("")
                     appViewModel.updateAmountForNewFinance(0)
