@@ -3,6 +3,7 @@ package com.example.mylifeorganizer.components.finance.screen
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,39 +17,49 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.room.FinanceWithCategories
+import com.example.mylifeorganizer.room.PaymentMethodEntity
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+
 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun FinanceCard(
     finance: FinanceWithCategories,
-    paymentName: String,
-    paymentColor: String
+    paymentMethod: PaymentMethodEntity
 ) {
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
 
-    // Formato de fecha
-    val dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")
-    val monthFormatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
+    var showMenu by remember { mutableStateOf(false) }
 
     // Obtener color de fondo dependiendo del tipo (income/expense)
-    val backgroundColor = if (finance.finance.type == "income") {
-        themeColors.bgIncome
+    val backgroundColor = if(showMenu) {
+        themeColors.backGround4
     } else {
-        themeColors.bgExpense
+        if (finance.finance.type == "income") {
+            themeColors.bgIncome
+        } else {
+            themeColors.bgExpense
+        }
     }
+
+
+
+
 
     Column (
         modifier = Modifier
@@ -57,6 +68,12 @@ fun FinanceCard(
             .clip(RoundedCornerShape(8.dp))
             .background(backgroundColor)
             .padding(16.dp)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onLongPress = { showMenu = true},
+                    onTap = {}
+                )
+            }
     ) {
         Row (
             modifier = Modifier
@@ -96,11 +113,11 @@ fun FinanceCard(
         Box(
             modifier = Modifier
                 .padding(1.dp)
-                .background(themeViewModel.getCategoryColor(paymentColor))
+                .background(themeViewModel.getCategoryColor(paymentMethod.bgColor))
                 .padding(1.dp)
         ) {
             Text(
-                text = paymentName,
+                text = paymentMethod.name,
                 color = themeColors.text1,
             )
         }
@@ -126,5 +143,12 @@ fun FinanceCard(
                 }
             }
         }
+
+        FloatingOptionsFinance(
+            finance = finance,
+            showMenu = showMenu,
+            changeShowMenu = { showMenu = it},
+            paymentMethod = paymentMethod
+        )
     }
 }

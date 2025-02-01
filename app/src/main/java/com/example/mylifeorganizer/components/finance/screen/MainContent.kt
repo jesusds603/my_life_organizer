@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.room.FinanceWithCategories
+import com.example.mylifeorganizer.room.PaymentMethodEntity
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 import java.time.LocalDate
@@ -105,13 +106,10 @@ fun MainContent(
                 // Mostrar las finanzas de ese día
                 financesForDay.forEach { financeItem ->
                     val paymentMethod = paymentMethods.find { it.paymentId == financeItem.finance.paymentId }
-                    val paymentName = paymentMethod?.name ?: ""
-                    val paymentColor = paymentMethod?.bgColor ?: ""
 
                     FinanceCard(
                         finance = financeItem,
-                        paymentName = paymentName,
-                        paymentColor = paymentColor
+                        paymentMethod = paymentMethod ?: PaymentMethodEntity(0, "", "")
                     )
                 }
             }

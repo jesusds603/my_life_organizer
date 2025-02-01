@@ -420,9 +420,10 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
     }
 
     // Actualizar datos
-    fun updateFinance(finance: FinanceEntity) {
+    fun updateFinance(finance: FinanceEntity, onFinanceUpdated: (Long) -> Unit) {
         viewModelScope.launch {
             notesRepository.updateFinance(finance)
+            onFinanceUpdated(finance.financeId)
         }
     }
 
@@ -442,6 +443,12 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
     fun deleteFinance(finance: FinanceEntity) {
         viewModelScope.launch {
             notesRepository.deleteFinance(finance)
+        }
+    }
+
+    fun deleteFinanceCategories(financeId: Long) {
+        viewModelScope.launch {
+            notesRepository.deleteFinanceCategories(financeId)
         }
     }
 

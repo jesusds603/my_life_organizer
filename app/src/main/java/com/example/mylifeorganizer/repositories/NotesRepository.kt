@@ -259,6 +259,10 @@ class NotesRepository (val noteDB: NoteDB) {
     // Eliminar datos
     suspend fun deleteFinance(finance: FinanceEntity) = noteDAO.deleteFinance(finance)
 
+    suspend fun deleteFinanceCategories(financeId: Long) {
+        noteDAO.deleteFinanceCategories(financeId)
+    }
+
     suspend fun deleteCategoryFinance(category: CategoryFinanceEntity) = noteDAO.deleteCategoryFinance(category)
 
     suspend fun deletePaymentMethod(paymentMethod: PaymentMethodEntity) = noteDAO.deletePaymentMethod(paymentMethod)

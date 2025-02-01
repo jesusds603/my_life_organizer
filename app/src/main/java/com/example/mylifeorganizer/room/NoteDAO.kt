@@ -319,6 +319,10 @@ interface NoteDao {
     @Delete
     suspend fun deleteFinance(finance: FinanceEntity)
 
+    // Eliminar todas las categorías relacionadas con una tarea
+    @Query("DELETE FROM finance_category_cross_ref WHERE financeId = :financeId")
+    suspend fun deleteFinanceCategories(financeId: Long)
+
     @Delete
     suspend fun deleteCategoryFinance(category: CategoryFinanceEntity)
 

@@ -235,6 +235,16 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
         isAddingFinance.value = !isAddingFinance.value
     }
 
+    val isEditingFinance = mutableStateOf(false)
+    fun toggleEditingFinance() {
+        isEditingFinance.value = !isEditingFinance.value
+    }
+
+    val financeIdForEditing = mutableStateOf<Long?>(null)
+    fun updateFinanceIdForEditing(financeId: Long?) {
+        financeIdForEditing.value = financeId
+    }
+
     val isAddingDateForFinance = mutableStateOf(false)
     fun toggleAddingDateForFinance() {
         isAddingDateForFinance.value = !isAddingDateForFinance.value

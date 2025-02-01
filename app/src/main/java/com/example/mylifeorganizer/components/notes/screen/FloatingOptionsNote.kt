@@ -42,7 +42,7 @@ fun FloatingOptionsNote(
     val noteViewModel = appViewModel.noteViewModel
     val themeViewModel: ThemeViewModel = viewModel()
 
-    var themeColors = themeViewModel.themeColors.value
+    val themeColors = themeViewModel.themeColors.value
     val noteId = appViewModel.selectedNoteId.value
 
 

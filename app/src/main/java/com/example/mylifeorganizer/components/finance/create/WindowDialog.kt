@@ -51,11 +51,15 @@ fun WindowDialog() {
     val appViewModel: AppViewModel = viewModel()
     val noteViewModel = appViewModel.noteViewModel
 
-    var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var amount by remember { mutableStateOf("") }
+    val titleForNewFinance = appViewModel.titleForNewFinance
+    val descriptionForNewFinance = appViewModel.descriptionForNewFinance
+    val amountForNewFinance = appViewModel.amountForNewFinance
     val dateForNewFinance = appViewModel.dateForNewFinance
-    var isExpense by remember { mutableStateOf(true) } // Estado para alternar tipo
+    val isExpenseForNewFinance = appViewModel.isExpenseForNewFinance
+
+    val financeIdForEditing = appViewModel.financeIdForEditing
+    val isAddingFinance = appViewModel.isAddingFinance.value
+    val isEditingFinance = appViewModel.isEditingFinance.value
     val isAddingDateForFinance = appViewModel.isAddingDateForFinance.value
     val isAddingCategoryForFinance = appViewModel.isAddingCategoryForFinance.value
     val isAddingPaymentMethodForFinance = appViewModel.isAddingPaymentMethodForFinance.value
@@ -69,27 +73,59 @@ fun WindowDialog() {
         confirmButton = {
             Button(
                 onClick = {
-                    noteViewModel.addFinance(
-                        FinanceEntity(
-                            title = title,
-                            description = description,
-                            amount = amount.toDouble(),
-                            date = if(dateForNewFinance == "Today") LocalDate.now().format(
-                                DateTimeFormatter.ofPattern("yyyy/MM/dd")) else dateForNewFinance,
-                            type = if (isExpense) "expense" else "income",
-                            paymentId = paymentMethodForNewFinance?.paymentId
-                        ),
-                        onFinanceAdded = { financeId ->
-                            selectedCategoriesForNewFinance.forEach { category ->
-                                noteViewModel.linkFinanceToCategory(
-                                    financeId,
-                                    category.categoryId
-                                )
-                            }
+                    if(isAddingFinance && !isEditingFinance) {
+                        noteViewModel.addFinance(
+                            FinanceEntity(
+                                title = titleForNewFinance,
+                                description = descriptionForNewFinance,
+                                amount = amountForNewFinance.toDouble(),
+                                date = if(dateForNewFinance == "Today") LocalDate.now().format(
+                                    DateTimeFormatter.ofPattern("yyyy/MM/dd")) else dateForNewFinance,
+                                type = if (isExpenseForNewFinance) "expense" else "income",
+                                paymentId = paymentMethodForNewFinance?.paymentId
+                            ),
+                            onFinanceAdded = { financeId ->
+                                selectedCategoriesForNewFinance.forEach { category ->
+                                    noteViewModel.linkFinanceToCategory(
+                                        financeId,
+                                        category.categoryId
+                                    )
+                                }
 
-                        }
-                    )
+                            }
+                        )
+                    }
+                    if(isEditingFinance && !isAddingFinance) {
+                        noteViewModel.updateFinance(
+                            FinanceEntity(
+                                financeId = financeIdForEditing.value!!,
+                                title = titleForNewFinance,
+                                description = descriptionForNewFinance,
+                                amount = amountForNewFinance.toDouble(),
+                                date = if(dateForNewFinance == "Today") LocalDate.now().format(
+                                    DateTimeFormatter.ofPattern("yyyy/MM/dd")) else dateForNewFinance,
+                                type = if (isExpenseForNewFinance) "expense" else "income",
+                            ),
+                            onFinanceUpdated = { financeId ->
+                                // Eliminamos todas las relaciones anteriores de categorias
+                                noteViewModel.deleteFinanceCategories(financeId)
+
+                                // Linkear las nuevas categorias
+                                selectedCategoriesForNewFinance.forEach { category ->
+                                    noteViewModel.linkFinanceToCategory(
+                                        financeId,
+                                        category.categoryId
+                                    )
+                                }
+                            }
+                        )
+                    }
                     appViewModel.toggleAddingFinance()
+                    appViewModel.updateTitleForNewFinance("")
+                    appViewModel.updateDescriptionForNewFinance("")
+                    appViewModel.updateAmountForNewFinance(0)
+                    appViewModel.updateDateForNewFinance("Today")
+
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = themeColors.backGround2
@@ -100,7 +136,13 @@ fun WindowDialog() {
         },
         dismissButton = {
             Button(
-                onClick = { appViewModel.toggleAddingFinance() },
+                onClick = {
+                    appViewModel.toggleAddingFinance()
+                    appViewModel.updateTitleForNewFinance("")
+                    appViewModel.updateDescriptionForNewFinance("")
+                    appViewModel.updateAmountForNewFinance(0)
+                    appViewModel.updateDateForNewFinance("Today")
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = themeColors.backGround2
                 )
@@ -117,8 +159,8 @@ fun WindowDialog() {
         text = {
             Column {
                 TextField(
-                    value = title,
-                    onValueChange = { title = it },
+                    value = titleForNewFinance,
+                    onValueChange = { appViewModel.updateTitleForNewFinance(it) },
                     label = { Text("Title", color = themeColors.text1) },
                     singleLine = true,
                     colors = TextFieldDefaults.colors(
@@ -129,8 +171,8 @@ fun WindowDialog() {
                     )
                 )
                 TextField(
-                    value = description,
-                    onValueChange = { description = it },
+                    value = descriptionForNewFinance,
+                    onValueChange = { appViewModel.updateDescriptionForNewFinance(it) },
                     label = { Text("Description", color = themeColors.text1) },
                     colors = TextFieldDefaults.colors(
                         focusedTextColor = themeColors.text1,
@@ -140,8 +182,10 @@ fun WindowDialog() {
                     )
                 )
                 TextField(
-                    value = amount,
-                    onValueChange = { amount = it.filter { c -> c.isDigit() || c == '.' } },
+                    value = amountForNewFinance.toString(),
+                    onValueChange = { input ->
+                        appViewModel.updateAmountForNewFinance(input.toLong()) // Actualiza el ViewModel
+                    },
                     label = { Text("Amount $", color = themeColors.text1) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -271,15 +315,15 @@ fun WindowDialog() {
 
                 // Botón para alternar entre Expense e Income
                 Button(
-                    onClick = { isExpense = !isExpense },
+                    onClick = { appViewModel.toggleIsExpenseForNewFinance() },
                     colors = ButtonDefaults.buttonColors(
-                        contentColor = if(isExpense) themeColors.text1 else Color.Black,
-                        containerColor = if (isExpense) Color.Red else Color.Green
+                        contentColor = if(isExpenseForNewFinance) themeColors.text1 else Color.Black,
+                        containerColor = if (isExpenseForNewFinance) Color.Red else Color.Green
                     )
                 ) {
                     Text(
-                        text = if (isExpense) "Expense" else "Income",
-                        color = if(isExpense) Color.White else Color.Black
+                        text = if (isExpenseForNewFinance) "Expense" else "Income",
+                        color = if(isExpenseForNewFinance) Color.White else Color.Black
                     )
                 }
             }
