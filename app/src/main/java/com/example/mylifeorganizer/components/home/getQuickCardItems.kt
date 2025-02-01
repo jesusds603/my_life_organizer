@@ -52,7 +52,10 @@ fun getQuickCardItems(
             title = "+ Income/Expense",
             subtitle = "Write your incomes or expenses from today",
             iconResId = R.drawable.baseline_attach_money_24,
-            onClick = {  },
+            onClick = {
+                appViewModel.toggleAddingFinance()
+                appViewModel.changeTab("Finance")
+            },
             backgroundColor = themeColors.quickCard.addIncome
         ),
         QuickCardItem(

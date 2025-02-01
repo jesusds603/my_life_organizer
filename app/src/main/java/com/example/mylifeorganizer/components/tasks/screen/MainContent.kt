@@ -37,6 +37,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.R
 import com.example.mylifeorganizer.room.TaskEntity
@@ -287,17 +288,20 @@ fun MainContent() {
                             Text(
                                 text = date,
                                 color = themeColors.text1,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 12.sp
                             )
                             Text(
                                 text = dayOfWeek,
                                 color = themeColors.text1,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 12.sp
                             )
                             Text(
                                 text = daysText,
                                 color = themeColors.text1,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 12.sp
                             )
                         }
                         HorizontalDivider(thickness = 1.dp, color = Color.Gray)
