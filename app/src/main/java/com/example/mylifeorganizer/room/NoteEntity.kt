@@ -242,7 +242,7 @@ data class HabitEntity(
     val updatedAt: Long = System.currentTimeMillis(),
     val color: String,
     val icon: String,
-    val doItAt: String, // "morning", "afternoon", "evening", "all" or "hh:mm"
+    val doItAt: String, // "morning", "afternoon", "evening", "any" or "hh:mm"
     val recurrencePattern: String, // "weekly", "monthly", "yearly",
     val recurrenceWeekDays: String = "", // indices del 0 al 67
     val recurrenceMonthDays: String = "", // [1, 15, -1] (último día)

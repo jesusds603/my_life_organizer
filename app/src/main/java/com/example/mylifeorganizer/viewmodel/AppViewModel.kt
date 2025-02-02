@@ -3,6 +3,8 @@ package com.example.mylifeorganizer.viewmodel
 import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -325,4 +327,18 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
         isAddingHabit.value = !isAddingHabit.value
     }
 
+    val titleNewHabit = mutableStateOf("")
+    fun changeTitleNewHabit(title: String) {
+        titleNewHabit.value = title
+    }
+
+    val colorNewHabit = mutableStateOf("pink")
+    fun changeColorNewHabit(color: String) {
+        colorNewHabit.value = color
+    }
+
+    val timeForNewHabit = mutableStateOf("any")
+    fun changeTimeForNewHabit(time: String) {
+        timeForNewHabit.value = time
+    }
 }
