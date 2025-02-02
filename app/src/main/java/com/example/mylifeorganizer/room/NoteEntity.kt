@@ -230,26 +230,39 @@ data class TaskWithCategories(
 )
 
 
-// ------------------- GOALS -----------------------------------
+// ------------------- HABITS -----------------------------------
 
-@Entity(tableName = "goals")
-data class GoalEntity(
+@Entity(tableName = "habits")
+data class HabitEntity(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "goalId")
-    val goalId: Long = 0,
+    @ColumnInfo(name = "habitId")
+    val habitId: Long = 0,
     val title: String,
-    val description: String = "",
-    val priority: Int = 0,
-    val progress: Int = 0,
-    val dueDate: Long,
-    val isCompleted: Boolean,
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),
     val color: String,
-    val isRecurring: Boolean = false,
-    val recurrencePattern: String = "", // "daily", "weekly", "monthly", "yearly", "custom"
-    val recurrenceInterval: Int = 0, // en caso de que recurrence sea custom
-    val recurrenceEndDate: Long = 0
+    val icon: String,
+    val doItAt: String, // "morning", "afternoon", "evening", "all" or "hh:mm"
+    val recurrencePattern: String, // "weekly", "monthly", "yearly",
+    val recurrenceWeekDays: String = "", // indices del 0 al 67
+    val recurrenceMonthDays: String = "", // [1, 15, -1] (último día)
+    val recurrenceYearDays: String = "", // ["MM/DD", "MM/DD"]
+    val isFinished: Boolean = false, // Para terminarlo definitivamente
+    val isDurationSet: Boolean = false,
+    val duration: Int = 0, // En minutos
+)
+
+@Entity(tableName = "habits_occurrences")
+data class HabitOccurrenceEntity(
+    @PrimaryKey(autoGenerate = true)
+    val occurrenceId: Long = 0,
+    val habitId: Long,
+    val isCompleted: Boolean = false,
+    val date: String, // "yyyy/MM/dd",
+    val time: String = "", // "hh:mm",
+    val progress: Int = 0, // 0 - 100% según la duración del hábito en minutos
+    val createdAt: Long = System.currentTimeMillis(),
+    val updatedAt: Long = System.currentTimeMillis(),
 )
 
 

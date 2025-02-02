@@ -316,6 +316,13 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
         selectedMonthScreen = month
     }
 
+    // ------------------------------------------------------
+    //                   HABITS
+    // ------------------------------------------------------
 
+    val isAddingHabit = mutableStateOf(false)
+    fun toggleAddingHabit() {
+        isAddingHabit.value = !isAddingHabit.value
+    }
 
 }

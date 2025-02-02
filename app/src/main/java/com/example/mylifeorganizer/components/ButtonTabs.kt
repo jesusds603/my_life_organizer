@@ -1,27 +1,28 @@
 package com.example.mylifeorganizer.components
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
@@ -33,6 +34,7 @@ import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ButtonTabs() {
     val appViewModel: AppViewModel = viewModel()
@@ -50,17 +52,26 @@ fun ButtonTabs() {
         TabItem("Notes", if (isLangEng) "Notes" else "Notas", R.drawable.baseline_edit_note_24),
         TabItem("Daily", if (isLangEng) "Daily" else "Diario", R.drawable.baseline_today_24),
         TabItem("Tasks", if (isLangEng) "Tasks" else "Tareas", R.drawable.baseline_checklist_24),
+        TabItem("Habits", if (isLangEng) "Habits" else "Hábitos", R.drawable.baseline_downhill_skiing_24),
         TabItem("Finance", if (isLangEng) "Finance" else "Finanzas", R.drawable.baseline_wallet_24),
         TabItem("Calendar", if (isLangEng) "Calendar" else "Calendario", R.drawable.baseline_calendar_month_24),
         TabItem("Dashboard", "Dashboard", R.drawable.baseline_dashboard_24),
-        TabItem("Menu", if (isLangEng) "Menu" else "Menú", R.drawable.baseline_menu_24)
     )
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(heightBar)
-            .background(themeColors.backGround1),
+            .background(themeColors.backGround1)
+            .drawBehind {
+                val strokeWidth = 1.dp.toPx()
+                drawLine(
+                    color = Color.Cyan,
+                    start = Offset(0f, strokeWidth / 2),
+                    end = Offset(size.width, strokeWidth / 2),
+                    strokeWidth = strokeWidth
+                )
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
         tabs.forEach { tab ->

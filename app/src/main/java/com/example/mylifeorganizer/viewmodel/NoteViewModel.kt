@@ -11,6 +11,8 @@ import com.example.mylifeorganizer.room.FinanceEntity
 import com.example.mylifeorganizer.room.FinanceWithCategories
 import com.example.mylifeorganizer.room.FolderEntity
 import com.example.mylifeorganizer.room.FolderWithSubfolders
+import com.example.mylifeorganizer.room.HabitEntity
+import com.example.mylifeorganizer.room.HabitOccurrenceEntity
 import com.example.mylifeorganizer.room.NoteEntity
 import com.example.mylifeorganizer.room.NoteWithCategories
 import com.example.mylifeorganizer.room.NoteWithoutContentWithCategories
@@ -451,6 +453,60 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
     fun deletePaymentMethod(paymentMethod: PaymentMethodEntity) {
         viewModelScope.launch {
             notesRepository.deletePaymentMethod(paymentMethod)
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    //                      HABITS
+    // -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+
+    fun addHabit(habit: HabitEntity) {
+        viewModelScope.launch {
+            notesRepository.insertHabit(habit)
+        }
+    }
+
+    val habits = notesRepository.getAllHabits()
+
+    fun updateHabit(habit: HabitEntity) {
+        viewModelScope.launch {
+            notesRepository.updateHabit(habit)
+        }
+    }
+
+    fun deleteHabit(habit: HabitEntity) {
+        viewModelScope.launch {
+            notesRepository.deleteHabit(habit)
+        }
+    }
+
+    fun insertHabitOccurrence(habitOccurrence: HabitOccurrenceEntity) {
+        viewModelScope.launch {
+            notesRepository.insertHabitOccurrence(habitOccurrence)
+        }
+    }
+
+    fun getHabitOccurencesById(habitId: Long): Flow<List<HabitOccurrenceEntity>> {
+        return notesRepository.getHabitOccurencesById(habitId)
+    }
+
+    fun getAllHabitOccurrences(): Flow<List<HabitOccurrenceEntity>> {
+        return notesRepository.getAllHabitOccurrences()
+    }
+
+    fun updateHabitOccurrence(habitOccurrence: HabitOccurrenceEntity) {
+        viewModelScope.launch {
+            notesRepository.updateHabitOccurrence(habitOccurrence)
+        }
+    }
+
+    fun deleteHabitOccurrence(habitOccurrence: HabitOccurrenceEntity) {
+        viewModelScope.launch {
+            notesRepository.deleteHabitOccurrence(habitOccurrence)
         }
     }
 

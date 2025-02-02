@@ -8,6 +8,8 @@ import com.example.mylifeorganizer.room.FinanceEntity
 import com.example.mylifeorganizer.room.FinanceWithCategories
 import com.example.mylifeorganizer.room.FolderEntity
 import com.example.mylifeorganizer.room.FolderWithSubfolders
+import com.example.mylifeorganizer.room.HabitEntity
+import com.example.mylifeorganizer.room.HabitOccurrenceEntity
 import com.example.mylifeorganizer.room.NoteCategoryCrossRef
 import com.example.mylifeorganizer.room.NoteDB
 import com.example.mylifeorganizer.room.NoteEntity
@@ -266,6 +268,34 @@ class NotesRepository (val noteDB: NoteDB) {
     suspend fun deleteCategoryFinance(category: CategoryFinanceEntity) = noteDAO.deleteCategoryFinance(category)
 
     suspend fun deletePaymentMethod(paymentMethod: PaymentMethodEntity) = noteDAO.deletePaymentMethod(paymentMethod)
+
+
+    // -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    //                      HABITS
+    // -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+
+    suspend fun insertHabit(habit: HabitEntity): Long = noteDAO.insertHabit(habit)
+
+    fun getAllHabits(): Flow<List<HabitEntity>> = noteDAO.getAllHabits()
+
+    suspend fun updateHabit(habit: HabitEntity) = noteDAO.updateHabit(habit)
+
+    suspend fun deleteHabit(habit: HabitEntity) = noteDAO.deleteHabit(habit)
+
+    suspend fun insertHabitOccurrence(habitOccurrence: HabitOccurrenceEntity): Long = noteDAO.insertHabitOccurrence(habitOccurrence)
+
+    fun getHabitOccurencesById(habitId: Long): Flow<List<HabitOccurrenceEntity>> = noteDAO.getHabitOccurencesById(habitId)
+
+    fun getAllHabitOccurrences(): Flow<List<HabitOccurrenceEntity>> = noteDAO.getAllHabitOccurrences()
+
+    suspend fun updateHabitOccurrence(habitOccurrence: HabitOccurrenceEntity) = noteDAO.updateHabitOccurrence(habitOccurrence)
+
+    suspend fun deleteHabitOccurrence(habitOccurrence: HabitOccurrenceEntity) = noteDAO.deleteHabitOccurrence(habitOccurrence)
+
 
 
 }

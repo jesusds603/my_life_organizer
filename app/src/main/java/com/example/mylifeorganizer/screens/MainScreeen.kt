@@ -70,7 +70,7 @@ fun ContentMainScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = themeColors.backGround2)
+            .background(color = themeColors.backGround1)
     ) {
         // Parte superior: mostrar la pantalla seleccionada
         Box(modifier = Modifier.weight(1f)) {
@@ -82,6 +82,7 @@ fun ContentMainScreen(
                 "Finance" -> FinanceScreen()
                 "Calendar" -> CalendarScreen()
                 "Dashboard" -> DashboardScreen()
+                "Habits" -> HabitsScreen()
             }
         }
 

@@ -329,5 +329,41 @@ interface NoteDao {
     @Delete
     suspend fun deletePaymentMethod(paymentMethod: PaymentMethodEntity)
 
+
+    // -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    //                      HABITS
+    // -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+    // -------------------------------------------------------------------------
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertHabit(habit: HabitEntity): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertHabitOccurrence(habitOccurrence: HabitOccurrenceEntity): Long
+
+    @Query("SELECT * FROM habits")
+    fun getAllHabits(): Flow<List<HabitEntity>>
+
+    @Query("SELECT * FROM habits_occurrences")
+    fun getAllHabitOccurrences(): Flow<List<HabitOccurrenceEntity>>
+
+    @Query("SELECT * FROM habits_occurrences WHERE habitId = :habitId")
+    fun getHabitOccurencesById(habitId: Long): Flow<List<HabitOccurrenceEntity>>
+
+    @Delete
+    suspend fun deleteHabit(habit: HabitEntity)
+
+    @Delete
+    suspend fun deleteHabitOccurrence(occurrence: HabitOccurrenceEntity)
+
+    @Update
+    suspend fun updateHabit(habit: HabitEntity)
+
+    @Update
+    suspend fun updateHabitOccurrence(occurrence: HabitOccurrenceEntity)
+
 }
 

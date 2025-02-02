@@ -1,5 +1,7 @@
 package com.example.mylifeorganizer.components.home
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -13,6 +15,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -21,20 +26,30 @@ import com.example.mylifeorganizer.R
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Header() {
     val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
 
-    var themeColors = themeViewModel.themeColors.value
-    var isThemeDark = themeViewModel.isThemeDark.value
-    var isLangEng = appViewModel.isLangEng.value
+    val themeColors = themeViewModel.themeColors.value
+    val isThemeDark = themeViewModel.isThemeDark.value
+    val isLangEng = appViewModel.isLangEng.value
 
     Row (
         modifier = Modifier
             .fillMaxWidth()
             .background(themeColors.backGround1)
-            .height(50.dp),
+            .height(50.dp)
+            .drawBehind {
+                val strokeWidth = 1.dp.toPx()
+                drawLine(
+                    color = Color.Magenta,
+                    start = Offset(0f, size.height - strokeWidth / 2),
+                    end = Offset(size.width, size.height - strokeWidth / 2),
+                    strokeWidth = strokeWidth
+                )
+            },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
