@@ -351,4 +351,11 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
     fun changeMinuteForNewHabit(minute: String) {
         minuteForNewHabit.value = minute
     }
+
+    val recurrencePatternForNewHabit = mutableStateOf("weekly")
+    fun changeRecurrencePatternForNewHabit(recurrence: String) {
+        recurrencePatternForNewHabit.value = recurrence
+    }
+
+
 }
