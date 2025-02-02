@@ -243,10 +243,16 @@ data class HabitEntity(
     val color: String,
     val icon: String,
     val doItAt: String, // "morning", "afternoon", "evening", "any" or "hh:mm" ("custom")
-    val recurrencePattern: String, // "weekly", "monthly", "yearly",
-    val recurrenceWeekDays: String = "", // indices del 0 al 67
-    val recurrenceMonthDays: String = "", // [1, 15, -1] (último día)
-    val recurrenceYearDays: String = "", // ["MM/DD", "MM/DD"]
+    val recurrencePattern: String, // "daily", "weekly", "monthly", "yearly",
+    val isWeeklyAnytime: Boolean = false, // Si es weekly puede ser en cualquier día
+    val numDaysForWeekly: Int = 1, // Si es anytime en weekly seleccionar el numero de veces entre 1 y 7
+    val recurrenceWeekDays: String = "", // Si no es anytime entonces una lista de los indices de los dias de 0 a 6
+    val isMonthlyAnytime: Boolean = false, // Si es monthly puede ser cualquier dia
+    val numDaysForMonthly: Int = 1, // Si es anytime en monthly seleccionar el numero de veces (entre 1 y 31)
+    val recurrenceMonthDays: String = "", // Si no es anytime entonces una lista de los indices de los dias entre 0 y 31
+    val isYearlyAnytime: Boolean = false, // Si es yearly puede ser cualquier día
+    val numDaysForYearly: Int = 1, // Si es anytime en yearly seleccionar el numero de veces entre 1 y 366
+    val recurrenceYearDays: String = "", // Si no es anytime entonces una lista de los dias en formato MM/dd
     val isFinished: Boolean = false, // Para terminarlo definitivamente
     val isDurationSet: Boolean = false,
     val duration: Int = 0, // En minutos

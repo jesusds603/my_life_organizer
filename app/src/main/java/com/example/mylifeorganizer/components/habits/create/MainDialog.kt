@@ -3,7 +3,6 @@ package com.example.mylifeorganizer.components.habits.create
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,7 +17,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
-@OptIn(ExperimentalLayoutApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainDialog() {
@@ -77,15 +75,16 @@ fun MainDialog() {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
+                SelectRecurrence()
+
+                Spacer(modifier = Modifier.height(8.dp))
+
                 SelectTime()
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 SelectColors()
 
-                Spacer(modifier = Modifier.height(8.dp))
-
-                SelectRecurrence()
 
             }
         },
