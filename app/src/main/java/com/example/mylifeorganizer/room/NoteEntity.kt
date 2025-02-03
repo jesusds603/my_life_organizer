@@ -241,8 +241,8 @@ data class HabitEntity(
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),
     val color: String,
-    val icon: String,
     val doItAt: String, // "morning", "afternoon", "evening", "any" or "hh:mm" ("custom")
+
     val recurrencePattern: String, // "daily", "weekly", "monthly", "yearly",
     val isWeeklyAnytime: Boolean = false, // Si es weekly puede ser en cualquier día
     val numDaysForWeekly: Int = 1, // Si es anytime en weekly seleccionar el numero de veces entre 1 y 7
@@ -253,8 +253,8 @@ data class HabitEntity(
     val isYearlyAnytime: Boolean = false, // Si es yearly puede ser cualquier día
     val numDaysForYearly: Int = 1, // Si es anytime en yearly seleccionar el numero de veces entre 1 y 366
     val recurrenceYearDays: String = "", // Si no es anytime entonces una lista de los dias en formato MM/dd
+
     val isFinished: Boolean = false, // Para terminarlo definitivamente
-    val isDurationSet: Boolean = false,
     val duration: Int = 0, // En minutos
 )
 

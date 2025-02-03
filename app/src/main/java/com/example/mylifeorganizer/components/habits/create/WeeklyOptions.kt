@@ -12,10 +12,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -26,21 +22,21 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun WeeklyOptions(
-    appViewModel: AppViewModel,
-    numDaysForWeeklyHabit: Int?,
-    recurrenceWeekDaysHabit: String?
-) {
+fun WeeklyOptions() {
+    val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
 
-    var showAnytimeOptions by remember { mutableStateOf(numDaysForWeeklyHabit != null) }
+    val isWeeklyAnytimeHabit = appViewModel.isWeeklyAnytimeHabit.value // Si es anytime en weekly
+    val numDaysForWeeklyHabit = appViewModel.numDaysForWeeklyHabit.value // Si es anytime en weekly seleccionar el numero de veces entre 1 y 7
+    val recurrenceWeekDaysHabit = appViewModel.recurrenceWeekDaysHabit.value // Si no es anytime entonces una lista de los indices de los dias de 0 a 6
+
 
     Row {
         Button(
-            onClick = { showAnytimeOptions = true },
+            onClick = { appViewModel.changeIsWeeklyAnytimeHabit(true) },
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (showAnytimeOptions) Color.Magenta else themeColors.backGround1
+                containerColor = if (isWeeklyAnytimeHabit) Color.Magenta else themeColors.backGround1
             )
         ) {
             Text(
@@ -49,9 +45,9 @@ fun WeeklyOptions(
             )
         }
         Button(
-            onClick = { showAnytimeOptions = false },
+            onClick = { appViewModel.changeIsWeeklyAnytimeHabit(false) },
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (!showAnytimeOptions) Color.Magenta else themeColors.backGround1
+                containerColor = if (!isWeeklyAnytimeHabit) Color.Magenta else themeColors.backGround1
             )
         ) {
             Text(
@@ -62,9 +58,9 @@ fun WeeklyOptions(
         }
     }
 
-    if (showAnytimeOptions) {
+    if (isWeeklyAnytimeHabit) {
         Text(
-            text = "Select the amount of days",
+            text = "Select the amount of days:",
             color = themeColors.text1
         )
         LazyRow {
@@ -93,7 +89,7 @@ fun WeeklyOptions(
                 Box(
                     modifier = Modifier
                         .clickable {
-                            val selectedDays = recurrenceWeekDaysHabit?.split(",")?.toMutableList() ?: mutableListOf()
+                            val selectedDays = recurrenceWeekDaysHabit.split(",").toMutableList()
                             if (selectedDays.contains(index.toString())) {
                                 selectedDays.remove(index.toString())
                             } else {
@@ -101,7 +97,7 @@ fun WeeklyOptions(
                             }
                             appViewModel.changeRecurrenceWeekDaysHabit(selectedDays.joinToString(","))
                         }
-                        .background(if (recurrenceWeekDaysHabit?.contains(index.toString()) == true) Color.Magenta else themeColors.backGround1)
+                        .background(if (recurrenceWeekDaysHabit.contains(index.toString())) Color.Magenta else themeColors.backGround1)
                         .padding(8.dp)
                 ) {
                     Text(

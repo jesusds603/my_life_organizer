@@ -24,17 +24,17 @@ fun SelectRecurrence() {
     val themeColors = themeViewModel.themeColors.value
 
     val recurrencePatternForNewHabit = appViewModel.recurrencePatternForNewHabit.value // "daily", "weekly", "monthly", "yearly"
-    val numDaysForWeeklyHabit = appViewModel.numDaysForWeeklyHabit.value // Si es anytime en weekly seleccionar el numero de veces entre 1 y 7
-    val recurrenceWeekDaysHabit = appViewModel.recurrenceWeekDaysHabit.value // Si no es anytime entonces una lista de los indices de los dias de 0 a 6
-    val numDaysForMonthlyHabit = appViewModel.numDaysForMonthlyHabit.value // Si es anytime en monthly seleccionar el numero de veces (entre 1 y 31)
-    val recurrenceMonthDaysHabit = appViewModel.recurrenceMonthDaysHabit.value
-    val numDaysForYearlyHabit = appViewModel.numDaysForYearlyHabit.value
-    val recurrenceYearDaysHabit = appViewModel.recurrenceYearDaysHabit.value
+
 
     Column(
         modifier = Modifier
             .fillMaxWidth()
     ) {
+        Text(
+            text = "Select the recurrence pattern",
+            color = themeColors.text1
+        )
+
         // LazyRow para los botones de recurrencia
         LazyRow {
             items(listOf("Daily", "Weekly", "Monthly", "Yearly")) { recurrenceType ->
@@ -57,25 +57,13 @@ fun SelectRecurrence() {
         // Dependiendo de la selección, mostramos las opciones adicionales
         when (recurrencePatternForNewHabit) {
             "weekly" -> {
-                WeeklyOptions(
-                    appViewModel = appViewModel,
-                    numDaysForWeeklyHabit = numDaysForWeeklyHabit,
-                    recurrenceWeekDaysHabit = recurrenceWeekDaysHabit
-                )
+                WeeklyOptions()
             }
             "monthly" -> {
-                MonthlyOptions(
-                    appViewModel = appViewModel,
-                    numDaysForMonthlyHabit = numDaysForMonthlyHabit,
-                    recurrenceMonthDaysHabit = recurrenceMonthDaysHabit
-                )
+                MonthlyOptions()
             }
             "yearly" -> {
-                YearlyOptions(
-                    appViewModel = appViewModel,
-                    numDaysForYearlyHabit = numDaysForYearlyHabit,
-                    recurrenceYearDaysHabit = recurrenceYearDaysHabit
-                )
+                YearlyOptions()
             }
         }
     }

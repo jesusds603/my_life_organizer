@@ -357,6 +357,11 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
         recurrencePatternForNewHabit.value = recurrence
     }
 
+    val isWeeklyAnytimeHabit = mutableStateOf(true)
+    fun changeIsWeeklyAnytimeHabit(isWeeklyAnytime: Boolean) {
+        isWeeklyAnytimeHabit.value = isWeeklyAnytime
+    }
+
     val numDaysForWeeklyHabit = mutableStateOf(1)
     fun changeNumDaysWeeklyHabit(num: Int) {
         numDaysForWeeklyHabit.value = num
@@ -365,6 +370,11 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
     val recurrenceWeekDaysHabit = mutableStateOf("")
     fun changeRecurrenceWeekDaysHabit(days: String) {
         recurrenceWeekDaysHabit.value = days
+    }
+
+    val isMonthlyAnytimeHabit = mutableStateOf(true)
+    fun changeIsMonthlyAnytimeHabit(isMonthlyAnytime: Boolean) {
+        isMonthlyAnytimeHabit.value = isMonthlyAnytime
     }
 
     val numDaysForMonthlyHabit = mutableStateOf(1)
@@ -377,6 +387,11 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
         recurrenceMonthDaysHabit.value = days
     }
 
+    val isYearlyAnytimeHabit = mutableStateOf(true)
+    fun changeIsYearlyAnytimeHabit(isYearlyAnytime: Boolean) {
+        isYearlyAnytimeHabit.value = isYearlyAnytime
+    }
+
     val numDaysForYearlyHabit = mutableStateOf(1)
     fun changeNumDaysYearlyHabit(num: Int) {
         numDaysForYearlyHabit.value = num
@@ -385,5 +400,10 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
     val recurrenceYearDaysHabit = mutableStateOf("")
     fun changeRecurrenceYearDaysHabit(days: String) {
         recurrenceYearDaysHabit.value = days
+    }
+
+    val durationForNewHabit = mutableStateOf(0)
+    fun changeDurationForNewHabit(duration: Int) {
+        durationForNewHabit.value = duration
     }
 }

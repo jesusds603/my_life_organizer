@@ -12,10 +12,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -26,21 +22,21 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun YearlyOptions(
-    appViewModel: AppViewModel,
-    numDaysForYearlyHabit: Int?,
-    recurrenceYearDaysHabit: String?
-) {
+fun YearlyOptions() {
+    val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
 
-    var showAnytimeOptions by remember { mutableStateOf(numDaysForYearlyHabit != null) }
+    val isYearlyAnytimeHabit = appViewModel.isYearlyAnytimeHabit.value
+    val numDaysForYearlyHabit = appViewModel.numDaysForYearlyHabit.value
+    val recurrenceYearDaysHabit = appViewModel.recurrenceYearDaysHabit.value
+
 
     Row {
         Button(
-            onClick = { showAnytimeOptions = true },
+            onClick = { appViewModel.changeIsYearlyAnytimeHabit(true) },
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (showAnytimeOptions) Color.Magenta else themeColors.backGround1
+                containerColor = if (isYearlyAnytimeHabit) Color.Magenta else themeColors.backGround1
             )
         ) {
             Text(
@@ -49,9 +45,9 @@ fun YearlyOptions(
             )
         }
         Button(
-            onClick = { showAnytimeOptions = false },
+            onClick = { appViewModel.changeIsYearlyAnytimeHabit(false) },
             colors = ButtonDefaults.buttonColors(
-                containerColor = if (!showAnytimeOptions) Color.Magenta else themeColors.backGround1
+                containerColor = if (!isYearlyAnytimeHabit) Color.Magenta else themeColors.backGround1
             )
         ) {
             Text(
@@ -61,7 +57,7 @@ fun YearlyOptions(
         }
     }
 
-    if (showAnytimeOptions) {
+    if (isYearlyAnytimeHabit) {
         Text(
             text = "Select the amount of days",
             color = themeColors.text1
@@ -91,7 +87,7 @@ fun YearlyOptions(
                 Box(
                     modifier = Modifier
                         .clickable {
-                            val selectedDays = recurrenceYearDaysHabit?.split(",")?.toMutableList() ?: mutableListOf()
+                            val selectedDays = recurrenceYearDaysHabit.split(",").toMutableList()
                             if (selectedDays.contains((day + 1).toString())) {
                                 selectedDays.remove((day + 1).toString())
                             } else {
@@ -99,7 +95,7 @@ fun YearlyOptions(
                             }
                             appViewModel.changeRecurrenceYearDaysHabit(selectedDays.joinToString(","))
                         }
-                        .background(if (recurrenceYearDaysHabit?.contains((day + 1).toString()) == true) Color.Magenta else themeColors.backGround1)
+                        .background(if (recurrenceYearDaysHabit.contains((day + 1).toString())) Color.Magenta else themeColors.backGround1)
                         .padding(8.dp)
                 ) {
                     Text(
