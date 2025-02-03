@@ -464,17 +464,19 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
     // -------------------------------------------------------------------------
     // -------------------------------------------------------------------------
 
-    fun addHabit(habit: HabitEntity) {
+    fun addHabit(habit: HabitEntity, onHabitAdded: (Long) -> Unit) {
         viewModelScope.launch {
-            notesRepository.insertHabit(habit)
+            val habitId = notesRepository.insertHabit(habit)
+            onHabitAdded(habitId)
         }
     }
 
     val habits = notesRepository.getAllHabits()
 
-    fun updateHabit(habit: HabitEntity) {
+    fun updateHabit(habit: HabitEntity, onHabitUpdated: (Long) -> Unit) {
         viewModelScope.launch {
             notesRepository.updateHabit(habit)
+            onHabitUpdated(habit.habitId)
         }
     }
 

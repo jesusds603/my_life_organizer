@@ -10,6 +10,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -25,6 +29,7 @@ fun SelectRecurrence() {
 
     val recurrencePatternForNewHabit = appViewModel.recurrencePatternForNewHabit.value // "daily", "weekly", "monthly", "yearly"
 
+    var showDetails by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -40,7 +45,10 @@ fun SelectRecurrence() {
             items(listOf("Daily", "Weekly", "Monthly", "Yearly")) { recurrenceType ->
                 val isSelected = recurrencePatternForNewHabit == recurrenceType.lowercase()
                 Button(
-                    onClick = { appViewModel.changeRecurrencePatternForNewHabit(recurrenceType.lowercase()) },
+                    onClick = {
+                        showDetails = true
+                        appViewModel.changeRecurrencePatternForNewHabit(recurrenceType.lowercase())
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = if (isSelected) Color.Magenta else themeColors.backGround1
 
@@ -54,16 +62,30 @@ fun SelectRecurrence() {
             }
         }
 
-        // Dependiendo de la selección, mostramos las opciones adicionales
-        when (recurrencePatternForNewHabit) {
-            "weekly" -> {
-                WeeklyOptions()
+        if(showDetails) {
+            // Dependiendo de la selección, mostramos las opciones adicionales
+            when (recurrencePatternForNewHabit) {
+                "weekly" -> {
+                    WeeklyOptions()
+                }
+                "monthly" -> {
+                    MonthlyOptions()
+                }
+                "yearly" -> {
+                    YearlyOptions()
+                }
             }
-            "monthly" -> {
-                MonthlyOptions()
-            }
-            "yearly" -> {
-                YearlyOptions()
+
+            Button(
+                onClick = { showDetails = false },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color.Magenta
+                )
+            ) {
+                Text(
+                    text = "OK",
+                    color = themeColors.text1
+                )
             }
         }
     }

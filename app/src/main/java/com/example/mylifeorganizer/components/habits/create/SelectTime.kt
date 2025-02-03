@@ -92,7 +92,7 @@ fun SelectTime() {
                         }
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = if (timeForNewHabit == time || (time == "custom" && confirmedTime)) Color.Magenta else themeColors.backGround3
+                        containerColor = if (timeForNewHabit == time || (time == "custom" && confirmedTime)) Color.Magenta else themeColors.backGround1
                     )
                 ) {
                     Text(
@@ -198,32 +198,19 @@ fun SelectTime() {
                     modifier = Modifier.padding(top = 10.dp)
                 )
 
-                // Botones para confirmar o cancelar la selección de hora
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
+                // Botón para confirmar la selección de hora
+                Button(
+                    onClick = {
+                        // Actualizar el tiempo seleccionado
+                        appViewModel.changeTimeForNewHabit("$selectedHour:$selectedMinute")
+                        showTimeSelector = false // Ocultar el selector
+                        confirmedTime = true // Confirmar el tiempo seleccionado
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Magenta
+                    )
                 ) {
-                    Button(
-                        onClick = {
-                            // Actualizar el tiempo seleccionado
-                            appViewModel.changeTimeForNewHabit("$selectedHour:$selectedMinute")
-                            showTimeSelector = false // Ocultar el selector
-                            confirmedTime = true // Confirmar el tiempo seleccionado
-                        }
-                    ) {
-                        Text(text = "OK", color = themeColors.text1)
-                    }
-
-                    Button(
-                        onClick = {
-                            // Volver al estado inicial
-                            appViewModel.changeTimeForNewHabit("any")
-                            showTimeSelector = false // Ocultar el selector
-                            confirmedTime = false // Cancelar la selección
-                        }
-                    ) {
-                        Text(text = "Cancel", color = themeColors.text1)
-                    }
+                    Text(text = "OK", color = themeColors.text1)
                 }
             }
         }
