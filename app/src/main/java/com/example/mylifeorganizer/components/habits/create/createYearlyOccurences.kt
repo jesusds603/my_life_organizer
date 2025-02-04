@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-
 // Función para crear ocurrencias anuales
 fun createYearlyOccurrences(
     habitId: Long,
@@ -40,27 +39,37 @@ fun createYearlyOccurrences(
             )
         }
     } else {
-        // Crear ocurrencias en los días específicos del año
-        recurrenceDays.split(",").forEach { day ->
-            val (monthStr, dayOfMonthStr) = day.split("/")
-            val month = monthStr.toInt() - 1 // Convertir a índice 0-based
-            val dayOfMonth = dayOfMonthStr.toInt()
+        // Verificar si recurrenceDays no está vacío
+        if (recurrenceDays.isNotEmpty()) {
+            // Crear ocurrencias en los días específicos del año
+            recurrenceDays.split(",").forEach { day ->
+                try {
+                    val (monthStr, dayOfMonthStr) = day.split("/")
+                    val month = monthStr.toInt() - 1 // Convertir a índice 0-based
+                    val dayOfMonth = dayOfMonthStr.toInt()
 
-            // Ajustar al mes y día del mes
-            calendar.set(Calendar.MONTH, month)
-            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+                    // Ajustar al mes y día del mes
+                    calendar.set(Calendar.MONTH, month)
+                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-            // Verificar si la fecha es válida (por ejemplo, 30 de febrero no existe)
-            if (calendar.get(Calendar.MONTH) == month && calendar.get(Calendar.DAY_OF_MONTH) == dayOfMonth) {
-                val date = dateFormat.format(calendar.time) // Formato "yyyy/MM/dd"
-                noteViewModel.insertHabitOccurrence(
-                    HabitOccurrenceEntity(
-                        habitId = habitId,
-                        date = date,
-                        time = time
-                    )
-                )
+                    // Verificar si la fecha es válida (por ejemplo, 30 de febrero no existe)
+                    if (calendar.get(Calendar.MONTH) == month && calendar.get(Calendar.DAY_OF_MONTH) == dayOfMonth) {
+                        val date = dateFormat.format(calendar.time) // Formato "yyyy/MM/dd"
+                        noteViewModel.insertHabitOccurrence(
+                            HabitOccurrenceEntity(
+                                habitId = habitId,
+                                date = date,
+                                time = time
+                            )
+                        )
+                    }
+                } catch (e: Exception) {
+                    // Manejar el error si el formato no es válido o hay un problema al convertir
+                    println("Error: $day no es un formato válido (MM/dd).")
+                }
             }
+        } else {
+            println("Error: recurrenceDays está vacío.")
         }
     }
 }

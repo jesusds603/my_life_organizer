@@ -161,18 +161,21 @@ fun YearlyOptions() {
                 }
             }
         }
+
+        // Mostrar los días seleccionados
         Text(
             text = "Selected days:",
             color = themeColors.text1
         )
 
-        // Mostrar los días seleccionados
+        // Mostrar los días seleccionados en formato MM/dd
         LazyRow {
-            recurrenceYearDaysHabit.forEach { day ->
-                item {
+            items(recurrenceYearDaysHabit.split(",")) { day ->
+                if (day.isNotEmpty()) {
                     Text(
-                        text = "$day",
-                        color = themeColors.text1
+                        text = day,
+                        color = themeColors.text1,
+                        modifier = Modifier.padding(4.dp)
                     )
                 }
             }
