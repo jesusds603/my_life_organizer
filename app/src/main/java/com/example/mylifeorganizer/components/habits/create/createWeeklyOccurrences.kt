@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-
 // Función para crear ocurrencias semanales
 fun createWeeklyOccurrences(
     habitId: Long,
@@ -43,17 +42,30 @@ fun createWeeklyOccurrences(
                 )
             }
         } else {
-            // Crear ocurrencias en los días específicos de la semana
-            recurrenceDays.split(",").forEach { dayIndex ->
-                calendar.set(Calendar.DAY_OF_WEEK, dayIndex.toInt() + 1) // Ajustar al día de la semana
-                val date = dateFormat.format(calendar.time) // Formato "yyyy/MM/dd"
-                noteViewModel.insertHabitOccurrence(
-                    HabitOccurrenceEntity(
-                        habitId = habitId,
-                        date = date,
-                        time = time
-                    )
-                )
+            // Verificar si recurrenceDays no está vacío
+            if (recurrenceDays.isNotEmpty()) {
+                // Crear ocurrencias en los días específicos de la semana
+                recurrenceDays.split(",").forEach { dayIndexStr ->
+                    try {
+                        val dayIndex = dayIndexStr.toInt() // Convertir a entero
+                        if (dayIndex in 0..6) { // Verificar que el índice esté en el rango válido (0 = Domingo, 6 = Sábado)
+                            calendar.set(Calendar.DAY_OF_WEEK, dayIndex + 1) // Ajustar al día de la semana
+                            val date = dateFormat.format(calendar.time) // Formato "yyyy/MM/dd"
+                            noteViewModel.insertHabitOccurrence(
+                                HabitOccurrenceEntity(
+                                    habitId = habitId,
+                                    date = date,
+                                    time = time
+                                )
+                            )
+                        }
+                    } catch (e: NumberFormatException) {
+                        // Manejar el error si dayIndexStr no es un número válido
+                        println("Error: $dayIndexStr no es un número válido.")
+                    }
+                }
+            } else {
+                println("Error: recurrenceDays está vacío.")
             }
         }
         calendar.add(Calendar.WEEK_OF_YEAR, 1) // Siguiente semana

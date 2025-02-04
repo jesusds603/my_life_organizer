@@ -241,7 +241,7 @@ data class HabitEntity(
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),
     val color: String,
-    val doItAt: String, // "morning", "afternoon", "evening", "any" or "hh:mm" ("custom")
+    val doItAt: String, // "morning", "afternoon", "night", "any" or "hh:mm" ("custom")
 
     val recurrencePattern: String, // "daily", "weekly", "monthly", "yearly",
     val isWeeklyAnytime: Boolean = false, // Si es weekly puede ser en cualquier día
@@ -264,7 +264,7 @@ data class HabitOccurrenceEntity(
     val occurrenceId: Long = 0,
     val habitId: Long,
     val isCompleted: Boolean = false,
-    val date: String, // "yyyy/MM/dd",
+    val date: String, // "yyyy/MM/dd" o un rango "yyyy/MM/dd-yyyy/MM/dd"
     val time: String = "", // "hh:mm",
     val progress: Int = 0, // 0 - 100% según la duración del hábito en minutos
     val createdAt: Long = System.currentTimeMillis(),

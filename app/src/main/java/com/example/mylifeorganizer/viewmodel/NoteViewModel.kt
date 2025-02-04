@@ -496,9 +496,8 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
         return notesRepository.getHabitOccurencesById(habitId)
     }
 
-    fun getAllHabitOccurrences(): Flow<List<HabitOccurrenceEntity>> {
-        return notesRepository.getAllHabitOccurrences()
-    }
+    val habitsOccurrences = notesRepository.getAllHabitOccurrences()
+
 
     fun updateHabitOccurrence(habitOccurrence: HabitOccurrenceEntity) {
         viewModelScope.launch {

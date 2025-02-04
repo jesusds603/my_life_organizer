@@ -6,7 +6,6 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
-
 // Función para crear ocurrencias mensuales
 fun createMonthlyOccurrences(
     habitId: Long,
@@ -43,24 +42,34 @@ fun createMonthlyOccurrences(
                 )
             }
         } else {
-            // Crear ocurrencias en los días específicos del mes
-            recurrenceDays.split(",").forEach { dayIndexStr ->
-                val dayIndex = dayIndexStr.toInt()
-                val dayOfMonth = dayIndex + 1 // Convertir a día 1-based
+            // Verificar si recurrenceDays no está vacío
+            if (recurrenceDays.isNotEmpty()) {
+                // Crear ocurrencias en los días específicos del mes
+                recurrenceDays.split(",").forEach { dayIndexStr ->
+                    try {
+                        val dayIndex = dayIndexStr.toInt() // Convertir a entero
+                        val dayOfMonth = dayIndex + 1 // Convertir a día 1-based
 
-                // Asegurar que el día no exceda los días del mes
-                val maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-                val clampedDay = minOf(dayOfMonth, maxDay)
+                        // Asegurar que el día no exceda los días del mes
+                        val maxDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+                        val clampedDay = minOf(dayOfMonth, maxDay)
 
-                calendar.set(Calendar.DAY_OF_MONTH, clampedDay)
-                val date = dateFormat.format(calendar.time)
-                noteViewModel.insertHabitOccurrence(
-                    HabitOccurrenceEntity(
-                        habitId = habitId,
-                        date = date, // Fecha específica
-                        time = time
-                    )
-                )
+                        calendar.set(Calendar.DAY_OF_MONTH, clampedDay)
+                        val date = dateFormat.format(calendar.time)
+                        noteViewModel.insertHabitOccurrence(
+                            HabitOccurrenceEntity(
+                                habitId = habitId,
+                                date = date, // Fecha específica
+                                time = time
+                            )
+                        )
+                    } catch (e: NumberFormatException) {
+                        // Manejar el error si dayIndexStr no es un número válido
+                        println("Error: $dayIndexStr no es un número válido.")
+                    }
+                }
+            } else {
+                println("Error: recurrenceDays está vacío.")
             }
         }
         // Mover al primer día del próximo mes
