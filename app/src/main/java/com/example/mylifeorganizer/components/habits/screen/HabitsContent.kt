@@ -66,71 +66,128 @@ fun HabitsContent(
         }
     }
 
+    // Agrupar ocurrencias por hábito para evitar duplicados en rangos
+    val groupedOccurrences = occurrencesForDate.groupBy { it.habitId }
+
+    val completedOccurrences = groupedOccurrences.filter { it.value.all { occurrence -> occurrence.isCompleted } }
+    val uncompletedOccurrences = groupedOccurrences.filter { it.value.any { occurrence -> !occurrence.isCompleted } }
 
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        if (occurrencesForDate.isEmpty()) {
+        if (groupedOccurrences.isEmpty()) {
             item {
-                    Text(
+                Text(
                     text = "No hay hábitos para este día.",
                     color = themeColors.text1,
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
             }
         } else {
-            occurrencesForDate.forEach { occurrence ->
-                val habit = habits.first { it.habitId == occurrence.habitId }
+            groupedOccurrences.forEach { (habitId, occurrences) ->
+                val habit = habits.first { it.habitId == habitId }
+                val isRange = occurrences.any { it.date.contains("-") }
 
                 item {
-                    Row (
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(70.dp)
                             .padding(vertical = 2.dp)
                     ) {
-                        // Primera columna: Botón para marcar como completado
+                        // Primera columna: Flechas para aumentar/disminuir tareas completadas
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth(0.1f)
                                 .fillMaxHeight()
-                                .background(themeColors.backGround3)
-                                .clickable {
-                                    // Actualizar isCompleted en la base de datos
-                                    noteViewModel.updateHabitOccurrence(
-                                        occurrence.copy(isCompleted = !occurrence.isCompleted)
-                                    )
-                                },
+                                .background(themeColors.backGround3),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            Icon(
-                                painter = painterResource(
-                                    id = if (occurrence.isCompleted) {
-                                        R.drawable.baseline_check_box_24
-                                    } else {
-                                        R.drawable.baseline_check_box_outline_blank_24
-                                    }
-                                ),
-                                contentDescription = null,
-                                tint = if (occurrence.isCompleted) {
-                                    Color.Green
-                                } else {
-                                    Color.Gray
+                            if (isRange) {
+                                // Mostrar flechas solo para rangos
+                                val totalTasks = when (habit.recurrencePattern) {
+                                    "weekly" -> habit.numDaysForWeekly
+                                    "monthly" -> habit.numDaysForMonthly
+                                    "yearly" -> habit.numDaysForYearly
+                                    else -> 1
                                 }
-                            )
+                                val completedTasks = habitsOccurrences.count {
+                                    it.habitId == habitId && it.isCompleted && it.date.contains("-")
+                                }
+
+                                // Flecha hacia arriba
+                                IconButton(
+                                    onClick = {
+                                        if (completedTasks < totalTasks) {
+                                            // Encontrar la primera ocurrencia no completada y marcarla como completada
+                                            val occurrenceToUpdate = occurrences.firstOrNull { !it.isCompleted }
+                                            occurrenceToUpdate?.let {
+                                                noteViewModel.updateHabitOccurrence(it.copy(isCompleted = true))
+                                            }
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.baseline_keyboard_arrow_up_24),
+                                        contentDescription = "Aumentar",
+                                        tint = if (completedTasks < totalTasks) themeColors.text1 else Color.Gray
+                                    )
+                                }
+
+                                // Flecha hacia abajo
+                                IconButton(
+                                    onClick = {
+                                        if (completedTasks > 0) {
+                                            // Encontrar la última ocurrencia completada y marcarla como no completada
+                                            val occurrenceToUpdate = occurrences.lastOrNull { it.isCompleted }
+                                            occurrenceToUpdate?.let {
+                                                noteViewModel.updateHabitOccurrence(it.copy(isCompleted = false))
+                                            }
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.baseline_keyboard_arrow_down_24),
+                                        contentDescription = "Disminuir",
+                                        tint = if (completedTasks > 0) themeColors.text1 else Color.Gray
+                                    )
+                                }
+                            } else {
+                                // Mostrar el icono de selección para fechas únicas
+                                IconButton(
+                                    onClick = {
+                                        val occurrence = occurrences.first()
+                                        noteViewModel.updateHabitOccurrence(occurrence.copy(isCompleted = !occurrence.isCompleted))
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(
+                                            id = if (occurrences.first().isCompleted) {
+                                                R.drawable.baseline_check_box_24
+                                            } else {
+                                                R.drawable.baseline_check_box_outline_blank_24
+                                            }
+                                        ),
+                                        contentDescription = null,
+                                        tint = if (occurrences.first().isCompleted) Color.Green else Color.Gray
+                                    )
+                                }
+                            }
                         }
 
-                        Column (
+                        // Segunda columna: Título y fecha
+                        Column(
                             modifier = Modifier
                                 .fillMaxWidth(0.7f)
                                 .fillMaxHeight()
                                 .background(
                                     color = themeViewModel.getCategoryColor(habit.color)
                                 )
-                                .padding(8.dp)
+                                .padding(8.dp),
+                            verticalArrangement = Arrangement.Center
                         ) {
                             Text(
                                 text = habit.title,
@@ -138,13 +195,13 @@ fun HabitsContent(
                                 fontWeight = FontWeight.Bold
                             )
                             Text(
-                                text = occurrence.date,
+                                text = if (isRange) "Rango: ${occurrences.first().date}" else occurrences.first().date,
                                 color = themeColors.text1,
                                 fontSize = 12.sp
                             )
                         }
 
-                        // Tercera columna: Fecha o progreso
+                        // Tercera columna: Progreso o fecha
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth(1f)
@@ -154,8 +211,8 @@ fun HabitsContent(
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            if (occurrence.date.contains("-")) {
-                                // Es un rango de fechas
+                            if (isRange) {
+                                // Mostrar el progreso de tareas completadas
                                 val totalTasks = when (habit.recurrencePattern) {
                                     "weekly" -> habit.numDaysForWeekly
                                     "monthly" -> habit.numDaysForMonthly
@@ -163,62 +220,24 @@ fun HabitsContent(
                                     else -> 1
                                 }
                                 val completedTasks = habitsOccurrences.count {
-                                    it.habitId == habit.habitId && it.isCompleted && it.date.contains("-")
+                                    it.habitId == habitId && it.isCompleted && it.date.contains("-")
                                 }
 
-                                // Mostrar el progreso de tareas completadas
                                 Text(
                                     text = "$completedTasks/$totalTasks",
                                     color = themeColors.text1,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 14.sp
                                 )
-
                             } else {
-                                // Es una fecha única
+                                // Mostrar la fecha única
                                 Text(
-                                    text = occurrence.date,
+                                    text = occurrences.first().date,
                                     color = themeColors.text1,
                                     fontWeight = FontWeight.Bold,
                                     fontSize = 14.sp
                                 )
                             }
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Text(
-                                    text = habit.doItAt,
-                                    color = themeColors.text1,
-                                    fontSize = 14.sp
-                                )
-
-                                Text(
-                                    text = when {
-                                        habit.doItAt == "any" -> "\uD83C\uDF1E \uD83C\uDF19"
-                                        habit.doItAt == "morning" -> "\uD83C\uDF05"
-                                        habit.doItAt == "afternoon" -> "\uD83C\uDF04"
-                                        habit.doItAt == "night" -> "\uD83C\uDF06"
-                                        else -> {
-                                            val timeParts = habit.doItAt.split(":").mapNotNull { it.toIntOrNull() }
-                                            if (timeParts.size == 2) {
-                                                val hour = timeParts[0]
-                                                when {
-                                                    hour in 5..11 -> "\uD83C\uDF05" // Mañana
-                                                    hour in 12..19 -> "\uD83C\uDF04" // Tarde
-                                                    hour in 20..23 || hour in 0..4 -> "\uD83C\uDF06" // Noche
-                                                    else -> habit.doItAt
-                                                }
-                                            } else {
-                                                habit.doItAt
-                                            }
-                                        }
-                                    },
-                                    color = themeColors.text1,
-                                    fontSize = 14.sp
-                                )
-                            }
-
                         }
                     }
                 }
