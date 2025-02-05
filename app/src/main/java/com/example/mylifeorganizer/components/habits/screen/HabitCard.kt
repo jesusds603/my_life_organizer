@@ -3,6 +3,7 @@ package com.example.mylifeorganizer.components.habits.screen
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,9 +15,14 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -42,11 +48,21 @@ fun HabitCard(
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
 
+    var showMenu by remember { mutableStateOf(false) }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(70.dp)
             .padding(vertical = 2.dp)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onLongPress = {
+                        showMenu = true
+                    },
+                    onTap = {}
+                )
+            }
     ) {
         // Primera columna: Flechas para aumentar/disminuir tareas completadas
         Column(
@@ -146,10 +162,28 @@ fun HabitCard(
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = if (isRange) "Rango: ${occurrences.first().date}" else occurrences.first().date,
+                text = if (isRange) occurrences.first().date else occurrences.first().date,
                 color = themeColors.text1,
                 fontSize = 12.sp
             )
+        }
+
+        // Mostrar el emoji correspondiente al tiempo
+        val timeEmoji = when {
+            occurrences.first().time == "any" -> "☀️🌒"
+            occurrences.first().time == "morning" -> "\uD83C\uDF05"
+            occurrences.first().time == "afternoon" -> "\uD83C\uDF15"
+            occurrences.first().time == "night" -> "\uD83C\uDF19"
+            occurrences.first().time.matches(Regex("\\d{2}:\\d{2}")) -> {
+                val hour = occurrences.first().time.substring(0, 2).toInt()
+                when {
+                    hour in 6..11 -> "🌅" // Mañana: 6:00 - 11:59
+                    hour in 12..17 -> "🌇" // Tarde: 12:00 - 17:59
+                    hour in 18..23 || hour in 0..5 -> "🌆" // Noche: 18:00 - 5:59
+                    else -> "☀️🌒" // Por defecto
+                }
+            }
+            else -> "☀️🌒" // Por defecto, en caso de un valor inesperado
         }
 
         // Tercera columna: Progreso o fecha
@@ -170,31 +204,53 @@ fun HabitCard(
                     "yearly" -> habit.numDaysForYearly
                     else -> 1
                 }
-                val completedTasks = habitsOccurrences.count {
+                val completedHabits = habitsOccurrences.count {
                     it.habitId == habitId && it.isCompleted && it.date.contains("-")
                 }
 
-                Text(
-                    text = "$completedTasks/$totalTasks",
-                    color = themeColors.text1,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
-                )
-                Text(
-                    text = occurrences.first().time,
-                    color = themeColors.text1,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
-                )
+                Row {
+                    Text(
+                        text = "$completedHabits/$totalTasks",
+                        color = themeColors.text1,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp
+                    )
+
+                    Text(
+                        text = timeEmoji,
+                        color = themeColors.text1,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp
+                    )
+                }
             } else {
-                // Mostrar la fecha única
-                Text(
-                    text = occurrences.first().time,
-                    color = themeColors.text1,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
-                )
+
+                Row {
+                    Text(
+                        text = occurrences.first().time,
+                        color = themeColors.text1,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp
+                    )
+                    Text(
+                        text = timeEmoji,
+                        color = themeColors.text1,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp
+                    )
+                }
             }
+
+            Text(
+                text = habit.recurrencePattern,
+                color = themeColors.text1,
+                fontSize = 12.sp
+            )
         }
+
+        FloatingOptionsHabit(
+            showMenu = showMenu,
+            changeShowMenu = { showMenu = it },
+        )
     }
 }
