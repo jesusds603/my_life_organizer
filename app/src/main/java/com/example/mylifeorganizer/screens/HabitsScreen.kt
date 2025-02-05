@@ -28,7 +28,6 @@ import java.util.Locale
 fun HabitsScreen() {
     val appViewModel: AppViewModel = viewModel()
     val noteViewModel: NoteViewModel = appViewModel.noteViewModel
-    val themeViewModel: ThemeViewModel = viewModel()
 
     val habits = noteViewModel.habits.collectAsState(initial = emptyList()).value
     val habitsOccurrences = noteViewModel.habitsOccurrences.collectAsState(initial = emptyList()).value
@@ -43,10 +42,13 @@ fun HabitsScreen() {
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        Header()
+        Header(
+            selectedDate = selectedDate,
+            habitsOccurrences = habitsOccurrences
+        )
 
         RowDays(
-            habitsOccurrences = habitsOccurrences,
+            selectedDate = selectedDate,
             onDateSelected = { date -> selectedDate = date }
         )
 

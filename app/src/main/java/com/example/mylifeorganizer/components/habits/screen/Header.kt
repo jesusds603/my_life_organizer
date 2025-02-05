@@ -20,15 +20,46 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mylifeorganizer.room.HabitEntity
+import com.example.mylifeorganizer.room.HabitOccurrenceEntity
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Header() {
+fun Header(
+    selectedDate: String,
+    habitsOccurrences: List<HabitOccurrenceEntity>
+) {
     val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+
+    // Filtrar las ocurrencias para el día seleccionado
+    val occurrencesForDate = habitsOccurrences.filter { occurrence ->
+        if (occurrence.date.contains("-")) {
+            // Es un rango de fechas
+            isDateInRange(selectedDate, occurrence.date)
+        } else {
+            // Es una fecha única
+            occurrence.date == selectedDate
+        }
+    }
+
+    // Agrupar ocurrencias por hábito para evitar duplicados en rangos
+    val groupedOccurrences = occurrencesForDate.groupBy { it.habitId }
+
+    val completedOccurrences = groupedOccurrences.filter { (_, occurrences) ->
+        occurrences.all { it.isCompleted }
+    }
+    val uncompletedOccurrences = groupedOccurrences.filter { (_, occurrences) ->
+        occurrences.any { !it.isCompleted }
+    }
+
+    val numCompleted = completedOccurrences.size
+    val numUncompleted = uncompletedOccurrences.size
+    val total = numCompleted + numUncompleted
+    val percentageDone = if (total > 0) Math.round((numCompleted.toFloat() / total.toFloat()) * 100) else 0f
 
     Row (
         modifier = Modifier
@@ -47,14 +78,14 @@ fun Header() {
     ) {
         Column {
             Text(
-                text = "Fecha",
+                text = selectedDate,
                 color = themeColors.text1,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold
             )
 
             Text(
-                text = "0% Finished",
+                text = "$percentageDone% Finished",
                 color = themeColors.text1,
                 fontSize = 16.sp
             )

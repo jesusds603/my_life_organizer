@@ -1,5 +1,6 @@
 package com.example.mylifeorganizer.components.habits.screen
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,7 +29,7 @@ import java.util.Locale
 
 @Composable
 fun RowDays(
-    habitsOccurrences: List<HabitOccurrenceEntity>,
+    selectedDate: String,
     onDateSelected: (String) -> Unit
 ) {
     val themeViewModel: ThemeViewModel = viewModel()
@@ -87,6 +88,8 @@ fun RowDays(
                     text = date.split("/").last(), // Mostrar solo el día (DD)
                     color = if (isCurrentDay) Color.Magenta else themeColors.text1,
                     modifier = Modifier
+                        .padding(horizontal = 2.dp)
+                        .background(color = if (date == selectedDate) themeColors.backGround4 else Color.Transparent)
                         .weight(1f)
                         .clickable { onDateSelected(date) },
                     textAlign = TextAlign.Center,
