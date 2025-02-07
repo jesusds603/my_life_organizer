@@ -38,10 +38,9 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 @Composable
 fun HabitCard(
     habit: HabitEntity,
+    occurrence: HabitOccurrenceEntity,
     isRange: Boolean,
-    habitsOccurrences: List<HabitOccurrenceEntity>,
     occurrences: List<HabitOccurrenceEntity>,
-    habitId: Long
 ) {
     val appViewModel: AppViewModel = viewModel()
     val noteViewModel = appViewModel.noteViewModel
@@ -75,20 +74,20 @@ fun HabitCard(
         ) {
             if (isRange) {
                 // Mostrar flechas solo para rangos
-                val totalTasks = when (habit.recurrencePattern) {
+                val totalHabits = when (habit.recurrencePattern) {
                     "weekly" -> habit.numDaysForWeekly
                     "monthly" -> habit.numDaysForMonthly
                     "yearly" -> habit.numDaysForYearly
                     else -> 1
                 }
-                val completedTasks = habitsOccurrences.count {
-                    it.habitId == habitId && it.isCompleted && it.date.contains("-")
+                val completedOccurrences = occurrences.count {
+                    it.habitId == habit.habitId && it.isCompleted && it.date.contains("-")
                 }
 
                 // Flecha hacia arriba
                 IconButton(
                     onClick = {
-                        if (completedTasks < totalTasks) {
+                        if (completedOccurrences < totalHabits) {
                             // Encontrar la primera ocurrencia no completada y marcarla como completada
                             val occurrenceToUpdate = occurrences.firstOrNull { !it.isCompleted }
                             occurrenceToUpdate?.let {
@@ -100,14 +99,14 @@ fun HabitCard(
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_keyboard_arrow_up_24),
                         contentDescription = "Aumentar",
-                        tint = if (completedTasks < totalTasks) themeColors.text1 else Color.Gray
+                        tint = if (completedOccurrences < totalHabits) themeColors.text1 else Color.Gray
                     )
                 }
 
                 // Flecha hacia abajo
                 IconButton(
                     onClick = {
-                        if (completedTasks > 0) {
+                        if (completedOccurrences > 0) {
                             // Encontrar la última ocurrencia completada y marcarla como no completada
                             val occurrenceToUpdate = occurrences.lastOrNull { it.isCompleted }
                             occurrenceToUpdate?.let {
@@ -119,14 +118,13 @@ fun HabitCard(
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_keyboard_arrow_down_24),
                         contentDescription = "Disminuir",
-                        tint = if (completedTasks > 0) themeColors.text1 else Color.Gray
+                        tint = if (completedOccurrences > 0) themeColors.text1 else Color.Gray
                     )
                 }
             } else {
                 // Mostrar el icono de selección para fechas únicas
                 IconButton(
                     onClick = {
-                        val occurrence = occurrences.first()
                         noteViewModel.updateHabitOccurrence(occurrence.copy(isCompleted = !occurrence.isCompleted))
                     }
                 ) {
@@ -198,19 +196,19 @@ fun HabitCard(
         ) {
             if (isRange) {
                 // Mostrar el progreso de tareas completadas
-                val totalTasks = when (habit.recurrencePattern) {
+                val totalHabits = when (habit.recurrencePattern) {
                     "weekly" -> habit.numDaysForWeekly
                     "monthly" -> habit.numDaysForMonthly
                     "yearly" -> habit.numDaysForYearly
                     else -> 1
                 }
-                val completedHabits = habitsOccurrences.count {
-                    it.habitId == habitId && it.isCompleted && it.date.contains("-")
+                val completedHabits = occurrences.count {
+                    it.habitId == habit.habitId && it.isCompleted && it.date.contains("-")
                 }
 
                 Row {
                     Text(
-                        text = "$completedHabits/$totalTasks",
+                        text = "$completedHabits/$totalHabits",
                         color = themeColors.text1,
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp
@@ -251,6 +249,8 @@ fun HabitCard(
         FloatingOptionsHabit(
             showMenu = showMenu,
             changeShowMenu = { showMenu = it },
+            habit = habit,
+            occurrences = occurrences
         )
     }
 }

@@ -29,7 +29,6 @@ fun HabitsScreen() {
     val appViewModel: AppViewModel = viewModel()
     val noteViewModel: NoteViewModel = appViewModel.noteViewModel
 
-    val habits = noteViewModel.habits.collectAsState(initial = emptyList()).value
     val habitsOccurrences = noteViewModel.habitsOccurrences.collectAsState(initial = emptyList()).value
 
     val isAddingHabit = appViewModel.isAddingHabit.value
@@ -54,7 +53,6 @@ fun HabitsScreen() {
 
         HabitsContent(
             selectedDate = selectedDate,
-            habits = habits,
             habitsOccurrences = habitsOccurrences
         )
 

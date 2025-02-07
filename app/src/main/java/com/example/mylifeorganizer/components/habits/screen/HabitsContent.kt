@@ -16,6 +16,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -28,6 +29,7 @@ import com.example.mylifeorganizer.R
 import com.example.mylifeorganizer.room.HabitEntity
 import com.example.mylifeorganizer.room.HabitOccurrenceEntity
 import com.example.mylifeorganizer.viewmodel.AppViewModel
+import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -47,11 +49,15 @@ fun isDateInRange(selectedDate: String, dateRange: String): Boolean {
 @Composable
 fun HabitsContent(
     selectedDate: String,
-    habits: List<HabitEntity>,
     habitsOccurrences: List<HabitOccurrenceEntity>
 ) {
+    val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+
+    val noteViewModel: NoteViewModel = appViewModel.noteViewModel
+
+    val habits = noteViewModel.habits.collectAsState(initial = emptyList()).value
 
     // Filtrar las ocurrencias para el día seleccionado
     val occurrencesForDate = habitsOccurrences.filter { occurrence ->
@@ -96,18 +102,22 @@ fun HabitsContent(
                     fontSize = 18.sp,
                 )
             }
-            uncompletedOccurrences.forEach { (habitId, occurrences) ->
-                val habit = habits.first { it.habitId == habitId }
-                val isRange = occurrences.any { it.date.contains("-") }
+            uncompletedOccurrences.forEach { (habitId, uncomplOccurrences) ->
+                val habit = habits.firstOrNull { it.habitId == habitId }
+                val isRange = uncomplOccurrences.any { it.date.contains("-") }
+                val occurrenceForHabit = uncomplOccurrences.first { uncOcc ->
+                    uncOcc.habitId == habitId
+                }
 
-                item {
-                    HabitCard(
-                        habit = habit,
-                        isRange = isRange,
-                        habitsOccurrences = occurrences,
-                        occurrences = occurrences,
-                        habitId = habitId
-                    )
+                if(habit != null) {
+                    item {
+                        HabitCard(
+                            habit = habit,
+                            occurrence = occurrenceForHabit,
+                            isRange = isRange,
+                            occurrences = habitsOccurrences,
+                        )
+                    }
                 }
             }
 
@@ -119,18 +129,22 @@ fun HabitsContent(
                     fontSize = 18.sp,
                 )
             }
-            completedOccurrences.forEach { (habitId, occurrences) ->
-                val habit = habits.first { it.habitId == habitId }
-                val isRange = occurrences.any { it.date.contains("-") }
+            completedOccurrences.forEach { (habitId, complOccurrences) ->
+                val habit = habits.firstOrNull { it.habitId == habitId }
+                val isRange = complOccurrences.any { it.date.contains("-") }
+                val occurrenceForHabit = complOccurrences.first { complOcc ->
+                    complOcc.habitId == habitId
+                }
 
-                item {
-                    HabitCard(
-                        habit = habit,
-                        isRange = isRange,
-                        habitsOccurrences = occurrences,
-                        occurrences = occurrences,
-                        habitId = habitId
-                    )
+                if(habit != null) {
+                    item {
+                        HabitCard(
+                            habit = habit,
+                            occurrence = occurrenceForHabit,
+                            isRange = isRange,
+                            occurrences = habitsOccurrences,
+                        )
+                    }
                 }
             }
 
