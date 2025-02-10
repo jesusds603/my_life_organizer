@@ -406,4 +406,18 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
     fun changeDurationForNewHabit(duration: Int) {
         durationForNewHabit.value = duration
     }
+
+    // ------------------------------------------------------
+    //                   CALENDAR
+    // ------------------------------------------------------
+
+    val selectedDateCalendar = mutableStateOf(LocalDate.now())
+    fun changeSelectedDateCalendar(date: LocalDate) {
+        selectedDateCalendar.value = date
+    }
+
+    val isShowingDayCalendar = mutableStateOf(false)
+    fun toggleShowingDayCalendar() {
+        isShowingDayCalendar.value = !isShowingDayCalendar.value
+    }
 }

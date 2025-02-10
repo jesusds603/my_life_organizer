@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.components.ButtonTabs
+import com.example.mylifeorganizer.components.calendar.DayCalendarWindow
 import com.example.mylifeorganizer.components.notes.add.AddNoteWindow
 import com.example.mylifeorganizer.components.notes.edit.NoteWindow
 import com.example.mylifeorganizer.viewmodel.AppViewModel
@@ -25,6 +26,7 @@ fun MainScreen() {
     val themeColors = themeViewModel.themeColors.value
     val isAddingNote = appViewModel.isAddingNote.value
     val isShowingNote = appViewModel.isShowingNote.value
+    val isShowingDayCalendar = appViewModel.isShowingDayCalendar.value
 
 
 
@@ -45,6 +47,8 @@ fun MainScreen() {
             NoteWindow(
                 modifier = Modifier.fillMaxSize(),
             )
+        } else if (isShowingDayCalendar) {
+            DayCalendarWindow()
         } else {
             // Mostrar ContentMainScreen cuando no se está agregando una nota
             ContentMainScreen(

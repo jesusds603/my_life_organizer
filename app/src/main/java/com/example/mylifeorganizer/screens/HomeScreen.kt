@@ -88,7 +88,6 @@ fun HomeScreen() {
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(1f)
-                    .padding(2.dp)
                     .drawBehind {
                         val strokeWidth = 1.dp.toPx()
                         drawLine(
@@ -97,7 +96,8 @@ fun HomeScreen() {
                             end = Offset(size.width, size.height - strokeWidth / 2),
                             strokeWidth = strokeWidth
                         )
-                    },
+                    }
+                    .padding(2.dp),
             )
 
 
@@ -105,7 +105,6 @@ fun HomeScreen() {
                 modifier = Modifier
                     .fillMaxHeight()
                     .weight(1f)
-                    .padding(2.dp)
                     .drawBehind {
                         val strokeWidth = 1.dp.toPx()
                         drawLine(
@@ -114,7 +113,8 @@ fun HomeScreen() {
                             end = Offset(size.width, size.height - strokeWidth / 2),
                             strokeWidth = strokeWidth
                         )
-                    },
+                    }
+                    .padding(2.dp),
             )
         }
     }
