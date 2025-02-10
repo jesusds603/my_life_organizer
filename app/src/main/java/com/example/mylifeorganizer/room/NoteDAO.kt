@@ -166,6 +166,10 @@ interface NoteDao {
     @Query("SELECT * FROM tasks")
     fun getAllTasks(): Flow<List<TaskEntity>>
 
+    @Transaction
+    @Query("SELECT * FROM task_occurrences WHERE dueDate = :dueDate")
+    fun getOccurrencesTasksByDate(dueDate: String): Flow<List<TaskOccurrenceEntity>>
+
     // Obtener todas las tareas con sus categorías
     @Transaction
     @Query("SELECT * FROM tasks")
@@ -347,11 +351,17 @@ interface NoteDao {
     @Query("SELECT * FROM habits")
     fun getAllHabits(): Flow<List<HabitEntity>>
 
+    @Query("SELECT * FROM habits WHERE habitId = :habitId")
+    fun getHabitById(habitId: Long): Flow<HabitEntity>
+
     @Query("SELECT * FROM habits_occurrences")
     fun getAllHabitOccurrences(): Flow<List<HabitOccurrenceEntity>>
 
     @Query("SELECT * FROM habits_occurrences WHERE habitId = :habitId")
     fun getHabitOccurencesById(habitId: Long): Flow<List<HabitOccurrenceEntity>>
+
+    @Query("SELECT * FROM habits_occurrences WHERE date = :date")
+    fun getHabitOccurrencesByDate(date: String): Flow<List<HabitOccurrenceEntity>>
 
     @Delete
     suspend fun deleteHabit(habit: HabitEntity)

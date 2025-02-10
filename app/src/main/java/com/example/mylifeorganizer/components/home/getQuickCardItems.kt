@@ -35,20 +35,6 @@ fun getQuickCardItems(
             backgroundColor = themeColors.quickCard.addNote
         ),
         QuickCardItem(
-            title = "Add Daily",
-            subtitle = "Write what you did today",
-            iconResId = R.drawable.baseline_library_add_24,
-            onClick = {  },
-            backgroundColor = themeColors.quickCard.addDaily
-        ),
-        QuickCardItem(
-            title = "New Shopping",
-            subtitle = "Make a simple and quick shopping list",
-            iconResId = R.drawable.baseline_fact_check_24,
-            onClick = {  },
-            backgroundColor = themeColors.quickCard.addShoppingList
-        ),
-        QuickCardItem(
             title = "+ Income/Expense",
             subtitle = "Write your incomes or expenses from today",
             iconResId = R.drawable.baseline_attach_money_24,

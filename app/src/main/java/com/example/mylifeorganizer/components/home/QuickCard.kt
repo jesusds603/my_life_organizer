@@ -1,5 +1,7 @@
 package com.example.mylifeorganizer.components.home
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,6 +28,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun QuickCard(
     title: String,
@@ -43,7 +46,7 @@ fun QuickCard(
 
     Card (
         modifier = Modifier
-            .padding(4.dp)
+            .padding(2.dp)
             .clickable(onClick = onClick)
             .fillMaxWidth()
             .height(160.dp),
@@ -56,7 +59,8 @@ fun QuickCard(
     ) {
         Column (
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(16.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

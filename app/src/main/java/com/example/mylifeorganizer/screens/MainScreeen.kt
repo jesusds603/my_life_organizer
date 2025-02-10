@@ -9,16 +9,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.components.ButtonTabs
-import com.example.mylifeorganizer.viewmodel.AppViewModel
-import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 import com.example.mylifeorganizer.components.notes.add.AddNoteWindow
 import com.example.mylifeorganizer.components.notes.edit.NoteWindow
-import com.example.mylifeorganizer.repositories.NotesRepository
-import com.example.mylifeorganizer.room.NoteDB
-import com.example.mylifeorganizer.viewmodel.NoteViewModel
+import com.example.mylifeorganizer.viewmodel.AppViewModel
+import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -77,7 +73,6 @@ fun ContentMainScreen(
             when (selectedTab) {
                 "Home" -> HomeScreen()
                 "Notes" -> NotesScreen()
-                "Daily" -> DailyScreen()
                 "Tasks" -> TasksScreen()
                 "Finance" -> FinanceScreen()
                 "Calendar" -> CalendarScreen()

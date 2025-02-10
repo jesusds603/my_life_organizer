@@ -145,6 +145,7 @@ class NotesRepository (val noteDB: NoteDB) {
     // Obtener todas las tareas con categorías
     fun getAllTasksWithCategories() = noteDAO.getAllTasksWithCategories()
 
+    fun getOccurrencesTasksByDate(dueDate: String): Flow<List<TaskOccurrenceEntity>> = noteDAO.getOccurrencesTasksByDate(dueDate)
 
     fun getTaskById(taskId: Long): TaskWithCategories = noteDAO.getTaskById(taskId)
 
@@ -282,6 +283,8 @@ class NotesRepository (val noteDB: NoteDB) {
 
     fun getAllHabits(): Flow<List<HabitEntity>> = noteDAO.getAllHabits()
 
+    fun getHabitById(habitId: Long): Flow<HabitEntity> = noteDAO.getHabitById(habitId)
+
     suspend fun updateHabit(habit: HabitEntity) = noteDAO.updateHabit(habit)
 
     suspend fun deleteHabit(habit: HabitEntity) = noteDAO.deleteHabit(habit)
@@ -291,6 +294,8 @@ class NotesRepository (val noteDB: NoteDB) {
     fun getHabitOccurencesById(habitId: Long): Flow<List<HabitOccurrenceEntity>> = noteDAO.getHabitOccurencesById(habitId)
 
     fun getAllHabitOccurrences(): Flow<List<HabitOccurrenceEntity>> = noteDAO.getAllHabitOccurrences()
+
+    fun getHabitOccurrencesByDate(date: String): Flow<List<HabitOccurrenceEntity>> = noteDAO.getHabitOccurrencesByDate(date)
 
     suspend fun updateHabitOccurrence(habitOccurrence: HabitOccurrenceEntity) = noteDAO.updateHabitOccurrence(habitOccurrence)
 

@@ -50,7 +50,6 @@ fun ButtonTabs() {
     val tabs = listOf(
         TabItem("Home", if (isLangEng) "Home" else "Inicio", Icons.Default.Home),
         TabItem("Notes", if (isLangEng) "Notes" else "Notas", R.drawable.baseline_edit_note_24),
-        TabItem("Daily", if (isLangEng) "Daily" else "Diario", R.drawable.baseline_today_24),
         TabItem("Tasks", if (isLangEng) "Tasks" else "Tareas", R.drawable.baseline_checklist_24),
         TabItem("Habits", if (isLangEng) "Habits" else "Hábitos", R.drawable.baseline_downhill_skiing_24),
         TabItem("Finance", if (isLangEng) "Finance" else "Finanzas", R.drawable.baseline_wallet_24),

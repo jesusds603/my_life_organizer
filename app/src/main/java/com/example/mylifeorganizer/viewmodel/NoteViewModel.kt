@@ -254,6 +254,10 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
 
     val tasksWithCategories = notesRepository.getAllTasksWithCategories()
 
+    fun getOccurrencesTasksByDate(dueDate: String): Flow<List<TaskOccurrenceEntity>> {
+        return notesRepository.getOccurrencesTasksByDate(dueDate)
+    }
+
     fun getTaskById(taskId: Long): TaskWithCategories {
         return notesRepository.getTaskById(taskId)
     }
@@ -473,6 +477,10 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
 
     val habits = notesRepository.getAllHabits()
 
+    fun getHabitById(habitId: Long): Flow<HabitEntity> {
+        return notesRepository.getHabitById(habitId)
+    }
+
     fun updateHabit(habit: HabitEntity, onHabitUpdated: (Long) -> Unit) {
         viewModelScope.launch {
             notesRepository.updateHabit(habit)
@@ -498,6 +506,9 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
 
     val habitsOccurrences = notesRepository.getAllHabitOccurrences()
 
+    fun getHabitOccurrencesByDate(date: String): Flow<List<HabitOccurrenceEntity>> {
+        return notesRepository.getHabitOccurrencesByDate(date)
+    }
 
     fun updateHabitOccurrence(habitOccurrence: HabitOccurrenceEntity) {
         viewModelScope.launch {
