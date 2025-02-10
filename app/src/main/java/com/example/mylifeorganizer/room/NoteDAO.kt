@@ -287,6 +287,10 @@ interface NoteDao {
     @Query("SELECT * FROM finance")
     fun getAllFinances(): Flow<List<FinanceEntity>>
 
+    @Transaction
+    @Query("SELECT * FROM finance WHERE date = :date")
+    fun getFinancesByDate(date: String): Flow<List<FinanceWithCategories>>
+
     @Query("SELECT * FROM categories_finance")
     fun getAllCategoriesFinance(): Flow<List<CategoryFinanceEntity>>
 

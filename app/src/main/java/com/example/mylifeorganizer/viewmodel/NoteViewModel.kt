@@ -388,6 +388,7 @@ class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
     val categoriesFinance: Flow<List<CategoryFinanceEntity>> = notesRepository.getAllCategoriesFinance()
     val paymentMethods: Flow<List<PaymentMethodEntity>> = notesRepository.getAllPaymentMethods()
     val financesWithCategories: Flow<List<FinanceWithCategories>> = notesRepository.getAllFinancesWithCategories()
+    val getFinancesByDate: (String) -> Flow<List<FinanceWithCategories>> = { date -> notesRepository.getFinancesByDate(date) }
 
     // Agregar finanza, categoría, método de pago y relaciones
     fun addFinance(finance: FinanceEntity, onFinanceAdded: (Long) -> Unit) {

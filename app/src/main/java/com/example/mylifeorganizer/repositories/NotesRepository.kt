@@ -242,6 +242,8 @@ class NotesRepository (val noteDB: NoteDB) {
     // Obtener listas individuales
     fun getAllFinances(): Flow<List<FinanceEntity>> = noteDAO.getAllFinances()
 
+    fun getFinancesByDate(date: String): Flow<List<FinanceWithCategories>> = noteDAO.getFinancesByDate(date)
+
     fun getAllCategoriesFinance(): Flow<List<CategoryFinanceEntity>> = noteDAO.getAllCategoriesFinance()
 
     fun getAllPaymentMethods(): Flow<List<PaymentMethodEntity>> = noteDAO.getAllPaymentMethods()
