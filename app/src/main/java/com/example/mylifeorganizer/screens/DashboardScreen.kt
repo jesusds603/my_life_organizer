@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -40,6 +41,7 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
@@ -77,9 +79,11 @@ fun DashboardScreen() {
     val pieChartData by remember(totalIncome, totalExpense) {
         mutableStateOf(preparePieChartData(totalIncome, totalExpense, themeViewModel))
     }
-    val barChartData = prepareBarChartData(financesForMonth, categoriesFinance, themeViewModel)
-    val lineChartData = prepareLineChartData(financesForMonth, categoriesFinance, themeViewModel)
-
+    val barChartData by remember (financesForMonth, categoriesFinance) {
+        mutableStateOf(
+            prepareBarChartData(financesForMonth, categoriesFinance, themeViewModel)
+        )
+    }
 
     Column(
         modifier = Modifier
@@ -159,17 +163,9 @@ fun DashboardScreen() {
         }
 
         Text(
-            text = "$totalIncome, $totalExpense, $balance, ",
-            color = themeColors.text1
-        )
-
-        Text(
-            text = if(totalIncome + totalExpense == 0.0) {
-                "Suma es cero"
-            } else {
-                "Suma no cero"
-            },
-            color = themeColors.text1
+            text = "Balance: $balance",
+            color = themeColors.text1,
+            fontWeight = FontWeight.Bold
         )
 
 
@@ -185,7 +181,7 @@ fun DashboardScreen() {
                     setUsePercentValues(false) // Show actual values instead of percentages
                     setDrawEntryLabels(true) // Show labels on slices
                     animateY(1000) // Add animation
-                    setHoleColor(Color.Transparent.toArgb())
+                    isDrawHoleEnabled = false
 
                     // Set data
                     data = pieChartData
@@ -206,29 +202,31 @@ fun DashboardScreen() {
                 BarChart(context).apply {
                     data = barChartData
                     description.isEnabled = false
-                    xAxis.valueFormatter = IndexAxisValueFormatter(categoriesFinance.map { it.name })
+                    setFitBars(true)
+                    xAxis.apply {
+                        valueFormatter = IndexAxisValueFormatter(categoriesFinance.map { it.name })
+                        position = XAxis.XAxisPosition.TOP
+                        granularity = 1f
+                        textSize = 12f
+                        labelRotationAngle = 90f // Texto vertical
+                        textColor = themeColors.text1.toArgb()
+                    }
+                    axisLeft.axisMinimum = 0f
+                    axisRight.isEnabled = false
+                    legend.isEnabled = false
+                    groupBars(0f, 0.2f, 0.05f) // Agrupa las barras
                     animateY(1000)
                 }
+            },
+            update = {chart ->
+                chart.data = barChartData
+                chart.invalidate()
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(300.dp)
         )
 
-        // Line Chart for Category-wise Trends
-        AndroidView(
-            factory = { context ->
-                LineChart(context).apply {
-                    data = lineChartData
-                    description.isEnabled = false
-                    xAxis.valueFormatter = IndexAxisValueFormatter(categoriesFinance.map { it.name })
-                    animateY(1000)
-                }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(300.dp)
-        )
     }
 }
 
@@ -270,41 +268,39 @@ private fun prepareBarChartData(
     categories: List<CategoryFinanceEntity>,
     themeViewModel: ThemeViewModel
 ): BarData {
-    val categoryAmounts = categories.associate { it.name to 0f }.toMutableMap()
-    finances.filter { it.finance.type == "expense" }.forEach { finance ->
-        finance.categories.forEach { category ->
-            categoryAmounts[category.name] = categoryAmounts[category.name]!! + finance.finance.amount.toFloat()
-        }
-    }
-    val entries = categories.mapIndexed { index, category ->
-        BarEntry(index.toFloat(), categoryAmounts[category.name]!!)
-    }
-    val dataSet = BarDataSet(entries, "Expenses by Category").apply {
-        colors = categories.map { themeViewModel.getCategoryColor(it.bgColor).toArgb() }
-        valueTextColor = Color.Black.toArgb()
-        valueTextSize = 12f
-    }
-    return BarData(dataSet)
-}
+    val incomeEntries = mutableListOf<BarEntry>()
+    val expenseEntries = mutableListOf<BarEntry>()
+    val categoryNames = mutableListOf<String>()
+    val colorS = mutableListOf<Int>()
 
-private fun prepareLineChartData(
-    finances: List<FinanceWithCategories>,
-    categories: List<CategoryFinanceEntity>,
-    themeViewModel: ThemeViewModel
-): LineData {
-    val categoryAmounts = categories.associate { it.name to 0f }.toMutableMap()
-    finances.filter { it.finance.type == "expense" }.forEach { finance ->
-        finance.categories.forEach { category ->
-            categoryAmounts[category.name] = categoryAmounts[category.name]!! + finance.finance.amount.toFloat()
+    categories.forEachIndexed { index, category ->
+        val incomeTotal = finances.filter { it.finance.type == "income" && it.categories.contains(category) }
+            .sumOf { it.finance.amount }
+        val expenseTotal = finances.filter { it.finance.type == "expense" && it.categories.contains(category) }
+            .sumOf { it.finance.amount }
+
+        if (incomeTotal > 0 || expenseTotal > 0) {
+            incomeEntries.add(BarEntry(index.toFloat(), incomeTotal.toFloat()))
+            expenseEntries.add(BarEntry(index.toFloat() + 0.4f, expenseTotal.toFloat())) // Mueve la barra a la derecha
+
+            categoryNames.add(category.name)
+            colorS.add(themeViewModel.getCategoryColor(category.bgColor).toArgb()) // Color de la categoría
         }
     }
-    val entries = categories.mapIndexed { index, category ->
-        Entry(index.toFloat(), categoryAmounts[category.name]!!)
-    }
-    val dataSet = LineDataSet(entries, "Expenses Trend by Category").apply {
-        colors = categories.map { themeViewModel.getCategoryColor(it.bgColor).toArgb() }
-        valueTextColor = Color.Black.toArgb()
+
+    val incomeDataSet = BarDataSet(incomeEntries, "Income").apply {
+        valueTextColor = Color.Green.toArgb()
         valueTextSize = 12f
+        colors = colorS
     }
-    return LineData(dataSet)
+
+    val expenseDataSet = BarDataSet(expenseEntries, "Expense").apply {
+        valueTextColor = Color.Red.toArgb()
+        valueTextSize = 12f
+        colors = colorS
+    }
+
+    return BarData(incomeDataSet, expenseDataSet).apply {
+        barWidth = 0.3f // Tamaño de cada barra
+    }
 }
