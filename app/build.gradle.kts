@@ -63,34 +63,33 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     // Room
-    val room_version = "2.6.1"
-    implementation("androidx.room:room-runtime:$room_version")
-    implementation("androidx.room:room-ktx:$room_version")
-    ksp("androidx.room:room-compiler:$room_version")
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 
     // Navigation
-    implementation("androidx.navigation:navigation-compose:2.8.5")
+    implementation(libs.androidx.navigation.compose)
 
     // Para el sistema
-    implementation("com.google.accompanist:accompanist-systemuicontroller:0.36.0")
+    implementation(libs.accompanist.systemuicontroller)
 
     // Para un mejor fluje de Rows permitiendo que el texto se acomode en lineas
     // implementation("com.google.accompanist:accompanist-flowlayout:0.36.0")
 
     // Para markdown y latex
-    implementation("io.noties.markwon:core:4.6.2")
+    implementation(libs.core)
     // implementation("io.github.kexanie:MathView:0.5.0")
-    implementation("com.google.accompanist:accompanist-webview:0.36.0")
+    implementation(libs.accompanist.webview)
 
     // Para manejar la cincompatibilidad de java.time
 //    implementation("org.threeten:threetenbp:1.6.0")
 //    implementation("com.jakewharton.threetenabp:threetenabp:1.4.4")
 
-    implementation("androidx.work:work-runtime-ktx:2.10.0") // Para WorkManager
-    implementation("androidx.core:core-ktx:1.15.0") // Para NotificationCompat
+    implementation(libs.androidx.work.runtime.ktx) // Para WorkManager
+    implementation(libs.androidx.core.ktx) // Para NotificationCompat
 
     implementation(libs.gson)
 
     // Para gráficos
-    //implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
+    implementation(libs.mpandroidchart)
 }
