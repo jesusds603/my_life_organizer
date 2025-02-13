@@ -1,0 +1,53 @@
+package com.example.mylifeorganizer.components.dashboard
+
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
+import com.example.mylifeorganizer.room.CategoryFinanceEntity
+import com.example.mylifeorganizer.room.FinanceWithCategories
+import com.example.mylifeorganizer.viewmodel.ThemeViewModel
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+
+
+fun prepareBarChartData(
+    finances: List<FinanceWithCategories>,
+    categories: List<CategoryFinanceEntity>,
+    themeViewModel: ThemeViewModel
+): BarData {
+    val incomeEntries = mutableListOf<BarEntry>()
+    val expenseEntries = mutableListOf<BarEntry>()
+    val categoryNames = mutableListOf<String>()
+    val colorS = mutableListOf<Int>()
+
+    categories.forEachIndexed { index, category ->
+        val incomeTotal = finances.filter { it.finance.type == "income" && it.categories.contains(category) }
+            .sumOf { it.finance.amount }
+        val expenseTotal = finances.filter { it.finance.type == "expense" && it.categories.contains(category) }
+            .sumOf { it.finance.amount }
+
+        if (incomeTotal > 0 || expenseTotal > 0) {
+            incomeEntries.add(BarEntry(index.toFloat(), incomeTotal.toFloat()))
+            expenseEntries.add(BarEntry(index.toFloat() + 0.4f, expenseTotal.toFloat())) // Mueve la barra a la derecha
+
+            categoryNames.add(category.name)
+            colorS.add(themeViewModel.getCategoryColor(category.bgColor).toArgb()) // Color de la categoría
+        }
+    }
+
+    val incomeDataSet = BarDataSet(incomeEntries, "Income").apply {
+        valueTextColor = Color.Green.toArgb()
+        valueTextSize = 12f
+        colors = colorS
+    }
+
+    val expenseDataSet = BarDataSet(expenseEntries, "Expense").apply {
+        valueTextColor = Color.Red.toArgb()
+        valueTextSize = 12f
+        colors = colorS
+    }
+
+    return BarData(incomeDataSet, expenseDataSet).apply {
+        barWidth = 0.3f // Tamaño de cada barra
+    }
+}

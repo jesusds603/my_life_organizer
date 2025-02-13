@@ -33,6 +33,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.R
+import com.example.mylifeorganizer.components.dashboard.RowSelector
+import com.example.mylifeorganizer.components.dashboard.prepareBarChartData
+import com.example.mylifeorganizer.components.dashboard.preparePieChartData
 import com.example.mylifeorganizer.room.CategoryFinanceEntity
 import com.example.mylifeorganizer.room.FinanceWithCategories
 import com.example.mylifeorganizer.viewmodel.AppViewModel
@@ -91,76 +94,13 @@ fun DashboardScreen() {
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Selector de Año y Mes
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Año con flechas
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_keyboard_arrow_left_24),
-                    contentDescription = "Año anterior",
-                    tint = themeColors.text1,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clickable { selectedYear-- }
-                )
-                Text(
-                    text = selectedYear.toString(),
-                    color = themeColors.text1
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_keyboard_arrow_right_24),
-                    contentDescription = "Año siguiente",
-                    tint = themeColors.text1,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clickable { selectedYear++ }
-                )
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            // Mes con flechas
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_keyboard_arrow_left_24),
-                    contentDescription = "Mes anterior",
-                    tint = themeColors.text1,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clickable {
-                            if (selectedMonth == 1) {
-                                selectedMonth = 12
-                                selectedYear--
-                            } else {
-                                selectedMonth--
-                            }
-                        }
-                )
-                Text(
-                    text = monthString,
-                    color = themeColors.text1
-                )
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_keyboard_arrow_right_24),
-                    contentDescription = "Mes siguiente",
-                    tint = themeColors.text1,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clickable {
-                            if (selectedMonth == 12) {
-                                selectedMonth = 1
-                                selectedYear++
-                            } else {
-                                selectedMonth++
-                            }
-                        }
-                )
-            }
-        }
+       RowSelector(
+           selectedYear = selectedYear,
+           onYearChange = { selectedYear = it },
+           selectedMonth = selectedMonth,
+           onMonthChange = { selectedMonth = it },
+           monthString = monthString
+       )
 
         Text(
             text = "Balance: $balance",
@@ -205,10 +145,11 @@ fun DashboardScreen() {
                     setFitBars(true)
                     xAxis.apply {
                         valueFormatter = IndexAxisValueFormatter(categoriesFinance.map { it.name })
-                        position = XAxis.XAxisPosition.TOP
+                        Log.d("DashboardScreen", "Categories: ${categoriesFinance.map { it.name }}")
+                        position = XAxis.XAxisPosition.BOTTOM
                         granularity = 1f
                         textSize = 12f
-                        labelRotationAngle = 90f // Texto vertical
+                        labelRotationAngle = -90f // Texto vertical
                         textColor = themeColors.text1.toArgb()
                     }
                     axisLeft.axisMinimum = 0f
@@ -220,6 +161,8 @@ fun DashboardScreen() {
             },
             update = {chart ->
                 chart.data = barChartData
+                chart.xAxis.valueFormatter = IndexAxisValueFormatter(categoriesFinance.map { it.name })
+                Log.d("DashboardScreen", "Updated Categories: ${categoriesFinance.map { it.name }}")
                 chart.invalidate()
             },
             modifier = Modifier
@@ -230,77 +173,4 @@ fun DashboardScreen() {
     }
 }
 
-// Helper Function to Prepare Pie Chart Data
-private fun preparePieChartData(totalIncome: Double, totalExpense: Double, themeViewModel: ThemeViewModel): PieData {
-    // Calculate the total sum of incomes and expenses
-    val totalSum = totalIncome + totalExpense
 
-    Log.d("", "$totalIncome, $totalExpense, $totalSum")
-
-    // Handle zero values
-    val incomePercentage = if (totalSum == 0.0) 50f else (totalIncome / totalSum * 100).toFloat()
-    val expensePercentage = if (totalSum == 0.0) 50f else (totalExpense / totalSum * 100).toFloat()
-
-    // Create entries
-    val entries = listOf(
-        PieEntry(incomePercentage, "Income: $${"%.2f".format(totalIncome)}"),
-        PieEntry(expensePercentage, "Expense: $${"%.2f".format(totalExpense)}")
-    )
-
-    // Create dataset
-    val dataSet = PieDataSet(entries, "").apply {
-        colors = listOf(themeViewModel.themeColors.value.bgIncome.toArgb(), themeViewModel.themeColors.value.bgExpense.toArgb()) // Set slice colors
-        valueTextColor = themeViewModel.themeColors.value.text1.toArgb() // Set value text color
-        valueTextSize = 14f // Set value text size
-        valueFormatter = object : ValueFormatter() {
-            override fun getFormattedValue(value: Float): String {
-                // Display percentages
-                return if (value == 50f && totalSum == 0.0) "0%" else "%.1f%%".format(value)
-            }
-        }
-    }
-
-    return PieData(dataSet)
-}
-
-private fun prepareBarChartData(
-    finances: List<FinanceWithCategories>,
-    categories: List<CategoryFinanceEntity>,
-    themeViewModel: ThemeViewModel
-): BarData {
-    val incomeEntries = mutableListOf<BarEntry>()
-    val expenseEntries = mutableListOf<BarEntry>()
-    val categoryNames = mutableListOf<String>()
-    val colorS = mutableListOf<Int>()
-
-    categories.forEachIndexed { index, category ->
-        val incomeTotal = finances.filter { it.finance.type == "income" && it.categories.contains(category) }
-            .sumOf { it.finance.amount }
-        val expenseTotal = finances.filter { it.finance.type == "expense" && it.categories.contains(category) }
-            .sumOf { it.finance.amount }
-
-        if (incomeTotal > 0 || expenseTotal > 0) {
-            incomeEntries.add(BarEntry(index.toFloat(), incomeTotal.toFloat()))
-            expenseEntries.add(BarEntry(index.toFloat() + 0.4f, expenseTotal.toFloat())) // Mueve la barra a la derecha
-
-            categoryNames.add(category.name)
-            colorS.add(themeViewModel.getCategoryColor(category.bgColor).toArgb()) // Color de la categoría
-        }
-    }
-
-    val incomeDataSet = BarDataSet(incomeEntries, "Income").apply {
-        valueTextColor = Color.Green.toArgb()
-        valueTextSize = 12f
-        colors = colorS
-    }
-
-    val expenseDataSet = BarDataSet(expenseEntries, "Expense").apply {
-        valueTextColor = Color.Red.toArgb()
-        valueTextSize = 12f
-        colors = colorS
-    }
-
-    return BarData(incomeDataSet, expenseDataSet).apply {
-        barWidth = 0.3f // Tamaño de cada barra
-    }
-}
