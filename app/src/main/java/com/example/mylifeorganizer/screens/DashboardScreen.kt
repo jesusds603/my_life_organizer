@@ -2,20 +2,14 @@ package com.example.mylifeorganizer.screens
 
 import android.os.Build
 import android.util.Log
-import android.view.ViewGroup
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -25,37 +19,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mylifeorganizer.R
 import com.example.mylifeorganizer.components.dashboard.RowSelector
-import com.example.mylifeorganizer.components.dashboard.prepareBarChartData
+import com.example.mylifeorganizer.components.dashboard.prepareCatChartData
+import com.example.mylifeorganizer.components.dashboard.preparePaymentChartData
 import com.example.mylifeorganizer.components.dashboard.preparePieChartData
-import com.example.mylifeorganizer.room.CategoryFinanceEntity
-import com.example.mylifeorganizer.room.FinanceWithCategories
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.formatter.ValueFormatter
 import java.time.YearMonth
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -78,20 +57,28 @@ fun DashboardScreen() {
     val totalIncome = financesForMonth.filter { it.finance.type == "income" }.sumOf { it.finance.amount }
     val balance = totalIncome - totalExpense
 
+    val scrollState by remember { mutableStateOf(0) }
+
     // Prepare data for charts
     val pieChartData by remember(totalIncome, totalExpense) {
         mutableStateOf(preparePieChartData(totalIncome, totalExpense, themeViewModel))
     }
-    val barChartData by remember (financesForMonth, categoriesFinance) {
+    val catChartData by remember (financesForMonth, categoriesFinance) {
         mutableStateOf(
-            prepareBarChartData(financesForMonth, categoriesFinance, themeViewModel)
+            prepareCatChartData(financesForMonth, categoriesFinance, themeViewModel)
+        )
+    }
+    val paymentChartData by remember (financesForMonth, paymentMethods) {
+        mutableStateOf(
+            preparePaymentChartData(financesForMonth, paymentMethods, themeViewModel)
         )
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState(scrollState)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
        RowSelector(
@@ -136,11 +123,17 @@ fun DashboardScreen() {
                 .height(300.dp)
         )
 
+        Text(
+            text = "Category-wise Expenses",
+            color = themeColors.text1,
+            fontWeight = FontWeight.Bold
+        )
+
         // Bar Chart for Category-wise Expenses
         AndroidView(
             factory = { context ->
                 BarChart(context).apply {
-                    data = barChartData
+                    data = catChartData
                     description.isEnabled = false
                     setFitBars(true)
                     xAxis.apply {
@@ -160,9 +153,47 @@ fun DashboardScreen() {
                 }
             },
             update = {chart ->
-                chart.data = barChartData
+                chart.data = catChartData
                 chart.xAxis.valueFormatter = IndexAxisValueFormatter(categoriesFinance.map { it.name })
                 Log.d("DashboardScreen", "Updated Categories: ${categoriesFinance.map { it.name }}")
+                chart.invalidate()
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(300.dp)
+        )
+
+        Text(
+            text = "Payment Method-wise Expenses",
+            color = themeColors.text1,
+            fontWeight = FontWeight.Bold
+        )
+
+        // Bar Chart for Payment Method-wise Expenses
+        AndroidView(
+            factory = { context ->
+                BarChart(context).apply {
+                    data = paymentChartData
+                    description.isEnabled = false
+                    setFitBars(true)
+                    xAxis.apply {
+                        valueFormatter = IndexAxisValueFormatter(paymentMethods.map { it.name })
+                        position = XAxis.XAxisPosition.BOTTOM
+                        granularity = 1f
+                        textSize = 12f
+                        labelRotationAngle = -90f // Texto vertical
+                        textColor = themeColors.text1.toArgb()
+                    }
+                    axisLeft.axisMinimum = 0f
+                    axisRight.isEnabled = false
+                    legend.isEnabled = false
+                    groupBars(0f, 0.2f, 0.05f) // Agrupa las barras
+                    animateY(1000)
+                }
+            },
+            update = {chart ->
+                chart.data = paymentChartData
+                chart.xAxis.valueFormatter = IndexAxisValueFormatter(paymentMethods.map { it.name })
                 chart.invalidate()
             },
             modifier = Modifier
