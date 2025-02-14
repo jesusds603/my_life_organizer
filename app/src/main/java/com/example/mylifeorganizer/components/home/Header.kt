@@ -19,6 +19,8 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -39,7 +41,7 @@ fun Header() {
     Row (
         modifier = Modifier
             .fillMaxWidth()
-            .background(themeColors.backGround1)
+            .background(color = Color(0x22660066))
             .height(50.dp)
             .drawBehind {
                 val strokeWidth = 1.dp.toPx()
@@ -57,7 +59,9 @@ fun Header() {
         Text(
             text = "MyLifeOrganizer",
             color = themeColors.text1,
-            fontSize = 24.sp
+            fontSize = 20.sp,
+            fontWeight = FontWeight.ExtraBold,
+            fontFamily = FontFamily.Monospace
         )
 
         // Botones de idioma y tema
@@ -73,7 +77,7 @@ fun Header() {
                         painter = painterResource(id = R.drawable.baseline_language_24),
                         contentDescription = "Language",
                         modifier = Modifier.size(24.dp), // Ajusta el tamaño del ícono
-                        tint = themeColors.text1 // Asegura que el color coincida con el tema
+                        tint = themeColors.tabButtonDefault
                     )
                     Text(
                         text = if (isLangEng) "EN" else "ES",

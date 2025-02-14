@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -39,6 +40,7 @@ fun HabitsSection(
     val themeViewModel: ThemeViewModel = viewModel()
 
     val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
     val todayDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
 
@@ -51,7 +53,7 @@ fun HabitsSection(
 
     ) {
         Text(
-            text = "Habits for today",
+            text = if(isLangEng) "Habits for today" else "Habitos para hoy",
             color = themeColors.text1,
         )
 
@@ -66,6 +68,10 @@ fun HabitsSection(
                     Row (
                         modifier = Modifier
                             .fillMaxWidth()
+                            .background(
+                                color = Color(0x22cc0099)
+                            ),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         IconButton(
                             onClick = {

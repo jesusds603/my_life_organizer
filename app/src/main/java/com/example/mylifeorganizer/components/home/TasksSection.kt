@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -42,6 +44,7 @@ fun TasksSection(
     val themeViewModel: ThemeViewModel = viewModel()
 
     val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
     val todayDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"))
 
@@ -54,7 +57,7 @@ fun TasksSection(
 
     ) {
         Text(
-            text = "Tasks for today",
+            text = if(isLangEng) "Tasks for today" else "Tareas para hoy",
             color = themeColors.text1,
         )
 
@@ -66,7 +69,14 @@ fun TasksSection(
                 val task = tasks.find { occurrence.taskId == it.task.taskId }
 
                 item {
-                    Row {
+                    Row (
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(
+                                color = Color(0x22cc0099)
+                            ),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         IconButton(
                             onClick = {
                                 noteViewModel.updateOccurrence(
@@ -75,6 +85,7 @@ fun TasksSection(
                             },
                             modifier = Modifier
                                 .fillMaxWidth(0.2f)
+                                .fillMaxHeight()
                         ) {
                             Icon(
                                 painter = painterResource(
@@ -92,13 +103,10 @@ fun TasksSection(
                         Column (
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .background(
-                                    color = themeColors.backGround2
-                                )
-                                .padding(horizontal = 2.dp)
+                                .padding(horizontal = 8.dp, vertical = 2.dp)
                         ) {
                             Text(
-                                text = task?.task?.title ?: "Unknown task",
+                                text = task?.task?.title ?: if(isLangEng) "Unknown task" else "Tarea desconodida",
                                 color = themeColors.text1,
                                 fontWeight = FontWeight.Bold
                             )

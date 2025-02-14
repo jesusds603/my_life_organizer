@@ -10,7 +10,6 @@ import com.example.mylifeorganizer.viewmodel.ThemeColors
 
 data class QuickCardItem(
     val title: String,
-    val subtitle: String,
     val iconResId: Int, // ID del ícono
     val onClick: () -> Unit,
     val backgroundColor: Color
@@ -21,12 +20,12 @@ data class QuickCardItem(
 @RequiresApi(Build.VERSION_CODES.O)
 fun getQuickCardItems(
     themeColors: ThemeColors,
-    appViewModel: AppViewModel
+    appViewModel: AppViewModel,
+    isLangEng: Boolean
 ): List<QuickCardItem> {
     return listOf(
         QuickCardItem(
-            title = "Add Note",
-            subtitle = "Add a new note",
+            title = if (isLangEng) "New Note" else "Nueva Nota",
             iconResId = R.drawable.baseline_colorize_24,
             onClick = {
                 appViewModel.changeIdFolderForAddingNote(0)
@@ -35,8 +34,7 @@ fun getQuickCardItems(
             backgroundColor = themeColors.quickCard.addNote
         ),
         QuickCardItem(
-            title = "+ Income/Expense",
-            subtitle = "Write your incomes or expenses from today",
+            title = if(isLangEng) "+ Income / Expense" else "+ Ingresos / Gastos",
             iconResId = R.drawable.baseline_attach_money_24,
             onClick = {
                 appViewModel.toggleAddingFinance()
@@ -45,8 +43,7 @@ fun getQuickCardItems(
             backgroundColor = themeColors.quickCard.addIncome
         ),
         QuickCardItem(
-            title = "New Task",
-            subtitle = "Write a task easily",
+            title = if(isLangEng) "New Task" else "Nueva Tarea",
             iconResId = R.drawable.baseline_add_task_24,
             onClick = {
                 appViewModel.changeTitleNewTask("")

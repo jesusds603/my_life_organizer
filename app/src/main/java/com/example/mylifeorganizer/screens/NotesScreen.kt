@@ -1,6 +1,7 @@
 package com.example.mylifeorganizer.screens
 
-import android.util.Log
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +16,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -23,14 +23,11 @@ import com.example.mylifeorganizer.components.notes.screen.AddFolderDialog
 import com.example.mylifeorganizer.components.notes.screen.DialogOptionsAdd
 import com.example.mylifeorganizer.components.notes.screen.NotesFoldersContainer
 import com.example.mylifeorganizer.components.notes.screen.RowCategories
-import com.example.mylifeorganizer.repositories.NotesRepository
-import com.example.mylifeorganizer.room.FolderEntity
-import com.example.mylifeorganizer.room.NoteDB
 import com.example.mylifeorganizer.viewmodel.AppViewModel
-import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NotesScreen() {
     val appViewModel: AppViewModel = viewModel()

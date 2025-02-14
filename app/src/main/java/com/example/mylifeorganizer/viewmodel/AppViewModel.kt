@@ -3,21 +3,16 @@ package com.example.mylifeorganizer.viewmodel
 import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.example.mylifeorganizer.repositories.NotesRepository
 import com.example.mylifeorganizer.room.CategoryEntity
 import com.example.mylifeorganizer.room.CategoryFinanceEntity
 import com.example.mylifeorganizer.room.CategoryTaskEntity
 import com.example.mylifeorganizer.room.NoteDB
-import com.example.mylifeorganizer.room.NoteEntity
 import com.example.mylifeorganizer.room.PaymentMethodEntity
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -33,14 +28,12 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
 
     // Language state
     val isLangEng = mutableStateOf(true)
-
     fun toggleLanguage() {
         isLangEng.value = !isLangEng.value
     }
 
     // Tab state
     var selectedTab = mutableStateOf("Home")
-
     fun changeTab(newTab: String) {
         selectedTab.value = newTab
     }
@@ -402,9 +395,9 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
         recurrenceYearDaysHabit.value = days
     }
 
-    val durationForNewHabit = mutableStateOf(0)
+    val durationForNewHabit = mutableIntStateOf(0)
     fun changeDurationForNewHabit(duration: Int) {
-        durationForNewHabit.value = duration
+        durationForNewHabit.intValue = duration
     }
 
     // ------------------------------------------------------

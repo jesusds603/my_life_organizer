@@ -75,7 +75,7 @@ fun MainView(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(themeColors.backgroundTransparent1)
+            .background(themeColors.backGround1)
             .padding(4.dp)
     ) {
 

@@ -50,7 +50,7 @@ class ThemeViewModel : ViewModel() {
             buttonAdd = Color(0xFF2196F3),
             buttonDelete = Color(0xFFF44336),
             quickCard = ThemeColors.QuickCardColors(
-                addNote = Color(0xffdbb807),
+                addNote = Color(0xffffb300),
                 addDaily = Color(0xFF04AF74),
                 addShoppingList = Color(0xFF9307BA),
                 addExpense = Color(0xFFA00606),
@@ -62,7 +62,7 @@ class ThemeViewModel : ViewModel() {
                 red = Color(0xFF8B0000),
                 green = Color(0xFF04A004),
                 blue = Color(0xFF00008B),
-                yellow =  Color(0xffdbb807),
+                yellow =  Color(0xffffb300),
                 purple = Color(0xFF53089E),
                 orange = Color(0xFFF34C17),
                 cyan = Color(0xFF0EA380),
@@ -84,7 +84,10 @@ class ThemeViewModel : ViewModel() {
                 Color(0xFF7D30F8)
             ),
             bgExpense = Color(0xFFC90926),
-            bgIncome = Color(0xFF219E05)
+            bgIncome = Color(0xFF219E05),
+            bgDialog = Color(0x99660066),
+            bgCardNote = Color(0x44191970),
+            bgCardFolder = Color(0x448B008B)
         )
     )
 
@@ -107,7 +110,7 @@ class ThemeViewModel : ViewModel() {
                 buttonAdd = Color(0xFF2196F3),
                 buttonDelete = Color(0xFFF44336),
                 quickCard = ThemeColors.QuickCardColors(
-                    addNote = Color(0xffdbb807),
+                    addNote = Color(0xffffb300),
                     addDaily = Color(0xFF04AF74),
                     addShoppingList = Color(0xFF9307BA),
                     addExpense = Color(0xFFA00606),
@@ -119,7 +122,7 @@ class ThemeViewModel : ViewModel() {
                     red = Color(0xFF8B0000),
                     green = Color(0xFF008000),
                     blue = Color(0xFF00008B),
-                    yellow =  Color(0xffdbb807),
+                    yellow =  Color(0xffffb300),
                     purple = Color(0xFF800080),
                     orange = Color(0xFFFF5722),
                     cyan = Color(0xFF800040),
@@ -141,7 +144,10 @@ class ThemeViewModel : ViewModel() {
                     Color(0xFF7D30F8)
                 ),
                 bgExpense = Color(0xFFC90926),
-                bgIncome = Color(0xFF219E05)
+                bgIncome = Color(0xFF219E05),
+                bgDialog = Color(0x99660066),
+                bgCardNote = Color(0x44191970),
+                bgCardFolder = Color(0x448B008B)
             )
         } else {
             ThemeColors(
@@ -153,18 +159,18 @@ class ThemeViewModel : ViewModel() {
                 text2 = Color(0xff111111),
                 text3 = Color(0xff222222),
                 textComment = Color(0xFF61AD9D),
-                tabButtonDefault = Color(0xFF05664A),
+                tabButtonDefault = Color(0xFF071F9A),
                 tabButtonSelected = Color(0xFF97108D),
                 backGroundRed = Color(0xFFF31C4E),
                 buttonAdd = Color(0xFF24EFA8),
                 buttonDelete = Color(0xFFE91E63),
                 quickCard = ThemeColors.QuickCardColors(
-                    addNote = Color(0xFFF1ED1D),
+                    addNote = Color(0xFFFFFF00),
                     addDaily = Color(0xFF2CEEB1),
                     addShoppingList = Color(0xFFC162F5),
                     addExpense = Color(0xFFF33450),
                     addIncome = Color(0xFF5CF63A),
-                    addTask = Color(0xFF2196F3)
+                    addTask = Color(0xFF00CCFF)
                 ),
                 backgroundTransparent1 = Color(0xccffffff),
                 categoriesNotes = ThemeColors.CategoriesNotes(
@@ -172,20 +178,20 @@ class ThemeViewModel : ViewModel() {
                     green = Color(0xFF00FF00),
                     blue = Color(0xFF00BFFF),
                     yellow =  Color(0xFFFFFF00),
-                    purple = Color(0xFFAB29F1),
+                    purple = Color(0xFFCB88EF),
                     orange = Color(0xFFFFA500),
                     cyan = Color(0xFF00FFFF),
-                    pink = Color(0xFFF538CC),
+                    pink = Color(0xFFEE74D4),
                     gray = Color(0xFFA0A0A0),
                 ),
                 verticalLinesNotes = listOf(
-                    Color(0xFFD7C420),
+                    Color(0xff000000),
                     Color(0xFF05B683),
                     Color(0xFF29A12E),
                     Color(0xFFB8159D),
                     Color(0xFFE91E63),
                     Color(0xFF7D30F8),
-                    Color(0xFFD7C420),
+                    Color(0xFFFFFF00),
                     Color(0xFF05B683),
                     Color(0xFF29A12E),
                     Color(0xFFB8159D),
@@ -193,7 +199,10 @@ class ThemeViewModel : ViewModel() {
                     Color(0xFF7D30F8)
                 ),
                 bgExpense = Color(0xFFF33450),
-                bgIncome = Color(0xFF6BFC4B)
+                bgIncome = Color(0xFF6BFC4B),
+                bgDialog = Color(0xaaff00ff),
+                bgCardNote = Color(0x447FFFD4),
+                bgCardFolder = Color(0x44FF00FF)
             )
         }
     }
@@ -220,6 +229,9 @@ data class ThemeColors(
     val verticalLinesNotes: List<Color>,
     val bgExpense: Color,
     val bgIncome: Color,
+    val bgDialog: Color,
+    val bgCardNote: Color,
+    val bgCardFolder: Color,
 ) {
     data class QuickCardColors(
         val addNote: Color,

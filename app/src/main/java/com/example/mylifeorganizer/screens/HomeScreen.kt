@@ -40,11 +40,13 @@ fun HomeScreen() {
     val themeViewModel: ThemeViewModel = viewModel()
 
     val themeColors = themeViewModel.themeColors.value
-    var isThemeDark = themeViewModel.isThemeDark.value
-    var isLangEng = appViewModel.isLangEng.value
-    var isAddingNote = appViewModel.isAddingNote.value
+    val isLangEng = appViewModel.isLangEng.value
 
-    val quickCardItems = getQuickCardItems(themeColors, appViewModel)
+    val quickCardItems = getQuickCardItems(
+        themeColors,
+        appViewModel,
+        isLangEng
+    )
 
     Column (
         modifier = Modifier.fillMaxSize()
@@ -62,7 +64,6 @@ fun HomeScreen() {
             items(quickCardItems) { item ->
                 QuickCard(
                     title = item.title,
-                    subtitle = item.subtitle,
                     icon = {
                         Icon(
                             painter = painterResource(id = item.iconResId),

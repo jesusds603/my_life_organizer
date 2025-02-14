@@ -26,6 +26,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -136,7 +137,8 @@ fun TabButton(
             Text(
                 text = name,
                 fontSize = 10.sp,
-                color = if (isSelected) themeColors.tabButtonSelected else themeColors.tabButtonDefault
+                color = if (isSelected) themeColors.tabButtonSelected else themeColors.tabButtonDefault,
+                fontWeight = FontWeight.Bold
             )
         }
     }

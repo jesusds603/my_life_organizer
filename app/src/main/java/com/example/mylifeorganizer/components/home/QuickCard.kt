@@ -21,35 +21,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun QuickCard(
     title: String,
-    subtitle: String,
     icon: @Composable () -> Unit,
     onClick: () -> Unit,
     backgroundColor: Color,
 ) {
-    val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
 
-    var themeColors = themeViewModel.themeColors.value
-    var isThemeDark = themeViewModel.isThemeDark.value
-    var isLangEng = appViewModel.isLangEng.value
+    val themeColors = themeViewModel.themeColors.value
 
     Card (
         modifier = Modifier
             .padding(2.dp)
             .clickable(onClick = onClick)
             .fillMaxWidth()
-            .height(160.dp),
+            .height(130.dp),
         shape = RoundedCornerShape(16.dp),
         elevation = CardDefaults.cardElevation(4.dp),
         colors = CardDefaults.cardColors(
@@ -81,22 +74,10 @@ fun QuickCard(
                 color = themeColors.text1,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.fillMaxWidth(),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
+                maxLines = 2,
                 textAlign = TextAlign.Center // Centra el texto del título
             )
 
-            Spacer(modifier = Modifier.height(4.dp))
-
-            // Subtitle
-            Text(
-                text = subtitle,
-                color = themeColors.text2,
-                modifier = Modifier.fillMaxWidth(),
-                overflow = TextOverflow.Ellipsis,
-                textAlign = TextAlign.Center,
-                fontSize = 15.sp
-            )
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.example.mylifeorganizer.components.notes.screen
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,6 +27,7 @@ import com.example.mylifeorganizer.R
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun DialogOptionsAdd(
     onShowDialog: (Boolean) -> Unit,
@@ -122,7 +126,7 @@ fun DialogOptionsAdd(
                 }
             }
         },
-        containerColor = themeColors.backGround3,
+        containerColor = themeColors.bgDialog,
         tonalElevation = 8.dp,
         shape = MaterialTheme.shapes.large // Bordes más redondeados
     )

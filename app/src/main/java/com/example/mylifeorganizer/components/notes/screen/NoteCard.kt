@@ -75,7 +75,10 @@ fun NoteCard(
 
         Column(
             modifier = Modifier
-                .background(themeColors.backGround4, shape = RoundedCornerShape(8.dp))
+                .background(
+                    color = themeColors.bgCardNote,
+                    shape = RoundedCornerShape(8.dp)
+                )
                 .padding(horizontal = 8.dp)
                 .fillMaxSize()
                 .pointerInput(Unit) {

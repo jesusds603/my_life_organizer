@@ -1,6 +1,8 @@
 package com.example.mylifeorganizer.components.notes.screen
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,13 +39,14 @@ import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun FolderCard(
     folder: FolderEntity,
     depth: Int
 ) {
     val appViewModel: AppViewModel = viewModel()
-    val noteViewModel = appViewModel.noteViewModel
+    val noteViewModel: NoteViewModel = appViewModel.noteViewModel
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
 
@@ -76,7 +79,10 @@ fun FolderCard(
         // Card
         Row(
             modifier = Modifier
-                .background(themeColors.backGround4, shape = RoundedCornerShape(8.dp))
+                .background(
+                    color = themeColors.bgCardFolder,
+                    shape = RoundedCornerShape(8.dp)
+                )
                 .padding(horizontal = 8.dp)
                 .fillMaxSize()
                 .clickable {
