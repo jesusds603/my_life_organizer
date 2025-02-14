@@ -1,6 +1,8 @@
 package com.example.mylifeorganizer.components.notes.screen
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,22 +16,22 @@ import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AddFolderDialog(
     onDismiss: () -> Unit,
 ) {
     val appViewModel: AppViewModel = viewModel()
-    val noteViewModel = appViewModel.noteViewModel
-    val themeViewModel: ThemeViewModel = viewModel()
+    val noteViewModel: NoteViewModel = appViewModel.noteViewModel
 
-    val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
     var folderName by remember { mutableStateOf("") }
     val idFolderForAddingSubFolder = appViewModel.idFolderForAddingSubFolder.value
 
     AlertDialogWindow(
-        title = "Create New Folder",
-        confirmButtonText = "Add Folder",
+        title = if(isLangEng) "Create New Folder" else "Crear Nueva Carpeta",
+        confirmButtonText = if(isLangEng) "Add Folder" else "Agregar Carpeta",
         onConfirm = {
             noteViewModel.addFolder(
                 FolderEntity(
@@ -44,12 +46,12 @@ fun AddFolderDialog(
             )
             onDismiss()
         },
-        dismissButtonText = "Cancel",
+        dismissButtonText = if(isLangEng) "Cancel" else "Cancelar",
         onDismiss = { onDismiss() },
         isConfirmButtonEnabled = folderName.isNotBlank(),
         textFieldValue = folderName,
         textFieldOnValueChange = { folderName = it },
-        textFieldLabel = "Folder Name"
+        textFieldLabel = if(isLangEng) "Folder Name" else "Nombre de la Carpeta"
     )
 
 }

@@ -22,8 +22,9 @@ import androidx.room.RoomDatabase
         CategoryFinanceEntity::class,
         FinanceCategoryCrossRef::class,
         PaymentMethodEntity::class,
+        SettingsEntity::class
    ],
-    version = 35, exportSchema = true
+    version = 36, exportSchema = true
 )
 abstract class NoteDB : RoomDatabase() {
 

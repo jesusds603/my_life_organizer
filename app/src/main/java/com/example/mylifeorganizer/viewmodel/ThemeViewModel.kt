@@ -1,16 +1,72 @@
 package com.example.mylifeorganizer.viewmodel
 
+import android.app.Application
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.mylifeorganizer.repositories.NotesRepository
+import com.example.mylifeorganizer.room.NoteDB
+import com.example.mylifeorganizer.room.SettingsEntity
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 
 
-class ThemeViewModel : ViewModel() {
+class ThemeViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val noteDB = NoteDB.getInstance(application.applicationContext)
+    private val notesRepository = NotesRepository(noteDB)
+
+    // Aquí inicializamos NoteViewModel para compartirlo
+    val noteViewModel: NoteViewModel = NoteViewModel(notesRepository)
+
     // Theme state
     val isThemeDark = mutableStateOf(true)
 
+    init {
+        viewModelScope.launch {
+            val lastSettings = noteViewModel.settings.firstOrNull()
+
+            Log.d("ThemeViewModel", "Last Settings: $lastSettings")
+
+
+            if (lastSettings != null) {
+                isThemeDark.value = lastSettings.isThemeDark
+            } else {
+                isThemeDark.value = true // Default si no hay configuración guardada
+            }
+            Log.d("ThemeViewModel", "isThemeDark value init: ${isThemeDark.value}")
+            updateThemeColors()
+        }
+    }
+
     fun toggleTheme() {
-        isThemeDark.value = !isThemeDark.value
+        viewModelScope.launch {
+            val latestSettings = noteViewModel.settings.firstOrNull()
+
+            if (latestSettings != null) {
+                // Actualizar la configuración existente
+                val updatedSettings = latestSettings.copy(
+                    isThemeDark = !latestSettings.isThemeDark,
+                    updatedAt = System.currentTimeMillis()
+                )
+                noteViewModel.updateSettings(updatedSettings)
+            } else {
+                // Crear nueva configuración si no existe
+                val newSettings = SettingsEntity(
+                    isThemeDark = !isThemeDark.value,
+                )
+                noteViewModel.insertSettings(newSettings)
+            }
+
+            // Actualizar el estado en la UI
+            isThemeDark.value = !isThemeDark.value
+            Log.d("ThemeViewModel", "isThemeDark value toggle: ${isThemeDark.value}")
+        }
         updateThemeColors()
     }
 

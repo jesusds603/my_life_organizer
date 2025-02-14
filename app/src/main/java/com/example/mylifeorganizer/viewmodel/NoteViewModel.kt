@@ -17,6 +17,7 @@ import com.example.mylifeorganizer.room.NoteEntity
 import com.example.mylifeorganizer.room.NoteWithCategories
 import com.example.mylifeorganizer.room.NoteWithoutContentWithCategories
 import com.example.mylifeorganizer.room.PaymentMethodEntity
+import com.example.mylifeorganizer.room.SettingsEntity
 import com.example.mylifeorganizer.room.TaskEntity
 import com.example.mylifeorganizer.room.TaskOccurrenceEntity
 import com.example.mylifeorganizer.room.TaskWithCategories
@@ -24,7 +25,40 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
-class NoteViewModel(val notesRepository: NotesRepository) : ViewModel() {
+class NoteViewModel(private val notesRepository: NotesRepository) : ViewModel() {
+    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
+    //                      SETTINGS
+    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
+
+    fun insertSettings(settings: SettingsEntity) {
+        viewModelScope.launch {
+            notesRepository.insertSettings(settings)
+        }
+    }
+
+    val settings = notesRepository.getSettings()
+
+    fun updateSettings(settings: SettingsEntity) {
+        viewModelScope.launch {
+            notesRepository.updateSettings(settings)
+            }
+    }
+
+    fun deleteSettings(settings: SettingsEntity) {
+        viewModelScope.launch {
+            notesRepository.deleteSettings(settings)
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
+    //                      NOTES
+    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     fun addNote(note: NoteEntity, onNoteAdded: (Long) -> Unit) {
         viewModelScope.launch {
             val noteId = notesRepository.insertNote(note)

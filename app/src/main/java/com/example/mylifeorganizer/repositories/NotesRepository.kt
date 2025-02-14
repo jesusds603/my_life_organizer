@@ -14,6 +14,7 @@ import com.example.mylifeorganizer.room.NoteCategoryCrossRef
 import com.example.mylifeorganizer.room.NoteDB
 import com.example.mylifeorganizer.room.NoteEntity
 import com.example.mylifeorganizer.room.PaymentMethodEntity
+import com.example.mylifeorganizer.room.SettingsEntity
 import com.example.mylifeorganizer.room.TaskCategoryCrossRef
 import com.example.mylifeorganizer.room.TaskEntity
 import com.example.mylifeorganizer.room.TaskOccurrenceEntity
@@ -23,6 +24,33 @@ import kotlinx.coroutines.flow.Flow
 class NotesRepository (val noteDB: NoteDB) {
 
     private val noteDAO = noteDB.noteDao()
+
+    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
+    //                      SETTINGS
+    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
+    suspend fun insertSettings(settings: SettingsEntity) {
+        noteDAO.insertSettings(settings)
+    }
+
+    fun getSettings() = noteDAO.getSettings()
+
+    suspend fun updateSettings(settings: SettingsEntity) {
+        noteDAO.updateSettings(settings)
+    }
+
+    suspend fun deleteSettings(settings: SettingsEntity) {
+        noteDAO.deleteSettings(settings)
+    }
+
+    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
+    //                      NOTAS
+    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
 
     // Insertar una nueva nota
     suspend fun insertNote(note: NoteEntity): Long {

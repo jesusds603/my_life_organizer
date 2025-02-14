@@ -8,12 +8,16 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.mylifeorganizer.repositories.NotesRepository
 import com.example.mylifeorganizer.room.CategoryEntity
 import com.example.mylifeorganizer.room.CategoryFinanceEntity
 import com.example.mylifeorganizer.room.CategoryTaskEntity
 import com.example.mylifeorganizer.room.NoteDB
 import com.example.mylifeorganizer.room.PaymentMethodEntity
+import com.example.mylifeorganizer.room.SettingsEntity
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -26,10 +30,71 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
     // Aquí inicializamos NoteViewModel para compartirlo
     val noteViewModel: NoteViewModel = NoteViewModel(notesRepository)
 
-    // Language state
+    // Estado del idioma con valor por defecto
     val isLangEng = mutableStateOf(true)
+
+    // Ordenar notas en la screen
+    // Valores: createdAscending, createdDescending, updatedAscending, updatedDescending, nameAscending, nameDescending
+    val selectedOrderingNotes = mutableStateOf("updatedDescending") // la mas reciente arriba
+
+
+    init {
+        viewModelScope.launch {
+            val lastSettings = noteViewModel.settings.firstOrNull()
+
+
+            if (lastSettings != null) {
+                isLangEng.value = lastSettings.isLangEng
+                selectedOrderingNotes.value = lastSettings.orderNotes
+            } else {
+                isLangEng.value = true // Default si no hay configuración guardada
+                selectedOrderingNotes.value = "updatedDescending"
+            }
+        }
+    }
+
     fun toggleLanguage() {
-        isLangEng.value = !isLangEng.value
+        viewModelScope.launch {
+            val latestSettings = noteViewModel.settings.firstOrNull()
+
+            if (latestSettings != null) {
+                // Actualizar la configuración existente
+                val updatedSettings = latestSettings.copy(
+                    isLangEng = !latestSettings.isLangEng,
+                    updatedAt = System.currentTimeMillis()
+                )
+                noteViewModel.updateSettings(updatedSettings)
+            } else {
+                // Crear nueva configuración si no existe
+                val newSettings = SettingsEntity(
+                    isLangEng = !isLangEng.value,
+                )
+                noteViewModel.insertSettings(newSettings)
+            }
+
+            // Actualizar el estado en la UI
+            isLangEng.value = !isLangEng.value
+        }
+    }
+
+    fun changeSelectedOrderingNotes(ordering: String) {
+        viewModelScope.launch {
+            val latestSettings = noteViewModel.settings.firstOrNull()
+            if (latestSettings != null) {
+                val updatedSettings = latestSettings.copy(
+                    orderNotes = ordering,
+                    updatedAt = System.currentTimeMillis()
+                )
+                noteViewModel.updateSettings(updatedSettings)
+            } else {
+                // Crear nueva configuración si no existe
+                val newSettings = SettingsEntity(
+                    orderNotes = ordering,
+                )
+                noteViewModel.insertSettings(newSettings)
+            }
+            selectedOrderingNotes.value = ordering
+        }
     }
 
     // Tab state
@@ -76,12 +141,6 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
         selectedCategory.value = category
     }
 
-    // Ordenar notas en la screen
-    // Valores: createdAscending, createdDescending, updatedAscending, updatedDescending, nameAscending, nameDescending
-    val selectedOrderingNotes = mutableStateOf("updatedDescending") // la mas reciente arriba
-    fun changeSelectedOrderingNotes(ordering: String) {
-        selectedOrderingNotes.value = ordering
-    }
 
     // recordar los folders abiertos en la screen de notas para que al crear una nueva nota o editarla se mantenga la vista
     var expandedFolders = mutableStateOf<Set<Long>>(emptySet())

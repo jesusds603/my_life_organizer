@@ -5,6 +5,30 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NoteDao {
+    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
+    //                      SETTINGS
+    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSettings(settings: SettingsEntity)
+
+    @Query("SELECT * FROM settings")
+    fun getSettings(): Flow<SettingsEntity>
+
+    @Update
+    suspend fun updateSettings(settings: SettingsEntity)
+
+    @Delete
+    suspend fun deleteSettings(settings: SettingsEntity)
+
+    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
+    //                      NOTAS
+    // -----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNote(note: NoteEntity): Long
 

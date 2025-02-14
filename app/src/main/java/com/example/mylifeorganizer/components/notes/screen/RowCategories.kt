@@ -1,15 +1,15 @@
 package com.example.mylifeorganizer.components.notes.screen
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,7 +28,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -40,17 +39,19 @@ import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RowCategories(
     selectedCategory: String,
     onCategorySelected: (String) -> Unit,
 ) {
     val appViewModel: AppViewModel = viewModel()
-    val noteViewModel = appViewModel.noteViewModel
+    val noteViewModel: NoteViewModel = appViewModel.noteViewModel
     val categories by noteViewModel.categories.collectAsState(initial = emptyList())
 
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
     val selectedOrderingNotes = appViewModel.selectedOrderingNotes.value
 
     var showMenuOrdering by remember { mutableStateOf(false) }
@@ -65,6 +66,7 @@ fun RowCategories(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .background(color = themeColors.backGround1)
+                .weight(1f)
         ) {
 
             // Agregar la opción "All"
@@ -129,12 +131,12 @@ fun RowCategories(
                     LazyColumn {
                         items(
                             listOf(
-                                "Created Ascending" to "createdAscending",
-                                "Created Descending" to "createdDescending",
-                                "Updated Ascending" to "updatedAscending",
-                                "Updated Descending" to "updatedDescending",
-                                "Name Ascending" to "nameAscending",
-                                "Name Descending" to "nameDescending"
+                                (if (isLangEng) "Created Ascending" else "Creado Ascendente") to "createdAscending",
+                                (if (isLangEng) "Created Descending" else "Creado Descendente") to "createdDescending",
+                                (if (isLangEng) "Updated Ascending" else "Actualizado Ascendente") to "updatedAscending",
+                                (if (isLangEng) "Updated Descending" else "Actualizado Descendente") to "updatedDescending",
+                                (if (isLangEng) "Name Ascending" else "Nombre Ascendente") to "nameAscending",
+                                (if (isLangEng) "Name Descending" else "Nombre Descendente") to "nameDescending"
                             )
                         ) { (label, value) ->
                             Row (
@@ -169,7 +171,7 @@ fun RowCategories(
                         }
                     }
                 },
-                containerColor = themeColors.backGround2
+                containerColor = themeColors.bgDialog
             )
         }
     }

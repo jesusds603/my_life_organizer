@@ -1,6 +1,7 @@
 package com.example.mylifeorganizer.components.home
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -36,6 +37,7 @@ fun Header() {
 
     val themeColors = themeViewModel.themeColors.value
     val isThemeDark = themeViewModel.isThemeDark.value
+    Log.d("Header", "isThemeDark value header: $isThemeDark")
     val isLangEng = appViewModel.isLangEng.value
 
     Row (

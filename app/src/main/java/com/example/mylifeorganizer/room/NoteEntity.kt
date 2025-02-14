@@ -7,9 +7,19 @@ import androidx.room.ForeignKey
 import androidx.room.ForeignKey.Companion.CASCADE
 import androidx.room.PrimaryKey
 import androidx.room.Relation
-import androidx.room.TypeConverter
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
+
+// Entidad para los ajustes
+@Entity(tableName = "settings")
+data class SettingsEntity(
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "settingId")
+    val settingId: Long = 0,
+    val isThemeDark: Boolean = true,
+    val isLangEng: Boolean = true,
+    val orderNotes: String = "updatedDescending",
+    val createdAt: Long = System.currentTimeMillis(),
+    val updatedAt: Long = System.currentTimeMillis(),
+)
 
 
 // Entidad para las notas
