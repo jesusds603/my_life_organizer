@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,14 +40,18 @@ fun CategoryBox(
 ) {
     val appViewModel: AppViewModel = viewModel()
     val noteViewModel = appViewModel.noteViewModel
-    val isLangEng = appViewModel.isLangEng.value
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
 
     var showOptionsForCategory by remember { mutableStateOf(false) }
-    var showDialogRename by remember { mutableStateOf(false) }
+    var showDialogEdit by remember { mutableStateOf(false) }
+    var showDialogDelete by remember { mutableStateOf(false) }
+
+    val noteIdsForCategory by remember { noteViewModel.getNotesIdByCategory(category.categoryId) }.collectAsState(initial = emptyList())
+
 
     var nameForRename by remember { mutableStateOf(category.name) }
+    var bgCategoryEdit by remember { mutableStateOf(category.bgColor) }
 
     val cornerRadius = 4.dp
 
@@ -106,32 +111,52 @@ fun CategoryBox(
         FloatingOptionsCategory(
             showMenu = showOptionsForCategory,
             changeShowMenu = { showOptionsForCategory = it },
-            changeShowDialogRename = { showDialogRename = it }
+            changeShowDialogRename = { showDialogEdit = it },
+            changeShowDialogDelete = { showDialogDelete = it }
         )
     }
 
-    if(showDialogRename) {
-        AlertDialogWindow(
-            title = if(isLangEng) "Rename category" else "Renombrar categoría",
-            confirmButtonText = if(isLangEng) "Rename" else "Renombrar",
+    if(showDialogEdit) {
+        DialogEditCategory(
             onConfirm = {
                 noteViewModel.updateCategory(
-                    category.copy(name = nameForRename)
+                    category.copy(
+                        name = nameForRename,
+                        bgColor = bgCategoryEdit
+                    )
                 )
-                showDialogRename = false
+                showDialogEdit = false
                 showOptionsForCategory = false
             },
-            dismissButtonText = if(isLangEng) "Cancel" else "Cancelar",
             onDismiss = {
-                showDialogRename = false
+                showDialogEdit = false
             },
-            isConfirmButtonEnabled = true,
             textFieldValue = nameForRename,
             textFieldOnValueChange = {
                 nameForRename = it
             },
-            textFieldLabel = if(isLangEng) "New name" else "Nuevo nombre",
+            bgCategory = bgCategoryEdit,
+            onBgCategoryChange = { bgCategoryEdit = it}
         )
+    }
 
+    if(showDialogDelete) {
+        DialogDeleteCategory(
+            category = category,
+            onConfirm = {
+                noteIdsForCategory.forEach { noteId ->
+                    noteViewModel.deleteRelationNoteCategory(
+                        noteId = noteId,
+                        categoryId = category.categoryId
+                    )
+                }
+                noteViewModel.deleteCategory(category)
+                showDialogDelete = false
+                showOptionsForCategory = false
+            },
+            onDismiss = {
+                showDialogDelete = false
+            }
+        )
     }
 }

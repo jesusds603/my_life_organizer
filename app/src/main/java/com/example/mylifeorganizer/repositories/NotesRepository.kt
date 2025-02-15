@@ -64,7 +64,7 @@ class NotesRepository (val noteDB: NoteDB) {
     fun getAllNotesWithoutContentWithCategories() = noteDAO.getAllNotesWithoutContentWithCategories()
 
     // Filtrar notas por una categoría específica
-    fun getNotesByCategory(categoryId: Long) = noteDAO.getNotesByCategory(categoryId)
+    fun getNotesIdByCategory(categoryId: Long) = noteDAO.getNotesIdByCategory(categoryId)
 
     fun getNoteWithCategoriesById(noteId: Long) = noteDAO.getNoteWithCategoriesById(noteId)
 
@@ -114,6 +114,10 @@ class NotesRepository (val noteDB: NoteDB) {
 
     suspend fun deleteNoteCategories(noteId: Long) {
         noteDAO.deleteNoteCategories(noteId)
+    }
+
+    suspend fun deleteRelationNoteCategory(noteId: Long, categoryId: Long) {
+        noteDAO.deleteRelationNoteCategory(noteId, categoryId)
     }
 
 

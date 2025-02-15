@@ -27,15 +27,14 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 fun FloatingOptionsCategory(
     showMenu: Boolean,
     changeShowMenu: (Boolean) -> Unit,
-    changeShowDialogRename: (Boolean) -> Unit
+    changeShowDialogRename: (Boolean) -> Unit,
+    changeShowDialogDelete: (Boolean) -> Unit,
 ) {
     val appViewModel: AppViewModel = viewModel()
-    val noteViewModel = appViewModel.noteViewModel
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
     val isLangEng = appViewModel.isLangEng.value
 
-    var showDialogDelete by remember { mutableStateOf(false) }
 
 
     DropdownMenu(
@@ -48,7 +47,7 @@ fun FloatingOptionsCategory(
         DropdownMenuItem(
             text = {
                 Text(
-                    text = if(isLangEng) "Rename" else "Renombrar",
+                    text = if(isLangEng) "Edit" else "Editar",
                     color = themeColors.text1
                 )
             },
@@ -69,7 +68,7 @@ fun FloatingOptionsCategory(
                     )
             },
             onClick = {
-                showDialogDelete = true
+                changeShowDialogDelete(true)
                 changeShowMenu(false)
             },
             modifier = Modifier.background(themeColors.backGround1)

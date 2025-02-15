@@ -48,12 +48,12 @@ interface NoteDao {
 
     @Transaction
     @Query("""
-        SELECT * FROM notes 
-        INNER JOIN note_category_cross_ref 
-        ON notes.noteId = note_category_cross_ref.noteId 
-        WHERE note_category_cross_ref.categoryId = :categoryId
+    SELECT notes.noteId FROM notes 
+    INNER JOIN note_category_cross_ref 
+    ON notes.noteId = note_category_cross_ref.noteId 
+    WHERE note_category_cross_ref.categoryId = :categoryId
     """)
-    fun getNotesByCategory(categoryId: Long): Flow<List<NoteEntity>>
+    fun getNotesIdByCategory(categoryId: Long): Flow<List<Long>>
 
     @Transaction
     @Query("""
@@ -109,6 +109,10 @@ interface NoteDao {
     // Eliminar todas las categorías relacionadas con una nota
     @Query("DELETE FROM note_category_cross_ref WHERE noteId = :noteId")
     suspend fun deleteNoteCategories(noteId: Long)
+
+    // Eliminar una relacion entre categoria y nota
+    @Query("DELETE FROM note_category_cross_ref WHERE noteId = :noteId AND categoryId = :categoryId")
+    suspend fun deleteRelationNoteCategory(noteId: Long, categoryId: Long)
 
     // Insertar relaciones en lote
     @Insert(onConflict = OnConflictStrategy.REPLACE)

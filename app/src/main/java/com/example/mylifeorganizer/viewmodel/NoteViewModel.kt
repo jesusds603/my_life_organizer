@@ -107,6 +107,10 @@ class NoteViewModel(private val notesRepository: NotesRepository) : ViewModel() 
         return notesRepository.getCategoriesByNote(noteId)
     }
 
+    fun getNotesIdByCategory(categoryId: Long): Flow<List<Long>> {
+        return notesRepository.getNotesIdByCategory(categoryId)
+    }
+
     // Eliminar una categoría
     fun deleteCategory(category: CategoryEntity) {
         viewModelScope.launch {
@@ -136,6 +140,12 @@ class NoteViewModel(private val notesRepository: NotesRepository) : ViewModel() 
     fun deleteNoteCategories(noteId: Long) {
         viewModelScope.launch {
             notesRepository.deleteNoteCategories(noteId)
+        }
+    }
+
+    fun deleteRelationNoteCategory(noteId: Long, categoryId: Long) {
+        viewModelScope.launch {
+            notesRepository.deleteRelationNoteCategory(noteId, categoryId)
         }
     }
 

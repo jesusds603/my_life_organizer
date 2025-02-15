@@ -24,7 +24,7 @@ import androidx.room.RoomDatabase
         PaymentMethodEntity::class,
         SettingsEntity::class
    ],
-    version = 36, exportSchema = true
+    version = 37, exportSchema = true
 )
 abstract class NoteDB : RoomDatabase() {
 
