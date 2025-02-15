@@ -43,12 +43,15 @@ fun FloatingOptionsNote(
     val themeViewModel: ThemeViewModel = viewModel()
 
     val themeColors = themeViewModel.themeColors.value
-    val noteId = appViewModel.selectedNoteId.value
+    val isLangEng = appViewModel.isLangEng.value
 
+    val noteId = appViewModel.selectedNoteId.value
 
     var showRenameDialog by remember { mutableStateOf(false) } // Controla si el diálogo de renombrar está visible
     var newTitle by remember { mutableStateOf("") } // Título temporal para renombrar
     var showDetailsDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var showMoveDialog by remember { mutableStateOf(false) }
 
     val noteWithCategories by noteViewModel
         .getNoteWithCategoriesById(noteId ?: 1L)
@@ -62,7 +65,7 @@ fun FloatingOptionsNote(
     ) {
         DropdownMenuItem(
             text = { Text(
-                text= "Edit",
+                text= if(isLangEng) "Edit" else "Editar",
                 color = themeColors.text1
             ) },
             onClick = {
@@ -77,7 +80,7 @@ fun FloatingOptionsNote(
 
         DropdownMenuItem(
             text = { Text(
-                text= "Rename",
+                text= if(isLangEng) "Rename" else "Renombrar",
                 color = themeColors.text1
             ) },
             onClick = {
@@ -92,11 +95,11 @@ fun FloatingOptionsNote(
 
         DropdownMenuItem(
             text = { Text(
-                text= "Delete",
+                text= if(isLangEng) "Move" else "Mover",
                 color = themeColors.text1
             ) },
             onClick = {
-                noteViewModel.deleteNote(noteWithCategories?.note!!)
+                showMoveDialog = true
                 changeShowMenu(false)
             },
             modifier = Modifier.background(themeColors.backGround3)
@@ -106,7 +109,21 @@ fun FloatingOptionsNote(
 
         DropdownMenuItem(
             text = { Text(
-                text= "Details",
+                text = if(isLangEng) "Delete" else "Eliminar",
+                color = themeColors.text1
+            ) },
+            onClick = {
+                showDeleteDialog = true
+                changeShowMenu(false)
+            },
+            modifier = Modifier.background(themeColors.backGround3)
+        )
+
+        Spacer(modifier = Modifier.padding(2.dp))
+
+        DropdownMenuItem(
+            text = { Text(
+                text= if(isLangEng) "Details" else "Detalles",
                 color = themeColors.text1
             ) },
             onClick = {
@@ -119,8 +136,8 @@ fun FloatingOptionsNote(
 
     if(showRenameDialog) {
         AlertDialogWindow(
-            title = "Rename Note",
-            confirmButtonText = "Save",
+            title = if(isLangEng) "Rename Note" else "Renombrar Nota",
+            confirmButtonText = if(isLangEng) "Save" else "Guardar",
             onConfirm = {
                 val updatedNote = noteWithCategories?.note?.copy(title = newTitle, updatedAt = System.currentTimeMillis())
                 if (updatedNote != null) {
@@ -129,75 +146,33 @@ fun FloatingOptionsNote(
                     }
                 }
             },
-            dismissButtonText = "Cancel",
+            dismissButtonText = if(isLangEng) "Cancel" else "Cancelar",
             onDismiss = { showRenameDialog = false },
             isConfirmButtonEnabled = newTitle.isNotBlank(),
             textFieldValue = newTitle,
             textFieldOnValueChange = { newTitle = it },
-            textFieldLabel = "New Note Title"
+            textFieldLabel = if(isLangEng) "New Title" else "Nuevo Título",
         )
     }
 
     if(showDetailsDialog) {
-        AlertDialog(
-            onDismissRequest = { showDetailsDialog = false },
-            confirmButton = {
-                Button(
-                    onClick = {showDetailsDialog = false},
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = themeColors.backGround1
-                    )
-                ) {
-                    Text(
-                        text = "OK"
-                    )
-                }
-            },
-            text = {
-                Column (
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxWidth(),
-                ) {
-                    Text(
-                        text = "Title: ${noteWithCategories?.note?.title}",
-                        color = themeColors.text1
-                    )
-                    Spacer(modifier = Modifier.padding(8.dp))
-                    Text(
-                        text = "${noteWithCategories?.note?.content?.length} characters",
-                        color = themeColors.text1
-                    )
-                    Spacer(modifier = Modifier.padding(8.dp))
-                    Text(
-                        text = "${noteWithCategories?.note?.content?.split("\\s+".toRegex())?.filter { it.isNotBlank() }?.size ?: 0} words",
-                        color = themeColors.text1
-                    )
-                   Spacer(modifier = Modifier.padding(8.dp))
-                    Text(
-                        text = "Categories: ${noteWithCategories?.categories?.joinToString(", ") { it.name }}",
-                        color = themeColors.text1
-                    )
-                    Spacer(modifier = Modifier.padding(8.dp))
-                    Text(
-                        text = "Created at: ${formatDate(noteWithCategories?.note?.createdAt ?: 0)}",
-                        color = themeColors.text1
-                    )
-                    Spacer(modifier = Modifier.padding(8.dp))
-                    Text(
-                        text = "Last modified at: ${formatDate(noteWithCategories?.note?.updatedAt ?: 0)}",
-                        color = themeColors.text1
-                    )
-                }
-            },
-            title = {
-                Text(
-                    text = "Details",
-                    style = MaterialTheme.typography.titleLarge,
-                    color = themeColors.text1
-                )
-            },
-            containerColor = themeColors.backGround2
+       DetailsDialogNote(
+           changeShowDetailsDialog = { showDetailsDialog = it },
+           noteWithCategories = noteWithCategories
+       )
+    }
+
+    if(showDeleteDialog) {
+        DeleteDialogNote(
+            changeShowDeleteDialog = { showDeleteDialog = it },
+            noteWithCategories = noteWithCategories
+        )
+    }
+
+    if(showMoveDialog) {
+        MoveNoteDialog(
+            changeShowMoveDialog = { showMoveDialog = it },
+            noteWithCategories = noteWithCategories
         )
     }
 }

@@ -5,13 +5,10 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mylifeorganizer.repositories.NotesRepository
 import com.example.mylifeorganizer.room.NoteDB
 import com.example.mylifeorganizer.room.SettingsEntity
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
@@ -66,8 +63,8 @@ class ThemeViewModel(application: Application) : AndroidViewModel(application) {
             // Actualizar el estado en la UI
             isThemeDark.value = !isThemeDark.value
             Log.d("ThemeViewModel", "isThemeDark value toggle: ${isThemeDark.value}")
+            updateThemeColors()
         }
-        updateThemeColors()
     }
 
     val namesColorCategories = listOf(
@@ -215,7 +212,7 @@ class ThemeViewModel(application: Application) : AndroidViewModel(application) {
                 text2 = Color(0xff111111),
                 text3 = Color(0xff222222),
                 textComment = Color(0xFF61AD9D),
-                tabButtonDefault = Color(0xFF071F9A),
+                tabButtonDefault = Color(0xFF04523B),
                 tabButtonSelected = Color(0xFF97108D),
                 backGroundRed = Color(0xFFF31C4E),
                 buttonAdd = Color(0xFF24EFA8),

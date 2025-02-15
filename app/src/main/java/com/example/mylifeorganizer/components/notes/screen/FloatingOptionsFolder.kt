@@ -1,5 +1,7 @@
 package com.example.mylifeorganizer.components.notes.screen
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
@@ -7,6 +9,10 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -15,6 +21,7 @@ import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun FloatingOptionsFolder(
     folder: FolderEntity,
@@ -26,9 +33,10 @@ fun FloatingOptionsFolder(
     onNewName: (String) -> Unit,
 ) {
     val appViewModel: AppViewModel = viewModel()
-    val noteViewModel = appViewModel.noteViewModel
+    val noteViewModel: NoteViewModel = appViewModel.noteViewModel
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+    var showMoveDialog by remember { mutableStateOf(false) }
 
     DropdownMenu(
         expanded = showDialog,
@@ -100,6 +108,8 @@ fun FloatingOptionsFolder(
             modifier = Modifier.background(themeColors.backGround3),
         )
 
+        Spacer(modifier = Modifier.size(8.dp))
+
         DropdownMenuItem(
             text = {
                 Text(
@@ -115,5 +125,9 @@ fun FloatingOptionsFolder(
         )
 
         Spacer(modifier = Modifier.size(8.dp))
+    }
+
+    if(showMoveDialog) {
+
     }
 }
