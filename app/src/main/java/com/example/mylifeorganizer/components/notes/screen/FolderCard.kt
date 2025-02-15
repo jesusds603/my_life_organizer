@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -25,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -49,6 +51,7 @@ fun FolderCard(
     val noteViewModel: NoteViewModel = appViewModel.noteViewModel
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
     val expandedFolders = appViewModel.expandedFolders.value
 
@@ -59,6 +62,9 @@ fun FolderCard(
     var showDetailsDialog by remember { mutableStateOf(false) }
 
     var showAddSubfolderDialog by remember { mutableStateOf(false) }
+    var showMoveDialog by remember { mutableStateOf(false) }
+
+    var selectedFolderId by remember { mutableStateOf<Long?>(null) } // Para mover ruta
 
     Row(
         modifier = Modifier
@@ -85,6 +91,13 @@ fun FolderCard(
                 )
                 .padding(horizontal = 8.dp)
                 .fillMaxSize()
+                .pointerInput(Unit) {
+                    detectTapGestures(
+                        onLongPress = {
+                            showDialog = true
+                        }
+                    )
+                }
                 .clickable {
                     appViewModel.changeExpandedFolders(
                         if (expandedFolders.contains(folder.folderId)) {
@@ -150,7 +163,9 @@ fun FolderCard(
                         onShowDetailsDialog = { showDetailsDialog = it },
                         onShowAddSubfolderDialog = { showAddSubfolderDialog = it },
                         onShowRenameDialog = { showRenameDialog = it },
-                        onNewName = { newName = it }
+                        onNewName = { newName = it },
+                        showMoveDialog = showMoveDialog,
+                        onShowMoveDialog = { showMoveDialog = it }
                     )
                 }
             }
@@ -158,26 +173,26 @@ fun FolderCard(
 
             if (showRenameDialog) {
                 AlertDialogWindow(
-                    title = "Rename Folder",
-                    confirmButtonText = "Save",
+                    title = if(isLangEng) "Rename Folder" else "Renombrar Carpeta",
+                    confirmButtonText = if(isLangEng) "Rename" else "Renombrar",
                     onConfirm = {
                         val updatedFolder = folder.copy(name = newName)
                         noteViewModel.updateFolder(updatedFolder)
                         showRenameDialog = false
                     },
-                    dismissButtonText = "Cancel",
+                    dismissButtonText = if(isLangEng) "Cancel" else "Cancelar",
                     onDismiss = { showRenameDialog = false },
                     isConfirmButtonEnabled = newName.isNotBlank(),
                     textFieldValue = newName,
                     textFieldOnValueChange = { newName = it },
-                    textFieldLabel = "New Folder Name"
+                    textFieldLabel = if(isLangEng) "New Name" else "Nuevo Nombre"
                 )
             }
 
             if (showAddSubfolderDialog) {
                 AlertDialogWindow(
-                    title = "Add Subfolder",
-                    confirmButtonText = "Add",
+                    title = if(isLangEng) "Add Subfolder" else "Añadir Subcarpeta",
+                    confirmButtonText = if(isLangEng) "Add" else "Añadir",
                     onConfirm = {
                         val newSubfolder = FolderEntity(
                             folderId = System.currentTimeMillis(),
@@ -195,12 +210,12 @@ fun FolderCard(
                         )
                         showAddSubfolderDialog = false
                     },
-                    dismissButtonText = "Cancel",
+                    dismissButtonText = if(isLangEng) "Cancel" else "Cancelar",
                     onDismiss = { showAddSubfolderDialog = false },
                     isConfirmButtonEnabled = newName.isNotBlank(),
                     textFieldValue = newName,
                     textFieldOnValueChange = { newName = it },
-                    textFieldLabel = "Subfolder Name"
+                    textFieldLabel = if (isLangEng) "Subfolder Name" else "Nombre de la Subcarpeta"
                 )
             }
 
@@ -208,6 +223,22 @@ fun FolderCard(
                 DialogDetailsFolder(
                     onShowDetailsDialog = { showDetailsDialog = it },
                     folder = folder
+                )
+            }
+
+            if(showMoveDialog) {
+                MoveItemDialog(
+                    selectedFolderId = selectedFolderId,
+                    onFolderSelected = { selectedFolderId = it }, // Actualiza el folder seleccionado
+                    changeShowMoveDialog = { showMoveDialog = it },
+                    item = folder,
+                    isMovingNote = false, // Indica que estamos moviendo una carpeta
+                    onMoveItem = { newParentFolderId ->
+                        // Actualiza la carpeta con el nuevo parentFolderId
+                        noteViewModel.updateFolder(
+                            folder = folder.copy(parentFolderId = newParentFolderId),
+                        )
+                    }
                 )
             }
         }

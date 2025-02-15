@@ -52,6 +52,8 @@ fun FloatingOptionsNote(
     var showDetailsDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showMoveDialog by remember { mutableStateOf(false) }
+    var selectedFolderId by remember { mutableStateOf<Long?>(null) } // Para mover
+
 
     val noteWithCategories by noteViewModel
         .getNoteWithCategoriesById(noteId ?: 1L)
@@ -61,7 +63,9 @@ fun FloatingOptionsNote(
     DropdownMenu(
         expanded = showMenu,
         onDismissRequest = { changeShowMenu(false) }, // Cierra el menú al hacer clic afuera
-        modifier = Modifier.background(themeColors.backGround1)
+        modifier = Modifier
+            .background(themeColors.bgDialog)
+            .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
         DropdownMenuItem(
             text = { Text(
@@ -73,7 +77,7 @@ fun FloatingOptionsNote(
                 appViewModel.toggleShowingNote()
                 changeShowMenu(false)
             },
-            modifier = Modifier.background(themeColors.backGround3)
+            modifier = Modifier.background(themeColors.backGround1)
         )
 
         Spacer(modifier = Modifier.padding(2.dp))
@@ -88,7 +92,7 @@ fun FloatingOptionsNote(
                 changeShowMenu(false)
                 showRenameDialog = true
             },
-            modifier = Modifier.background(themeColors.backGround3)
+            modifier = Modifier.background(themeColors.backGround1)
         )
 
         Spacer(modifier = Modifier.padding(2.dp))
@@ -102,7 +106,7 @@ fun FloatingOptionsNote(
                 showMoveDialog = true
                 changeShowMenu(false)
             },
-            modifier = Modifier.background(themeColors.backGround3)
+            modifier = Modifier.background(themeColors.backGround1)
         )
 
         Spacer(modifier = Modifier.padding(2.dp))
@@ -116,7 +120,7 @@ fun FloatingOptionsNote(
                 showDeleteDialog = true
                 changeShowMenu(false)
             },
-            modifier = Modifier.background(themeColors.backGround3)
+            modifier = Modifier.background(themeColors.backGround1)
         )
 
         Spacer(modifier = Modifier.padding(2.dp))
@@ -130,7 +134,7 @@ fun FloatingOptionsNote(
                 showDetailsDialog = true
                 changeShowMenu(false)
             },
-            modifier = Modifier.background(themeColors.backGround3)
+            modifier = Modifier.background(themeColors.backGround1)
         )
     }
 
@@ -170,9 +174,21 @@ fun FloatingOptionsNote(
     }
 
     if(showMoveDialog) {
-        MoveNoteDialog(
+        MoveItemDialog(
+            selectedFolderId = selectedFolderId,
+            onFolderSelected = { selectedFolderId = it },
             changeShowMoveDialog = { showMoveDialog = it },
-            noteWithCategories = noteWithCategories
+            item = noteWithCategories,
+            isMovingNote = true,
+            onMoveItem = {
+                if (selectedFolderId != null) {
+                    noteViewModel.updateNote(
+                        note = noteWithCategories!!.note.copy(folderId = selectedFolderId!!),
+                        onNoteUpdated = {}
+                    )
+                    showMoveDialog = false
+                }
+            }
         )
     }
 }

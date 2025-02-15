@@ -54,6 +54,7 @@ fun NoteCard(
     val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
     var showMenu by remember { mutableStateOf(false) }
 
@@ -154,7 +155,7 @@ fun NoteCard(
                 horizontalArrangement = Arrangement.Start
             ) {
                 Text(
-                    text = "Modified:  ",
+                    text = if(isLangEng) "Modified: " else "Modificado: ",
                     color = themeColors.text3,
                     fontSize = 12.sp
                 )

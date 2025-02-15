@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,6 +35,7 @@ fun DialogOptionsAdd(
     val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
     val verticalPaddingOptions = 16.dp
     val sizeTextButtons = 18.sp
@@ -51,7 +51,10 @@ fun DialogOptionsAdd(
                     containerColor = themeColors.backGround2
                 )
             ) {
-                Text(text = "Cancel", color = themeColors.text1)
+                Text(
+                    text = if(isLangEng) "Cancel" else "Cancelar",
+                    color = themeColors.text1
+                )
             }
         },
         text = {
@@ -61,7 +64,7 @@ fun DialogOptionsAdd(
                     .fillMaxWidth()
             ) {
                 Text(
-                    text = "Choose an option",
+                    text = if(isLangEng) "Choose an option" else "Elige una opción",
                     style = MaterialTheme.typography.titleLarge,
                     color = themeColors.text1,
                     modifier = Modifier.padding(bottom = 16.dp)
@@ -87,11 +90,11 @@ fun DialogOptionsAdd(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             painter = painterResource(id = R.drawable.baseline_edit_note_24),
-                            contentDescription = "Add Note",
+                            contentDescription = if(isLangEng) "Add Note" else "Añadir Nota",
                             modifier = Modifier.size(50.dp).padding(end = 8.dp) // Espaciado entre el icono y el texto
                         )
                         Text(
-                            text = "Add Note",
+                            text = if(isLangEng) "Add Note" else "Añadir Nota",
                             fontSize = sizeTextButtons
                         )
                     }
@@ -119,7 +122,7 @@ fun DialogOptionsAdd(
 
                         )
                         Text(
-                            text = "Add Folder",
+                            text = if(isLangEng) "Add Folder" else "Añadir Carpeta",
                             fontSize = sizeTextButtons
                         )
                     }

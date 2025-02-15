@@ -63,6 +63,10 @@ fun NotesFoldersContainer(
 
                 // Mostrar subfolders si el folder actual está expandido
                 if (expandedFolders.contains(folder.folderId)) {
+                    // Mostrar subcarpetas de forma recursiva
+                    displayFoldersAndNotes(folder.folderId, depth + 1)
+
+
                     val notesInFolder = notesWithoutContentWithCategories.filter {
                         it.note.folderId == folder.folderId
                     }
@@ -96,9 +100,6 @@ fun NotesFoldersContainer(
                         }
                     }
 
-
-                    // Mostrar subcarpetas de forma recursiva
-                    displayFoldersAndNotes(folder.folderId, depth + 1)
                 }
             }
         }

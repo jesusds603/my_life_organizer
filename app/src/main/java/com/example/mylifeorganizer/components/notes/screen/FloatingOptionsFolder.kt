@@ -4,15 +4,12 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -31,22 +28,26 @@ fun FloatingOptionsFolder(
     onShowAddSubfolderDialog: (Boolean) -> Unit,
     onShowRenameDialog: (Boolean) -> Unit,
     onNewName: (String) -> Unit,
+    showMoveDialog: Boolean,
+    onShowMoveDialog: (Boolean) -> Unit
 ) {
     val appViewModel: AppViewModel = viewModel()
     val noteViewModel: NoteViewModel = appViewModel.noteViewModel
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
-    var showMoveDialog by remember { mutableStateOf(false) }
+    val isLangEng = appViewModel.isLangEng.value
 
     DropdownMenu(
         expanded = showDialog,
         onDismissRequest = { onShowDialog(false) },
-        modifier = Modifier.background(themeColors.backGround1)
+        modifier = Modifier
+            .background(themeColors.bgDialog)
+            .padding(horizontal = 8.dp, vertical = 4.dp)
     ) {
         DropdownMenuItem(
             text = {
                 Text(
-                    text = "Add Note",
+                    text = if(isLangEng) "Add Note" else "Añadir Nota",
                     color = themeColors.text1
                 )
             },
@@ -55,7 +56,7 @@ fun FloatingOptionsFolder(
                 appViewModel.toggleAddingNote()
                 onShowDialog(false)
             },
-            modifier = Modifier.background(themeColors.backGround3)
+            modifier = Modifier.background(themeColors.backGround1)
         )
 
         Spacer(modifier = Modifier.size(8.dp))
@@ -63,7 +64,7 @@ fun FloatingOptionsFolder(
         DropdownMenuItem(
             text = {
                 Text(
-                    text = "Add Subfolder",
+                    text = if(isLangEng) "Add Subfolder" else "Añadir Subcarpeta",
                     color = themeColors.text1
                 )
             },
@@ -72,7 +73,7 @@ fun FloatingOptionsFolder(
                 onShowAddSubfolderDialog(true)
                 appViewModel.changeIdFolderForAddingSubFolder(folder.folderId)
             },
-            modifier = Modifier.background(themeColors.backGround3)
+            modifier = Modifier.background(themeColors.backGround1)
         )
 
         Spacer(modifier = Modifier.size(8.dp))
@@ -80,7 +81,7 @@ fun FloatingOptionsFolder(
         DropdownMenuItem(
             text = {
                 Text(
-                    text = "Rename Folder",
+                    text = if(isLangEng) "Rename Folder" else "Renombrar Carpeta",
                     color = themeColors.text1
                 )
             },
@@ -89,7 +90,7 @@ fun FloatingOptionsFolder(
                 onShowDialog(false)
                 onShowRenameDialog(true)
             },
-            modifier = Modifier.background(themeColors.backGround3)
+            modifier = Modifier.background(themeColors.backGround1)
         )
 
         Spacer(modifier = Modifier.size(8.dp))
@@ -97,7 +98,23 @@ fun FloatingOptionsFolder(
         DropdownMenuItem(
             text = {
                 Text(
-                    text = "Delete Folder",
+                    text = if(isLangEng) "Move Folder" else "Mover Carpeta",
+                    color = themeColors.text1
+                )
+            },
+            onClick = {
+                onShowMoveDialog(true)
+                onShowDialog(false)
+            },
+            modifier = Modifier.background(themeColors.backGround1)
+        )
+
+        Spacer(modifier = Modifier.size(8.dp))
+
+        DropdownMenuItem(
+            text = {
+                Text(
+                    text = if(isLangEng) "Delete Folder" else "Borrar Carpeta",
                     color = themeColors.text1
                 )
             },
@@ -105,7 +122,7 @@ fun FloatingOptionsFolder(
                 noteViewModel.deleteFolder(folder)
                 onShowDialog(false)
             },
-            modifier = Modifier.background(themeColors.backGround3),
+            modifier = Modifier.background(themeColors.backGround1),
         )
 
         Spacer(modifier = Modifier.size(8.dp))
@@ -113,7 +130,7 @@ fun FloatingOptionsFolder(
         DropdownMenuItem(
             text = {
                 Text(
-                    text = "Details",
+                    text = if(isLangEng) "Details" else "Detalles",
                     color = themeColors.text1
                 )
             },
@@ -121,13 +138,9 @@ fun FloatingOptionsFolder(
                 onShowDetailsDialog(true)
                 onShowDialog(false)
             },
-            modifier = Modifier.background(themeColors.backGround3),
+            modifier = Modifier.background(themeColors.backGround1),
         )
 
         Spacer(modifier = Modifier.size(8.dp))
-    }
-
-    if(showMoveDialog) {
-
     }
 }

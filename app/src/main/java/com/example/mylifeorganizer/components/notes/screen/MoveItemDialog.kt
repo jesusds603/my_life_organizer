@@ -20,16 +20,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mylifeorganizer.room.NoteWithCategories
+import com.example.mylifeorganizer.room.FolderEntity
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MoveNoteDialog(
+fun MoveItemDialog(
+    selectedFolderId: Long?, // Recibe el folder seleccionado desde fuera
+    onFolderSelected: (Long) -> Unit, // Callback para actualizar el folder seleccionado
     changeShowMoveDialog: (Boolean) -> Unit,
-    noteWithCategories: NoteWithCategories?
+    item: Any?, // Puede ser una nota o una carpeta
+    isMovingNote: Boolean, // Indica si se está moviendo una nota o una carpeta
+    onMoveItem: (Long) -> Unit // Función para manejar la actualización del item
 ) {
     val appViewModel: AppViewModel = viewModel()
     val noteViewModel: NoteViewModel = appViewModel.noteViewModel
@@ -39,8 +43,9 @@ fun MoveNoteDialog(
     val folders by noteViewModel.folders.collectAsState(initial = emptyList())
     val selectedOrderingNotes = appViewModel.selectedOrderingNotes.value
     var expandedFolders by remember { mutableStateOf<Set<Long>>(emptySet()) }
-    var selectedFolderId by remember { mutableStateOf<Long?>(null) }
 
+    // Obtener el ID de la carpeta que se está moviendo (si es una carpeta)
+    val movingFolderId = if (!isMovingNote && item is FolderEntity) item.folderId else null
 
     AlertDialog(
         onDismissRequest = { changeShowMoveDialog(false) },
@@ -49,10 +54,7 @@ fun MoveNoteDialog(
                 onClick = {
                     changeShowMoveDialog(false)
                     if (selectedFolderId != null) {
-                        noteViewModel.updateNote(
-                            note = noteWithCategories!!.note.copy(folderId = selectedFolderId!!),
-                            onNoteUpdated = {}
-                        )
+                        onMoveItem(selectedFolderId!!) // Llamar a la función de actualización
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
@@ -76,24 +78,31 @@ fun MoveNoteDialog(
                     text = if (isLangEng) "Cancel" else "Cancelar",
                     color = themeColors.text1
                 )
-
             }
         },
         title = {
             Text(
-                text = if (isLangEng) "Move note to:" else "Mover nota a:",
+                text = if (isMovingNote) {
+                    if (isLangEng) "Move note to:" else "Mover nota a:"
+                } else {
+                    if (isLangEng) "Move folder to:" else "Mover carpeta a:"
+                },
                 color = themeColors.text1
             )
         },
         text = {
-            LazyColumn (
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
             ) {
                 fun displayFolders(parentId: Long, depth: Int) {
-                    val filteredFolders = folders.filter { it.parentFolderId == parentId }
+                    // Filtrar carpetas que no sean la carpeta que se está moviendo ni sus subcarpetas
 
-                    val sortedFolders = when(selectedOrderingNotes) {
+                    val filteredFolders = folders.filter { folder ->
+                        folder.parentFolderId == parentId && folder.folderId != movingFolderId
+                    }
+
+                    val sortedFolders = when (selectedOrderingNotes) {
                         "createdAscending" -> filteredFolders.sortedBy { it.createdAt }
                         "createdDescending" -> filteredFolders.sortedByDescending { it.createdAt }
                         "updatedAscending" -> filteredFolders.sortedBy { it.createdAt }
@@ -113,11 +122,8 @@ fun MoveNoteDialog(
                             ) {
                                 // Lines
                                 if (depth > 0) {
-                                    // Líneas verticales a la izquierda
-                                    repeat(depth) { index -> // `index` es el índice del ciclo
-                                        VerticalLine(
-                                            depth = index // Pasar el índice como argumento
-                                        )
+                                    repeat(depth) { index ->
+                                        VerticalLine(depth = index)
                                     }
                                 }
 
@@ -127,7 +133,7 @@ fun MoveNoteDialog(
                                     folderName = folder.name,
                                     isSelected = folder.folderId == selectedFolderId,
                                     isExpanded = expandedFolders.contains(folder.folderId),
-                                    onFolderClicked = { selectedFolderId = it },
+                                    onFolderClicked = { onFolderSelected(it) }, // Actualiza el folder seleccionado
                                     onExpandClicked = {
                                         expandedFolders = if (expandedFolders.contains(it)) {
                                             expandedFolders - it
@@ -141,8 +147,6 @@ fun MoveNoteDialog(
 
                         // Mostrar subfolders si el folder actual está expandido
                         if (expandedFolders.contains(folder.folderId)) {
-
-                            // Mostrar subcarpetas de forma recursiva
                             displayFolders(folder.folderId, depth + 1)
                         }
                     }
@@ -155,7 +159,7 @@ fun MoveNoteDialog(
                         folderName = if (isLangEng) "Root" else "Raíz",
                         isSelected = 0L == selectedFolderId,
                         isExpanded = expandedFolders.contains(0L),
-                        onFolderClicked = { selectedFolderId = it },
+                        onFolderClicked = { onFolderSelected(it) }, // Actualiza el folder seleccionado
                         onExpandClicked = {
                             expandedFolders = if (expandedFolders.contains(it)) {
                                 expandedFolders - it
