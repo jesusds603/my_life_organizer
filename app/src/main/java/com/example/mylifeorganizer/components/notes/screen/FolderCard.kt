@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -60,6 +62,7 @@ fun FolderCard(
     var showRenameDialog by remember { mutableStateOf(false) } // Controla si el diálogo de renombrar está visible
     var newName by remember { mutableStateOf("") } // Título temporal para renombrar
     var showDetailsDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     var showAddSubfolderDialog by remember { mutableStateOf(false) }
     var showMoveDialog by remember { mutableStateOf(false) }
@@ -165,7 +168,8 @@ fun FolderCard(
                         onShowRenameDialog = { showRenameDialog = it },
                         onNewName = { newName = it },
                         showMoveDialog = showMoveDialog,
-                        onShowMoveDialog = { showMoveDialog = it }
+                        onShowMoveDialog = { showMoveDialog = it },
+                        onShowDeleteFolder = { showDeleteDialog = it }
                     )
                 }
             }
@@ -239,6 +243,58 @@ fun FolderCard(
                             folder = folder.copy(parentFolderId = newParentFolderId),
                         )
                     }
+                )
+            }
+
+            if(showDeleteDialog) {
+                AlertDialog(
+                    onDismissRequest = { showDeleteDialog = false },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                noteViewModel.deleteFolder(folder)
+                                showDeleteDialog = false
+                            },
+                            colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                                containerColor = themeColors.backGround1
+                            )
+                        ) {
+                            Text(
+                                text = if(isLangEng) "Delete" else "Borrar",
+                                color = themeColors.text1
+                            )
+                        }
+                    },
+                    dismissButton = {
+                        Button(
+                            onClick = { showDeleteDialog = false },
+                            colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                                containerColor = themeColors.backGround1
+                            )
+                        ) {
+                            Text(
+                                text = if(isLangEng) "Cancel" else "Cancelar",
+                                color = themeColors.text1
+                            )
+                        }
+                    },
+                    title = {
+                        Text(
+                            text = "${if(isLangEng) "Delete Folder" else "Borrar Carpeta"} '${folder.name}'",
+                            color = themeColors.text1
+                        )
+                    },
+                    text = {
+                        Text(
+                            text = if(isLangEng) {
+                                "Are you sure you want to delete this folder?"
+                            } else {
+                                "Estas seguro que quieres borrar esta carpeta?"
+                            },
+                            color = themeColors.text1
+                        )
+                    },
+                    containerColor = themeColors.bgDialog,
                 )
             }
         }

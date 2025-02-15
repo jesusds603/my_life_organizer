@@ -114,21 +114,6 @@ interface NoteDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNoteCategories(noteCategoryCrossRefs: List<NoteCategoryCrossRef>)
 
-    // Método para actualizar una nota y sus categorías
-    @Transaction
-    suspend fun updateNoteWithCategories(note: NoteEntity, categoryIds: List<Long>) {
-        // Actualizar la nota
-        updateNote(note)
-
-        // Eliminar las relaciones existentes de la nota con categorías
-        deleteNoteCategories(note.noteId)
-
-        // Insertar las nuevas relaciones de la nota con categorías
-        val noteCategoryCrossRefs = categoryIds.map { categoryId ->
-            NoteCategoryCrossRef(noteId = note.noteId, categoryId = categoryId)
-        }
-        insertNoteCategories(noteCategoryCrossRefs)
-    }
 
 
     // ---------------------------  FOLDERS --------------------------------------------

@@ -1,6 +1,8 @@
 package com.example.mylifeorganizer.components.notes.edit
 
+import android.os.Build
 import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -16,6 +18,7 @@ import com.example.mylifeorganizer.room.NoteEntity
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NoteWindow(
     modifier: Modifier = Modifier,
@@ -78,12 +81,28 @@ fun NoteWindow(
             folderId = idFolderForAddingNote
         )
 
-        // Recopilar las categorías seleccionadas
-        val selectedCategoryIds = selectedCategories.map { it.categoryId }
 
         // Llamar al metodo del ViewModel para actualizar la nota y las categorías
-        if(titleState.value != originalTitle.value || contentState.value != originalContent.value) {
-            noteViewModel.updateNoteWithCategories(updatedNote, selectedCategoryIds)
+        if (titleState.value != originalTitle.value ||
+            contentState.value != originalContent.value ||
+            selectedCategories != categoriesForNote
+            ) {
+        //    noteViewModel.updateNoteWithCategories(updatedNote, selectedCategoryIds)
+            noteViewModel.updateNote(
+                updatedNote,
+                onNoteUpdated = {noteId ->
+                    // Eliminar las categorías asociadas a la nota
+                    noteViewModel.deleteNoteCategories(noteId)
+
+                    selectedCategories.forEach { categoryEntity ->
+                        noteViewModel.linkNoteWithCategory(
+                            noteId = noteId,
+                            categoryId = categoryEntity.categoryId
+                        )
+
+                    }
+                }
+            )
         }
 
         appViewModel.toggleShowingNote()

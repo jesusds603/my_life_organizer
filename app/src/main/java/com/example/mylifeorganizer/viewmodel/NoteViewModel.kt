@@ -90,13 +90,6 @@ class NoteViewModel(private val notesRepository: NotesRepository) : ViewModel() 
         }
     }
 
-    // Método para actualizar una nota con sus categorías
-    fun updateNoteWithCategories(note: NoteEntity, categoryIds: List<Long>) {
-        viewModelScope.launch {
-            notesRepository.updateNoteWithCategories(note, categoryIds)
-        }
-    }
-
 
     // ---------------------------------------------------------------
 
@@ -136,6 +129,13 @@ class NoteViewModel(private val notesRepository: NotesRepository) : ViewModel() 
     fun linkNoteWithCategory(noteId: Long, categoryId: Long) {
         viewModelScope.launch {
             notesRepository.linkNoteWithCategory(noteId, categoryId)
+        }
+    }
+
+    // Eliminar todas las relaciones de categorias con una nota
+    fun deleteNoteCategories(noteId: Long) {
+        viewModelScope.launch {
+            notesRepository.deleteNoteCategories(noteId)
         }
     }
 

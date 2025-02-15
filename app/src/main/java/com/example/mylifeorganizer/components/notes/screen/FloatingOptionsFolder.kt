@@ -29,7 +29,8 @@ fun FloatingOptionsFolder(
     onShowRenameDialog: (Boolean) -> Unit,
     onNewName: (String) -> Unit,
     showMoveDialog: Boolean,
-    onShowMoveDialog: (Boolean) -> Unit
+    onShowMoveDialog: (Boolean) -> Unit,
+    onShowDeleteFolder: (Boolean) -> Unit
 ) {
     val appViewModel: AppViewModel = viewModel()
     val noteViewModel: NoteViewModel = appViewModel.noteViewModel
@@ -119,7 +120,7 @@ fun FloatingOptionsFolder(
                 )
             },
             onClick = {
-                noteViewModel.deleteFolder(folder)
+                onShowDeleteFolder(true)
                 onShowDialog(false)
             },
             modifier = Modifier.background(themeColors.backGround1),

@@ -78,12 +78,6 @@ class NotesRepository (val noteDB: NoteDB) {
         noteDAO.updateNote(note)
     }
 
-    // Método para actualizar una nota con sus categorías
-    suspend fun updateNoteWithCategories(note: NoteEntity, categoryIds: List<Long>) {
-        noteDAO.updateNoteWithCategories(note, categoryIds)
-    }
-
-
     // -------------------------------------------------
 
 
@@ -116,6 +110,10 @@ class NotesRepository (val noteDB: NoteDB) {
     // Vincular una nota con una categoría
     suspend fun linkNoteWithCategory(noteId: Long, categoryId: Long) {
         noteDAO.insertNoteCategoryCrossRef(NoteCategoryCrossRef(noteId, categoryId))
+    }
+
+    suspend fun deleteNoteCategories(noteId: Long) {
+        noteDAO.deleteNoteCategories(noteId)
     }
 
 

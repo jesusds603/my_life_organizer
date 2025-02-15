@@ -115,7 +115,7 @@ class ThemeViewModel(application: Application) : AndroidViewModel(application) {
                 red = Color(0xFF8B0000),
                 green = Color(0xFF04A004),
                 blue = Color(0xFF00008B),
-                yellow =  Color(0xffffb300),
+                yellow =  Color(0xFF000000),
                 purple = Color(0xFF53089E),
                 orange = Color(0xFFF34C17),
                 cyan = Color(0xFF0EA380),
