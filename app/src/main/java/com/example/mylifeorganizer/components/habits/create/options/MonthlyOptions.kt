@@ -1,4 +1,4 @@
-package com.example.mylifeorganizer.components.habits.create
+package com.example.mylifeorganizer.components.habits.create.options
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -26,6 +26,7 @@ fun MonthlyOptions() {
     val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
     val isMonthlyAnytimeHabit = appViewModel.isMonthlyAnytimeHabit.value // Si es anytime en monthly
     val numDaysForMonthlyHabit = appViewModel.numDaysForMonthlyHabit.value // Si es anytime en monthly seleccionar el numero de veces (entre 1 y 31)
@@ -39,7 +40,7 @@ fun MonthlyOptions() {
             )
         ) {
             Text(
-                text = "Anytime",
+                text = if (isLangEng) "Anytime" else "Cualquier día",
                 color = themeColors.text1
             )
         }
@@ -50,7 +51,7 @@ fun MonthlyOptions() {
             )
         ) {
             Text(
-                text = "Select Days",
+                text = if(isLangEng) "Specific days" else "Días específicos",
                 color = themeColors.text1
             )
         }
@@ -58,7 +59,7 @@ fun MonthlyOptions() {
 
     if (isMonthlyAnytimeHabit) {
         Text(
-            text = "Select the amount of days",
+            text = if(isLangEng) "Select the amount of days" else "Selecciona la cantidad de días",
             color = themeColors.text1
         )
         LazyRow {
@@ -78,7 +79,7 @@ fun MonthlyOptions() {
         }
     } else {
         Text(
-            text = "Select the days you want to repeat",
+            text = if(isLangEng) "Select the days" else "Selecciona los días",
             color = themeColors.text1
         )
         LazyRow {

@@ -1,4 +1,4 @@
-package com.example.mylifeorganizer.components.habits.create
+package com.example.mylifeorganizer.components.habits.create.options
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -14,7 +14,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -32,6 +31,7 @@ fun YearlyOptions() {
     val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
     val isYearlyAnytimeHabit = appViewModel.isYearlyAnytimeHabit.value
     val numDaysForYearlyHabit = appViewModel.numDaysForYearlyHabit.value
@@ -42,10 +42,10 @@ fun YearlyOptions() {
 
     // Lista de tripletas (MMM, MM, días)
     val monthsWithDays = listOf(
-        Triple("Jan", "01", 31),
+        Triple(if (isLangEng) "Jan" else "Ene", "01", 31),
         Triple("Feb", "02", 29), // Febrero con 29 días
         Triple("Mar", "03", 31),
-        Triple("Apr", "04", 30),
+        Triple(if (isLangEng) "Apr" else "Abr", "04", 30),
         Triple("May", "05", 31),
         Triple("Jun", "06", 30),
         Triple("Jul", "07", 31),
@@ -53,14 +53,12 @@ fun YearlyOptions() {
         Triple("Sep", "09", 30),
         Triple("Oct", "10", 31),
         Triple("Nov", "11", 30),
-        Triple("Dec", "12", 31)
+        Triple(if (isLangEng) "Dec" else "Dic", "12", 31)
     )
 
     // Estado para el mes seleccionado
     var selectedMonth by remember { mutableStateOf<Triple<String, String, Int>?>(null) }
 
-    // Estado para los días seleccionados en formato MM/dd
-    val selectedDays = recurrenceYearDaysHabit.split(",").toMutableList()
 
     Row {
         Button(
@@ -70,7 +68,7 @@ fun YearlyOptions() {
             )
         ) {
             Text(
-                text = "Anytime",
+                text = if(isLangEng) "Anytime" else "Cualquier día",
                 color = themeColors.text1
             )
         }
@@ -81,7 +79,7 @@ fun YearlyOptions() {
             )
         ) {
             Text(
-                text = "Select Days",
+                text = if(isLangEng) "Specific days" else "Días específicos",
                 color = themeColors.text1
             )
         }
@@ -89,7 +87,7 @@ fun YearlyOptions() {
 
     if (isYearlyAnytimeHabit) {
         Text(
-            text = "Select the amount of days",
+            text = if(isLangEng) "Select the amount of days" else "Selecciona la cantidad de días",
             color = themeColors.text1
         )
         LazyRow {
@@ -109,7 +107,7 @@ fun YearlyOptions() {
         }
     } else {
         Text(
-            text = "Select the days you want to repeat",
+            text = if(isLangEng) "Select the days" else "Selecciona los días",
             color = themeColors.text1
         )
         LazyRow {
@@ -164,7 +162,7 @@ fun YearlyOptions() {
 
         // Mostrar los días seleccionados
         Text(
-            text = "Selected days:",
+            text = if(isLangEng) "Selected days" else "Días seleccionados",
             color = themeColors.text1
         )
 

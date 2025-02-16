@@ -36,18 +36,30 @@ fun SelectTime() {
     val themeViewModel: ThemeViewModel = viewModel()
 
     val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
     val timeForNewHabit = appViewModel.timeForNewHabit.value
     val timeOptions = listOf("any", "morning", "afternoon", "night", "custom")
 
-    // Opciones de hora con sus representaciones más amigables
-    val timeLabels = mapOf(
+    // Opciones de hora con sus representaciones en inglés y español
+    val timeLabelsEng = mapOf(
         "any" to "Anytime",
         "morning" to "Morning",
         "afternoon" to "Afternoon",
         "night" to "Night",
         "custom" to "Set Time"
     )
+
+    val timeLabelsEsp = mapOf(
+        "any" to "Cualquier hora",
+        "morning" to "Mañana",
+        "afternoon" to "Tarde",
+        "night" to "Noche",
+        "custom" to "Elegir hora"
+    )
+
+    // Seleccionar el mapa de etiquetas según el idioma
+    val timeLabels = if (isLangEng) timeLabelsEng else timeLabelsEsp
 
 
     // Variables para hora y minuto
@@ -61,7 +73,7 @@ fun SelectTime() {
         Row {
             // Tiempo
             Text(
-                text = "Do it at:",
+                text = if(isLangEng) "Time" else "Tiempo",
                 color = themeColors.text1,
             )
 
@@ -214,6 +226,5 @@ fun SelectTime() {
                 }
             }
         }
-
     }
 }

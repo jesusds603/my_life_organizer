@@ -15,6 +15,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mylifeorganizer.components.habits.create.functions.createDailyOccurrences
+import com.example.mylifeorganizer.components.habits.create.functions.createMonthlyOccurrences
+import com.example.mylifeorganizer.components.habits.create.functions.createWeeklyOccurrences
+import com.example.mylifeorganizer.components.habits.create.functions.createYearlyOccurrences
 import com.example.mylifeorganizer.room.HabitEntity
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
@@ -26,6 +30,7 @@ fun MainDialog() {
     val noteViewModel = appViewModel.noteViewModel
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
     val titleNewHabit = appViewModel.titleNewHabit.value
     val colorNewHabit = appViewModel.colorNewHabit.value
@@ -114,11 +119,15 @@ fun MainDialog() {
                     appViewModel.toggleAddingHabit()
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = themeColors.backGround3
+                    containerColor = themeColors.backGround1
                 )
             ) {
                 Text(
-                    text = "Aceptar",
+                    text = if (isLangEng) {
+                        "Accept"
+                    } else {
+                        "Aceptar"
+                    },
                     color = themeColors.text1
                 )
             }
@@ -130,18 +139,22 @@ fun MainDialog() {
 
                 },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = themeColors.backGround3
+                    containerColor = themeColors.backGround1
                 )
             ) {
                 Text(
-                    text = "Cancelar",
+                    text = if(isLangEng) "Cancel" else "Cancelar",
                     color = themeColors.text1
                 )
             }
         },
         title = {
             Text(
-                text = "Create Habit",
+                text = if (isLangEng) {
+                    "New habit"
+                } else {
+                    "Nuevo hábito"
+                },
                 color = themeColors.text1
             )
         },
@@ -173,6 +186,6 @@ fun MainDialog() {
             }
 
         },
-        containerColor = themeColors.backGround2
+        containerColor = themeColors.bgDialog
     )
 }

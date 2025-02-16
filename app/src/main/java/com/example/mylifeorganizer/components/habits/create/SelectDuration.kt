@@ -35,6 +35,7 @@ fun SelectDuration() {
     val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
     val durationForNewHabit = appViewModel.durationForNewHabit.value
     var showDurationSelector by remember { mutableStateOf(false) }
@@ -52,17 +53,27 @@ fun SelectDuration() {
                     containerColor = themeColors.backGround1
                 )
             ) {
-                Text(text = "Duration", color = themeColors.text1)
+                Text(
+                    text = if(isLangEng) "Duration" else "Duración",
+                    color = themeColors.text1
+                )
             }
             Text(
-                text = if (durationForNewHabit == 0) "No duration" else "$durationForNewHabit min",
+                text = if (durationForNewHabit == 0) {
+                    if(isLangEng) "No duration" else "Sin duración"
+                } else {
+                    "$durationForNewHabit min"
+                },
                 color = themeColors.text1,
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
         }
 
         if (showDurationSelector) {
-            Text(text = "Select duration (minutes):", color = themeColors.text1)
+            Text(
+                text = if(isLangEng) "Select duration (minutes):" else "Seleccionar duración (minutos)",
+                color = themeColors.text1
+            )
             LazyRow(
                 modifier = Modifier.fillMaxWidth()
             ) {

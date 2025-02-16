@@ -34,6 +34,7 @@ fun FloatingOptionsHabit(
     val noteViewModel = appViewModel.noteViewModel
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
     var confirmDelete by remember { mutableStateOf(false) }
 
@@ -45,18 +46,18 @@ fun FloatingOptionsHabit(
     DropdownMenu(
         expanded = showMenu,
         onDismissRequest = { changeShowMenu(false) }, // Cierra el menú al hacer clic afuera
-        modifier = Modifier.background(themeColors.backGround1)
+        modifier = Modifier.background(themeColors.bgDialog)
     ) {
         DropdownMenuItem(
             text = { Text(
-                text= "Delete",
+                text= if(isLangEng) "Delete" else "Borrar",
                 color = themeColors.text1
             ) },
             onClick = {
                 changeShowMenu(false)
                 confirmDelete = true
             },
-            modifier = Modifier.background(themeColors.backGround3)
+            modifier = Modifier.background(themeColors.backGround1)
         )
     }
 
@@ -82,7 +83,7 @@ fun FloatingOptionsHabit(
                     }
                 ) {
                     Text(
-                        text = "Aceptar",
+                        text = if(isLangEng) "Delete" else "Borrar",
                         color = themeColors.text1
                     )
                 }
@@ -94,25 +95,25 @@ fun FloatingOptionsHabit(
                     }
                 ) {
                     Text(
-                        text = "Cancelar",
+                        text = if(isLangEng) "Cancel" else "Cancelar",
                         color = themeColors.text1
                     )
                 }
             },
             title = {
                 Text(
-                    text = "Delete Habit",
+                    text = if(isLangEng) "Delete Habit" else "Borrar Hábito",
                     color = themeColors.text1
                 )
             },
             text = {
                 Text(
-                    text = "Are you sure you want to delete this habit?",
+                    text = if(isLangEng) "Are you sure you want to delete this habit?" else "Estas seguro que quieres borrar este hábito?",
                     color = themeColors.text1,
                     fontSize = 14.sp
                 )
             },
-            containerColor = themeColors.backGround2
+            containerColor = themeColors.bgDialog
         )
     }
 }

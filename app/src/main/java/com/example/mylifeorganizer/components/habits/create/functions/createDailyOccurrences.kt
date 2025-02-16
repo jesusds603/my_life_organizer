@@ -1,4 +1,4 @@
-package com.example.mylifeorganizer.components.habits.create
+package com.example.mylifeorganizer.components.habits.create.functions
 
 import com.example.mylifeorganizer.room.HabitOccurrenceEntity
 import com.example.mylifeorganizer.viewmodel.NoteViewModel

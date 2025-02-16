@@ -16,6 +16,7 @@ fun SelectTitle() {
     val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
     val titleNewHabit = appViewModel.titleNewHabit.value
 
@@ -26,15 +27,15 @@ fun SelectTitle() {
         },
         label = {
             Text(
-                text = "Title",
+                text = if(isLangEng) "Title" else "Título",
                 color = themeColors.text2,
             )
         },
         colors = TextFieldDefaults.colors(
             focusedTextColor = themeColors.text1,
             unfocusedTextColor = themeColors.text1,
-            focusedContainerColor = themeColors.backGround2,
-            unfocusedContainerColor = themeColors.backGround2,
+            focusedContainerColor = themeColors.backGround1,
+            unfocusedContainerColor = themeColors.backGround1,
         )
     )
 }
