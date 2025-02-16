@@ -11,10 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.components.tasks.generateTaskOccurrences
-import com.example.mylifeorganizer.room.CategoryTaskEntity
 import com.example.mylifeorganizer.room.TaskEntity
+import com.example.mylifeorganizer.room.TaskOccurrenceEntity
 import com.example.mylifeorganizer.viewmodel.AppViewModel
-import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -24,6 +23,7 @@ fun MainWindowDialog() {
     val noteViewModel = appViewModel.noteViewModel
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
     val selectedDueDate = appViewModel.selectedDueDate
     val selectedDueTime = appViewModel.selectedDueTime
@@ -59,6 +59,7 @@ fun MainWindowDialog() {
         },
         confirmButton = {
             Button(
+                enabled = selectedDueDate != "" && titleNewTask != "",
                 onClick = {
                     if (isEditingTask && taskIdSelectedScreen != null) {
                         // Modo de edición: Actualizar la tarea y sus ocurrencias
@@ -85,27 +86,37 @@ fun MainWindowDialog() {
                         noteViewModel.updateTaskById(
                             updatedTask,
                             onTaskUpdated = { taskId ->
-                                // Crear nuevas ocurrencias
-                                val occurrences = generateTaskOccurrences(
-                                    taskId = taskId,
-                                    dueDate = selectedDueDate,
-                                    dueTime = selectedDueTime,
-                                    isRecurring = isTaskRecurring,
-                                    recurrencePattern = recurrenceTaskPattern,
-                                    numDays = numDaysNewTask,
-                                    recurrenceWeekDays = selectedWeekDaysNewTask,
-                                    numWeeks = numWeeksNewTask,
-                                    recurrenceMonthDays = selectedMonthDaysNewTask,
-                                    numMonths = numMonthsNewTask,
-                                    recurrenceYearDays = selectedYearDaysNewTask,
-                                    numYears = numYearsNewTask,
-                                    recurrenceInterval = selectedCustomIntervalNewTask,
-                                    numTimes = numTimesNewTask
-                                )
+                                if(isTaskRecurring) {
+                                    // Crear nuevas ocurrencias
+                                    val occurrences = generateTaskOccurrences(
+                                        taskId = taskId,
+                                        dueDate = selectedDueDate,
+                                        dueTime = selectedDueTime,
+                                        isRecurring = isTaskRecurring,
+                                        recurrencePattern = recurrenceTaskPattern,
+                                        numDays = numDaysNewTask,
+                                        recurrenceWeekDays = selectedWeekDaysNewTask,
+                                        numWeeks = numWeeksNewTask,
+                                        recurrenceMonthDays = selectedMonthDaysNewTask,
+                                        numMonths = numMonthsNewTask,
+                                        recurrenceYearDays = selectedYearDaysNewTask,
+                                        numYears = numYearsNewTask,
+                                        recurrenceInterval = selectedCustomIntervalNewTask,
+                                        numTimes = numTimesNewTask
+                                    )
 
-                                // Insertar las nuevas ocurrencias
-                                occurrences.forEach { occurrence ->
-                                    noteViewModel.insertOccurrence(occurrence)
+                                    // Insertar las nuevas ocurrencias
+                                    occurrences.forEach { occurrence ->
+                                        noteViewModel.insertOccurrence(occurrence)
+                                    }
+                                } else {
+                                    noteViewModel.insertOccurrence(
+                                        TaskOccurrenceEntity(
+                                            taskId = taskId,
+                                            dueDate = selectedDueDate,
+                                            dueTime = selectedDueTime
+                                        )
+                                    )
                                 }
 
 
@@ -156,37 +167,54 @@ fun MainWindowDialog() {
                                     )
                                 }
 
-                                val occurrences =  generateTaskOccurrences(
-                                    taskId = taskId,
-                                    dueDate = selectedDueDate,
-                                    dueTime = selectedDueTime,
-                                    isRecurring = isTaskRecurring,
-                                    recurrencePattern = recurrenceTaskPattern,
-                                    numDays = numDaysNewTask,
-                                    recurrenceWeekDays = selectedWeekDaysNewTask,
-                                    numWeeks = numWeeksNewTask,
-                                    recurrenceMonthDays = selectedMonthDaysNewTask,
-                                    numMonths = numMonthsNewTask,
-                                    recurrenceYearDays = selectedYearDaysNewTask,
-                                    numYears = numYearsNewTask,
-                                    recurrenceInterval = selectedCustomIntervalNewTask,
-                                    numTimes = numTimesNewTask
-                                )
+                                if(isTaskRecurring) {
+                                    val occurrences =  generateTaskOccurrences(
+                                        taskId = taskId,
+                                        dueDate = selectedDueDate,
+                                        dueTime = selectedDueTime,
+                                        isRecurring = isTaskRecurring,
+                                        recurrencePattern = recurrenceTaskPattern,
+                                        numDays = numDaysNewTask,
+                                        recurrenceWeekDays = selectedWeekDaysNewTask,
+                                        numWeeks = numWeeksNewTask,
+                                        recurrenceMonthDays = selectedMonthDaysNewTask,
+                                        numMonths = numMonthsNewTask,
+                                        recurrenceYearDays = selectedYearDaysNewTask,
+                                        numYears = numYearsNewTask,
+                                        recurrenceInterval = selectedCustomIntervalNewTask,
+                                        numTimes = numTimesNewTask
+                                    )
 
-                                // Guardar las ocurrencias en la base de datos
-                                occurrences.forEach { occurrence ->
-                                    noteViewModel.insertOccurrence(occurrence)
+                                    // Guardar las ocurrencias en la base de datos
+                                    occurrences.forEach { occurrence ->
+                                        noteViewModel.insertOccurrence(occurrence)
+                                    }
+                                } else {
+                                    noteViewModel.insertOccurrence(
+                                        TaskOccurrenceEntity(
+                                            taskId = taskId,
+                                            dueDate = selectedDueDate,
+                                            dueTime = selectedDueTime
+                                        )
+                                    )
                                 }
                             }
                         )
                         appViewModel.toggleShowDialogCreateTask()
+                    }
+
+                    if(isTaskRecurring) {
+                        appViewModel.toggleIsTaskRecurring()
                     }
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = themeColors.backGround2
                 )
             ) {
-                Text(text = "Add Task", color = themeColors.text1)
+                Text(
+                    text = if (isLangEng) "Add Task" else "Añadir tarea",
+                    color = themeColors.text1
+                )
             }
         },
         dismissButton = {
@@ -196,17 +224,20 @@ fun MainWindowDialog() {
                     containerColor = themeColors.backGround2
                 )
             ) {
-                Text(text = "Cancel", color = themeColors.text1)
+                Text(
+                    text = if(isLangEng) "Cancel" else "Cancelar",
+                    color = themeColors.text1
+                )
             }
         },
         title = { Text(
-            text = "Add New Task",
+            text = if(isLangEng) "Add New Task" else "Añadir nueva tarea",
             color = themeColors.text1
         ) },
         text = {
             ContentMainWindow()
         },
-        containerColor = themeColors.backGround3,
+        containerColor = themeColors.bgDialog,
         tonalElevation = 8.dp,
         shape = MaterialTheme.shapes.large // Bordes más redondeados
 

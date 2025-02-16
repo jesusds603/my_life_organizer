@@ -1,8 +1,8 @@
 package com.example.mylifeorganizer.components.tasks.screen
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -63,13 +63,14 @@ fun TaskCard(
             .fillMaxWidth()
             .padding(1.dp)
             .background(
-                color =  if (isSelected) themeColors.backGround4 else themeColors.backGround1
+                color =  if (isSelected) themeColors.backGround1 else themeColors.bgCardNote
             )
             .padding(vertical = 2.dp)
             .pointerInput(Unit) {
                 detectTapGestures(
                     onLongPress = {
                         appViewModel.updateTaskIdSelectedScreen(task.task.taskId)
+                        Log.d("LongPress", "LongPress task $taskIdSelectedScreen")
                     }
                 )
             },

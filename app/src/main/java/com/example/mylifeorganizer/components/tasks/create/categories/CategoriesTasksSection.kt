@@ -1,4 +1,4 @@
-package com.example.mylifeorganizer.components.tasks.create
+package com.example.mylifeorganizer.components.tasks.create.categories
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -17,11 +17,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,7 +25,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mylifeorganizer.room.CategoryTaskEntity
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
@@ -38,9 +32,9 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 @Composable
 fun CategoriesTasksSection() {
     val appViewModel: AppViewModel = viewModel()
-    val noteViewModel = appViewModel.noteViewModel
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
     val selectedCategoriesTask = appViewModel.selectedCategoriesTask
 
@@ -51,7 +45,11 @@ fun CategoriesTasksSection() {
             .border(width = 1.dp, color = themeColors.backGround1)
             .padding(4.dp)
     ) {
-        Text(text = "Categories:", color = themeColors.text1, fontSize = 16.sp)
+        Text(
+            text = if(isLangEng) "Categories:" else "Categorías:",
+            color = themeColors.text1,
+            fontWeight = FontWeight.Bold
+        )
 
         Row (
             modifier = Modifier
@@ -75,18 +73,28 @@ fun CategoriesTasksSection() {
                                     appViewModel.updateSelectedCategoriesTask( selectedCategoriesTask - category)
                                 }
                         ) {
-                            Text(text = category.name, color = themeColors.text1)
+                            Text(
+                                text = category.name,
+                                color = themeColors.text1
+                            )
                         }
                     }
                 }
             } else {
-                Text(text = "No categories selected", color = themeColors.text1, modifier = Modifier.weight(1f))
+                Text(
+                    text = if(isLangEng) "No categories selected" else "No hay categorías seleccionadas",
+                    color = themeColors.text1,
+                    modifier = Modifier.weight(1f)
+                )
             }
 
             Box(
                 modifier = Modifier
                     .wrapContentSize() // Ajusta el Box al contenido
-                    .background(Color.Magenta, shape = CircleShape) // Botón con forma circular
+                    .background(
+                        color = themeColors.backGround1,
+                        shape = CircleShape
+                    )
                     .clickable {
                         appViewModel.toggleShowCreateCategoryDialogTask()
                     }

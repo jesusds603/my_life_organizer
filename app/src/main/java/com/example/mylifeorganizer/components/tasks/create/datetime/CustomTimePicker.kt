@@ -1,4 +1,4 @@
-package com.example.mylifeorganizer.components.tasks.create
+package com.example.mylifeorganizer.components.tasks.create.datetime
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -30,6 +30,7 @@ fun CustomTimePicker() {
     val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
     // Convertir selectedDueTime a LocalTime o usar la hora actual si está vacío
     val initialTime = if (appViewModel.selectedDueTime.isNotEmpty()) {
@@ -53,7 +54,7 @@ fun CustomTimePicker() {
         onDismissRequest = { appViewModel.toggleShowTimePicker() },
         title = {
             Text(
-                text = "Selected Time: ${"%02d".format(normalizedHour)}:${"%02d".format(normalizedMinute)}",
+                text = "${if (isLangEng) "Selected Time" else "Hora seleccionada"}: ${"%02d".format(normalizedHour)}:${"%02d".format(normalizedMinute)}",
                 style = MaterialTheme.typography.titleLarge,
                 textAlign = TextAlign.Center,
                 color = themeColors.text1
@@ -95,12 +96,18 @@ fun CustomTimePicker() {
                     }
                 }
             ) {
-                Text("Next", color = themeColors.text1)
+                Text(
+                    text = if(isLangEng) "Next" else "Siguiente",
+                    color = themeColors.text1
+                )
             }
         },
         dismissButton = {
             TextButton(onClick = { appViewModel.toggleShowTimePicker() }) {
-                Text("Cancel", color = themeColors.text1)
+                Text(
+                    text = if(isLangEng) "Cancel" else "Cancelar",
+                    color = themeColors.text1
+                )
             }
         },
         containerColor = themeColors.backGround1

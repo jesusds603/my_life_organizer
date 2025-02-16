@@ -19,15 +19,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mylifeorganizer.components.tasks.create.CategoryDialogTask
-import com.example.mylifeorganizer.components.tasks.create.CustomDatePicker
-import com.example.mylifeorganizer.components.tasks.create.CustomTimePicker
+import com.example.mylifeorganizer.components.tasks.create.categories.CategoryDialogTask
+import com.example.mylifeorganizer.components.tasks.create.datetime.CustomDatePicker
+import com.example.mylifeorganizer.components.tasks.create.datetime.CustomTimePicker
 import com.example.mylifeorganizer.components.tasks.create.MainWindowDialog
 import com.example.mylifeorganizer.components.tasks.screen.MainContent
 import com.example.mylifeorganizer.components.tasks.screen.RowCategories
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
-import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -70,17 +69,16 @@ fun TasksScreen () {
                 appViewModel.updateSelectedDueTime("")
                 appViewModel.updateSelectedCategoriesTask(emptyList())
                 appViewModel.updatePriorityNewTask( 1)
-                appViewModel.toggleIsTaskRecurring()
-                appViewModel.updateRecurrenceTaskPattern("")
-                appViewModel.updateNumDaysNewTask(0)
+                appViewModel.updateRecurrenceTaskPattern("daily")
+                appViewModel.updateNumDaysNewTask(1)
                 appViewModel.updateSelectedWeekDaysNewTask( emptyList() )
-                appViewModel.updateNumWeeksNewTask( 0)
+                appViewModel.updateNumWeeksNewTask( 1)
                 appViewModel.updateSelectedMonthDaysNewTask( emptyList() )
-                appViewModel.updateNumMonthsNewTask(0)
+                appViewModel.updateNumMonthsNewTask(1)
                 appViewModel.updateSelectedYearDaysNewTask( emptySet() )
-                appViewModel.updateNumYearsNewTask(0)
+                appViewModel.updateNumYearsNewTask(1)
                 appViewModel.updateSelectedCustomIntervalNewTask(1)
-                appViewModel.updateNumTimesNewTask(0)
+                appViewModel.updateNumTimesNewTask(1)
 
                 appViewModel.toggleShowDialogCreateTask()
                       },

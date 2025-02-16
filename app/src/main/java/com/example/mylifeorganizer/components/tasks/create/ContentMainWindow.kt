@@ -10,17 +10,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mylifeorganizer.room.CategoryTaskEntity
+import com.example.mylifeorganizer.components.tasks.create.categories.CategoriesTasksSection
+import com.example.mylifeorganizer.components.tasks.create.datetime.RowDateTimePickers
+import com.example.mylifeorganizer.components.tasks.create.recurrence.Recurrence
 import com.example.mylifeorganizer.viewmodel.AppViewModel
-import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -29,6 +26,7 @@ fun ContentMainWindow() {
     val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
     val titleNewTask = appViewModel.titleNewTask.value
     val descriptionNewTask = appViewModel.descriptionNewTask.value
@@ -40,7 +38,12 @@ fun ContentMainWindow() {
         TextField(
             value = titleNewTask,
             onValueChange = { appViewModel.changeTitleNewTask(it) },
-            label = { Text("Title", color = themeColors.text1) },
+            label = {
+                Text(
+                    text = if(isLangEng) "Title" else "Título",
+                    color = themeColors.text1
+                )
+            },
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
                 focusedTextColor = themeColors.text1,
@@ -57,7 +60,12 @@ fun ContentMainWindow() {
         TextField(
             value = descriptionNewTask,
             onValueChange = { appViewModel.changeDescriptionNewTask(it) },
-            label = { Text("Description", color = themeColors.text1) },
+            label = {
+                Text(
+                    text = if(isLangEng) "Description" else "Descripción",
+                    color = themeColors.text1
+                )
+            },
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
                 focusedTextColor = themeColors.text1,

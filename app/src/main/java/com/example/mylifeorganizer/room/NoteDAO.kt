@@ -230,6 +230,10 @@ interface NoteDao {
     @Query("DELETE FROM task_category_cross_ref WHERE taskId = :taskId")
     suspend fun deleteTaskCategories(taskId: Long)
 
+    // Eliminar todas las relaciones de una categoria
+    @Query("DELETE FROM task_category_cross_ref WHERE categoryId = :categoryId")
+    suspend fun deleteRelationTaskCategory(categoryId: Long)
+
     // Insertar relaciones en lote
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTaskCategories(taskCategoryCrossRefs: List<TaskCategoryCrossRef>)

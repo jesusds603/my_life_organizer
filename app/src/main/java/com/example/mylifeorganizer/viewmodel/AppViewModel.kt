@@ -224,12 +224,12 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
         isTaskRecurring = !isTaskRecurring
     }
 
-    var recurrenceTaskPattern by mutableStateOf("")
+    var recurrenceTaskPattern by mutableStateOf("daily")
     fun updateRecurrenceTaskPattern(pattern: String) {
         recurrenceTaskPattern = pattern
     }
 
-    var numDaysNewTask by mutableStateOf(0)
+    var numDaysNewTask by mutableStateOf(1)
     fun updateNumDaysNewTask(days: Int) {
         numDaysNewTask = days
     }
@@ -239,7 +239,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
         selectedWeekDaysNewTask = days
     }
 
-    var numWeeksNewTask by mutableStateOf(0)
+    var numWeeksNewTask by mutableStateOf(1)
     fun updateNumWeeksNewTask(weeks: Int) {
         numWeeksNewTask = weeks
     }
@@ -249,7 +249,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
         selectedMonthDaysNewTask = days
     }
 
-    var numMonthsNewTask by mutableStateOf(0)
+    var numMonthsNewTask by mutableStateOf(1)
     fun updateNumMonthsNewTask(months: Int) {
         numMonthsNewTask = months
     }
@@ -259,7 +259,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
         selectedYearDaysNewTask = days
     }
 
-    var numYearsNewTask by mutableStateOf(0)
+    var numYearsNewTask by mutableStateOf(1)
     fun updateNumYearsNewTask(years: Int) {
         numYearsNewTask = years
     }
@@ -269,7 +269,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
         selectedCustomIntervalNewTask = interval
     }
 
-    var numTimesNewTask by mutableStateOf(0)
+    var numTimesNewTask by mutableStateOf(1)
     fun updateNumTimesNewTask(times: Int) {
         numTimesNewTask = times
     }

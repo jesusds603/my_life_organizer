@@ -1,4 +1,4 @@
-package com.example.mylifeorganizer.components.tasks.create
+package com.example.mylifeorganizer.components.tasks.create.datetime
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -18,13 +18,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,6 +50,7 @@ fun CustomDatePicker() {
     val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
     // Convertir selectedDueDate a LocalDate o usar la fecha actual si está vacío
     val initialDate = if (appViewModel.selectedDueDate.isNotEmpty()) {
@@ -65,14 +64,18 @@ fun CustomDatePicker() {
     var currentYear by remember { mutableStateOf(selectedDate.year) }
     var currentMonth by remember { mutableStateOf(selectedDate.month) }
 
-    val daysOfWeek = listOf("S", "M", "T", "W", "T", "F", "S")
+    val daysOfWeek = if (isLangEng) {
+        listOf("S", "M", "T", "W", "T", "F", "S")
+    } else {
+        listOf("D", "L", "M", "M", "J", "V", "S")
+    }
     val daysInMonth = currentMonth.length(Year.of(currentYear).isLeap)
     // Indice del dia de la semana de 0 a 6
     val firstDayOfMonth = LocalDate.of(currentYear, currentMonth, 1).dayOfWeek.value % 7
-    println("first day of mont ${LocalDate.of(currentYear, currentMonth, 1).dayOfWeek.value}")
+    println("first day of month ${LocalDate.of(currentYear, currentMonth, 1).dayOfWeek.value}")
     val daysGrid = (1..daysInMonth).toList()
     // Crearemos una lista para guardar los ultimos dias de la cuadricula vacios
-    val numDaysEndMonth = (7*7 - (firstDayOfMonth + daysInMonth)) % 7 // 7 semanas
+    val numDaysEndMonth = (6*7 - (firstDayOfMonth + daysInMonth)) % 7 // 6 semanas
 
     AlertDialog(
         onDismissRequest = { appViewModel.toggleShowDatePicker() },
@@ -115,7 +118,10 @@ fun CustomDatePicker() {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Previous Month")
                     }
                     Text(
-                        text = currentMonth.getDisplayName(TextStyle.FULL, Locale.getDefault()),
+                        text = currentMonth.getDisplayName(
+                            TextStyle.FULL,
+                            if (isLangEng) Locale.ENGLISH else Locale("es", "MX")
+                        ),
                         style = MaterialTheme.typography.titleLarge,
                         color = themeColors.text1
                     )
@@ -213,12 +219,18 @@ fun CustomDatePicker() {
                     appViewModel.toggleShowDatePicker()
                 }
             ) {
-                Text("OK")
+                Text(
+                    text = "OK",
+                    color = themeColors.text1
+                )
             }
         },
         dismissButton = {
             TextButton(onClick = { appViewModel.toggleShowDatePicker() }) {
-                Text("Cancel")
+                Text(
+                    text = if(isLangEng) "Cancel" else "Cancelar",
+                    color = themeColors.text1
+                )
             }
         },
         containerColor = themeColors.backGround1

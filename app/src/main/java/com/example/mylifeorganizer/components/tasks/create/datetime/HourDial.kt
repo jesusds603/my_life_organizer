@@ -1,4 +1,4 @@
-package com.example.mylifeorganizer.components.tasks.create
+package com.example.mylifeorganizer.components.tasks.create.datetime
 
 import android.graphics.Paint
 import androidx.compose.foundation.Canvas
@@ -6,7 +6,6 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb

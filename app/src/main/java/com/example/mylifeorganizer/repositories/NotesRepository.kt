@@ -232,6 +232,11 @@ class NotesRepository (val noteDB: NoteDB) {
         noteDAO.deleteTaskCategories(taskId)
     }
 
+    // Eliminar todas las relaciones de una categoria
+    suspend fun deleteRelationTaskCategory(categoryId: Long) {
+        noteDAO.deleteRelationTaskCategory(categoryId)
+    }
+
 
     // 📌 ───────── Ocurrencias ─────────
     suspend fun insertOccurrence(occurrence: TaskOccurrenceEntity) = noteDAO.insertOccurrence(occurrence)

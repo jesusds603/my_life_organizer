@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mylifeorganizer.components.tasks.screen.categories.CategoryBox
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
 
@@ -25,6 +26,7 @@ fun RowCategories() {
     ) {
         item {
             CategoryBox(
+                category = null,
                 name = "All",
                 bgColor = ""
             )
@@ -32,6 +34,7 @@ fun RowCategories() {
 
         items(categoriesTasks) { category ->
             CategoryBox(
+                category = category,
                 name = category.name,
                 bgColor = category.bgColor
             )

@@ -373,6 +373,13 @@ class NoteViewModel(private val notesRepository: NotesRepository) : ViewModel() 
         }
     }
 
+    // Eliminar todas las relaciones de una categoria
+    fun deleteRelationTaskCategory(categoryId: Long) {
+        viewModelScope.launch {
+            notesRepository.deleteRelationTaskCategory(categoryId)
+        }
+    }
+
     // Ocurrencias
     fun insertOccurrence(occurrence: TaskOccurrenceEntity) {
         viewModelScope.launch {
