@@ -18,7 +18,6 @@ import com.example.mylifeorganizer.components.habits.screen.Header
 import com.example.mylifeorganizer.components.habits.screen.RowDays
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
-import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale

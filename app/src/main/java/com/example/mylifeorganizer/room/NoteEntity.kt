@@ -275,7 +275,7 @@ data class HabitOccurrenceEntity(
     val habitId: Long,
     val isCompleted: Boolean = false,
     val date: String, // "yyyy/MM/dd" o un rango "yyyy/MM/dd-yyyy/MM/dd"
-    val time: String = "", // "hh:mm",
+    val time: String = "", // "hh:mm", // "any", "morning", "afternoon", "night"
     val progress: Int = 0, // 0 - 100% según la duración del hábito en minutos
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis(),

@@ -172,7 +172,6 @@ fun TaskCard(
                         .background(colors[task.task.priority-1])
                         .padding(horizontal = 3.dp, vertical = 0.dp)
                 )
-
             }
 
             Text(
@@ -180,8 +179,6 @@ fun TaskCard(
                 color = themeColors.text2,
                 fontSize = 12.sp
             )
-
-
         }
     }
 }

@@ -40,6 +40,7 @@ fun HabitsContent(
     val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
     val noteViewModel: NoteViewModel = appViewModel.noteViewModel
 
@@ -74,7 +75,11 @@ fun HabitsContent(
         if (groupedOccurrences.isEmpty()) {
             item {
                 Text(
-                    text = "No hay hábitos para este día.",
+                    text = if (isLangEng) {
+                        "No habits completed"
+                    } else {
+                        "No hay hábitos completados"
+                    },
                     color = themeColors.text1,
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
@@ -82,7 +87,11 @@ fun HabitsContent(
         } else {
             item {
                 Text(
-                    text = "No completados",
+                    text = if (isLangEng) {
+                        "Not completed"
+                    } else {
+                        "No completados"
+                    },
                     color = themeColors.text1,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
@@ -109,7 +118,11 @@ fun HabitsContent(
 
             item {
                 Text(
-                    text = "Completados",
+                    text = if (isLangEng) {
+                        "Completed"
+                    } else {
+                        "Completados"
+                    },
                     color = themeColors.text1,
                     fontWeight = FontWeight.Bold,
                     fontSize = 18.sp,
@@ -133,8 +146,6 @@ fun HabitsContent(
                     }
                 }
             }
-
-
         }
     }
 }

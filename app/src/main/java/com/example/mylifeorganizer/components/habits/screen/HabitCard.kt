@@ -46,6 +46,7 @@ fun HabitCard(
     val noteViewModel = appViewModel.noteViewModel
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
     var showMenu by remember { mutableStateOf(false) }
 
@@ -68,7 +69,7 @@ fun HabitCard(
             modifier = Modifier
                 .fillMaxWidth(0.1f)
                 .fillMaxHeight()
-                .background(themeColors.backGround3),
+                .background(themeColors.bgCardNote),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -146,7 +147,7 @@ fun HabitCard(
         // Segunda columna: Título y fecha
         Column(
             modifier = Modifier
-                .fillMaxWidth(0.7f)
+                .fillMaxWidth(0.6f)
                 .fillMaxHeight()
                 .background(
                     color = themeViewModel.getCategoryColor(habit.color)
@@ -189,7 +190,7 @@ fun HabitCard(
             modifier = Modifier
                 .fillMaxWidth(1f)
                 .fillMaxHeight()
-                .background(themeColors.backGround3)
+                .background(themeColors.bgCardNote)
                 .padding(8.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -223,9 +224,19 @@ fun HabitCard(
                 }
             } else {
 
+                fun getTranslatedTime(time: String): String {
+                    return when (time) {
+                        "any" -> if (isLangEng) "Anytime" else "Cuando sea"
+                        "morning" -> if (isLangEng) "Morning" else "Mañana"
+                        "afternoon" -> if (isLangEng) "Afternoon" else "Tarde"
+                        "night" -> if (isLangEng) "Night" else "Noche"
+                        else -> time // Para el caso de "hh:mm", se devuelve el valor tal cual
+                    }
+                }
+
                 Row {
                     Text(
-                        text = occurrences.first().time,
+                        text = getTranslatedTime(occurrences.first().time),
                         color = themeColors.text1,
                         fontWeight = FontWeight.Bold,
                         fontSize = 14.sp
@@ -239,8 +250,18 @@ fun HabitCard(
                 }
             }
 
+            fun getTranslatedRecurrencePattern(pattern: String): String {
+                return when (pattern) {
+                    "daily" -> if (isLangEng) "Daily" else "Diario"
+                    "weekly" -> if (isLangEng) "Weekly" else "Semanal"
+                    "monthly" -> if (isLangEng) "Monthly" else "Mensual"
+                    "yearly" -> if (isLangEng) "Yearly" else "Anual"
+                    else -> pattern // Por si acaso hay un valor no esperado
+                }
+            }
+
             Text(
-                text = habit.recurrencePattern,
+                text = getTranslatedRecurrencePattern(habit.recurrencePattern),
                 color = themeColors.text1,
                 fontSize = 12.sp
             )

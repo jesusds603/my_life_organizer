@@ -389,7 +389,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application)  {
         colorNewHabit.value = color
     }
 
-    val timeForNewHabit = mutableStateOf("any") // "any", "morning", "afternoon", "night", "custom"
+    val timeForNewHabit = mutableStateOf("any") // "any", "morning", "afternoon", "night"
     fun changeTimeForNewHabit(time: String) {
         timeForNewHabit.value = time
     }

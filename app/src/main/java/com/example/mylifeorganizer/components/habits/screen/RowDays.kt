@@ -1,5 +1,7 @@
 package com.example.mylifeorganizer.components.habits.screen
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,24 +20,32 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mylifeorganizer.room.HabitOccurrenceEntity
+import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun RowDays(
     selectedDate: String,
     onDateSelected: (String) -> Unit
 ) {
+    val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
-    val daysOfWeek = listOf("SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT")
+    val daysOfWeek = if(isLangEng) {
+        listOf("SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT")
+    } else {
+        listOf("DOM", "LUN", "MAR", "MIE", "JUE", "VIE", "SAB")
+    }
     val calendar = Calendar.getInstance()
     val currentDayOfWeek = calendar.get(Calendar.DAY_OF_WEEK) // Día actual de la semana (1 = Domingo, 2 = Lunes, etc.)
     val dateFormat = SimpleDateFormat("yyyy/MM/dd", Locale.getDefault())
@@ -71,7 +81,8 @@ fun RowDays(
                     color = themeColors.text1,
                     modifier = Modifier.weight(1f),
                     textAlign = TextAlign.Center,
-                    fontFamily = FontFamily.SansSerif
+                    fontFamily = FontFamily.SansSerif,
+                    fontWeight = FontWeight.Bold
                 )
             }
         }
@@ -89,7 +100,13 @@ fun RowDays(
                     color = if (isCurrentDay) Color.Magenta else themeColors.text1,
                     modifier = Modifier
                         .padding(horizontal = 2.dp)
-                        .background(color = if (date == selectedDate) themeColors.backGround4 else Color.Transparent)
+                        .background(
+                            color = if (date == selectedDate) {
+                                themeColors.bgCardFolder
+                            } else {
+                                Color.Transparent
+                            }
+                        )
                         .weight(1f)
                         .clickable { onDateSelected(date) },
                     textAlign = TextAlign.Center,
@@ -107,15 +124,33 @@ fun RowDays(
         ) {
             Button(
                 onClick = { selectedWeekOffset-- },
-                colors = ButtonDefaults.buttonColors(containerColor = themeColors.backGround3)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = themeColors.bgCardFolder
+                )
             ) {
-                Text(text = "Semana anterior", color = themeColors.text1)
+                Text(
+                    text = if (isLangEng) {
+                        "Last week"
+                    } else {
+                        "Semana anterior"
+                    },
+                    color = themeColors.text1
+                )
             }
             Button(
                 onClick = { selectedWeekOffset++ },
-                colors = ButtonDefaults.buttonColors(containerColor = themeColors.backGround3)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = themeColors.bgCardFolder
+                )
             ) {
-                Text(text = "Siguiente semana", color = themeColors.text1)
+                Text(
+                    text = if (isLangEng) {
+                        "Next week"
+                    } else {
+                        "Siguiente semana"
+                    },
+                    color = themeColors.text1
+                )
             }
         }
     }
