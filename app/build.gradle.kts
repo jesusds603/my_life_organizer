@@ -85,11 +85,14 @@ dependencies {
 //    implementation("org.threeten:threetenbp:1.6.0")
 //    implementation("com.jakewharton.threetenabp:threetenabp:1.4.4")
 
-    //implementation(libs.androidx.work.runtime.ktx) // Para WorkManager
-    //implementation(libs.androidx.core.ktx) // Para NotificationCompat
+    implementation(libs.androidx.work.runtime.ktx) // Para WorkManager
+    implementation(libs.androidx.core.ktx) // Para NotificationCompat
 
     implementation(libs.gson)
 
     // Para gráficos
     implementation(libs.mpandroidchart)
+
+    // Para anuncios
+    implementation(libs.play.services.ads)
 }

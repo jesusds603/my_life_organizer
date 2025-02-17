@@ -62,9 +62,30 @@ fun ColumnTasks(
             val dateFormatter = DateTimeFormatter.ofPattern("yyyy/MM/dd")
             val localDate = LocalDate.parse(date, dateFormatter)
 
+            fun getTranslatedDayOfWeek(dayOfWeek: String): String {
+                return if (isLangEng) {
+                    dayOfWeek // Devuelve el día en inglés tal cual
+                } else {
+                    // Mapea los días de la semana en inglés a español
+                    when (dayOfWeek.lowercase()) {
+                        "monday" -> "Lunes"
+                        "tuesday" -> "Martes"
+                        "wednesday" -> "Miércoles"
+                        "thursday" -> "Jueves"
+                        "friday" -> "Viernes"
+                        "saturday" -> "Sábado"
+                        "sunday" -> "Domingo"
+                        else -> dayOfWeek // Por si acaso hay un valor no esperado
+                    }
+                }
+            }
+
             // Get the day of the week (e.g., Monday, Tuesday)
             val dayOfWeek = localDate.dayOfWeek.toString()
                 .lowercase().replaceFirstChar { it.uppercase() }
+
+            // Traducir el día de la semana según el idioma
+            val translatedDayOfWeek = getTranslatedDayOfWeek(dayOfWeek)
 
             // Calculate the difference in days between the current date and the task date
             val currentDateText = LocalDate.now()
@@ -73,7 +94,8 @@ fun ColumnTasks(
             // Determine the text to display based on the difference in days
             val daysText = when {
                 daysDifference == 0L -> if(isLangEng) "Today" else "Hoy"
-                daysDifference > 0 -> if(isLangEng) "in ${daysDifference} days" else "en ${daysDifference} días"
+                daysDifference == 1L -> if(isLangEng) "Tomorrow" else "Mañana"
+                daysDifference > 1L -> if(isLangEng) "in ${daysDifference} days" else "en ${daysDifference} días"
                 else -> if (isLangEng) "past ${-daysDifference} days" else "hace ${-daysDifference} días"
             }
 
@@ -94,7 +116,7 @@ fun ColumnTasks(
                         fontSize = 12.sp
                     )
                     Text(
-                        text = dayOfWeek,
+                        text = translatedDayOfWeek,
                         color = themeColors.text1,
                         fontWeight = FontWeight.Bold,
                         fontSize = 12.sp
