@@ -14,6 +14,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mylifeorganizer.screens.MainScreen
 import com.example.mylifeorganizer.ui.theme.MyLifeOrganizerTheme
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
+import com.example.mylifeorganizer.worker.scheduleDailyHabitWorker
 import com.github.mikephil.charting.utils.Utils
 import com.example.mylifeorganizer.worker.scheduleDailyTaskWorker
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
@@ -31,16 +32,17 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 //        AndroidThreeTen.init(this)
         scheduleDailyTaskWorker(this)
+        scheduleDailyHabitWorker(this)
         Utils.init(this)
         enableEdgeToEdge()
 
-        MobileAds.initialize(this)
+        // MobileAds.initialize(this)
 
-//        val backgroundScope = CoroutineScope(Dispatchers.IO)
-//        backgroundScope.launch {
-//            // Initialize the Google Mobile Ads SDK on a background thread.
-//            MobileAds.initialize(this@MainActivity) {}
-//        }
+        val backgroundScope = CoroutineScope(Dispatchers.IO)
+        backgroundScope.launch {
+            // Initialize the Google Mobile Ads SDK on a background thread.
+            MobileAds.initialize(this@MainActivity) {}
+        }
 
 
 

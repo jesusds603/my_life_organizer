@@ -386,7 +386,7 @@ interface NoteDao {
     fun getAllHabits(): Flow<List<HabitEntity>>
 
     @Query("SELECT * FROM habits WHERE habitId = :habitId")
-    fun getHabitById(habitId: Long): Flow<HabitEntity>
+    fun getHabitById(habitId: Long): HabitEntity
 
     @Query("SELECT * FROM habits_occurrences")
     fun getAllHabitOccurrences(): Flow<List<HabitOccurrenceEntity>>

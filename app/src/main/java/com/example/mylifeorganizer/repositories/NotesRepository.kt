@@ -7,7 +7,6 @@ import com.example.mylifeorganizer.room.FinanceCategoryCrossRef
 import com.example.mylifeorganizer.room.FinanceEntity
 import com.example.mylifeorganizer.room.FinanceWithCategories
 import com.example.mylifeorganizer.room.FolderEntity
-import com.example.mylifeorganizer.room.FolderWithSubfolders
 import com.example.mylifeorganizer.room.HabitEntity
 import com.example.mylifeorganizer.room.HabitOccurrenceEntity
 import com.example.mylifeorganizer.room.NoteCategoryCrossRef
@@ -21,7 +20,7 @@ import com.example.mylifeorganizer.room.TaskOccurrenceEntity
 import com.example.mylifeorganizer.room.TaskWithCategories
 import kotlinx.coroutines.flow.Flow
 
-class NotesRepository (val noteDB: NoteDB) {
+class NotesRepository (noteDB: NoteDB) {
 
     private val noteDAO = noteDB.noteDao()
 
@@ -41,9 +40,6 @@ class NotesRepository (val noteDB: NoteDB) {
         noteDAO.updateSettings(settings)
     }
 
-    suspend fun deleteSettings(settings: SettingsEntity) {
-        noteDAO.deleteSettings(settings)
-    }
 
     // -----------------------------------------------------------------------
     // -----------------------------------------------------------------------
@@ -57,8 +53,6 @@ class NotesRepository (val noteDB: NoteDB) {
         return noteDAO.insertNote(note)
     }
 
-    // Obtener todas las notas
-    fun getAllNotesWithCategories() = noteDAO.getAllNotesWithCategories()
     fun getAllNotes() = noteDAO.getAllNotes()
 
     fun getAllNotesWithoutContentWithCategories() = noteDAO.getAllNotesWithoutContentWithCategories()
@@ -86,8 +80,6 @@ class NotesRepository (val noteDB: NoteDB) {
         noteDAO.insertCategory(category)
     }
 
-    // Obtener todas las categorías con sus notas
-    fun getAllCategoriesWithNotes() = noteDAO.getAllCategoriesWithNotes()
     fun getAllCategories() = noteDAO.getAllCategories()
 
     // Filtrar categorías por una nota específica
@@ -138,19 +130,6 @@ class NotesRepository (val noteDB: NoteDB) {
     // Obtener las notas dentro de una carpeta
     fun getNotesInFolder(folderId: Long) = noteDAO.getNotesInFolder(folderId)
 
-    // Obtener todas las notas de una carpeta sin contenido
-    fun getNotesInFolderWithoutContent(folderId: Long) = noteDAO.getNotesInFolderWithoutContent(folderId)
-
-    // Vincular una nota con una carpeta
-    suspend fun linkNoteWithFolder(noteId: Long, folderId: Long) {
-        noteDAO.updateNoteFolderId(noteId, folderId)
-    }
-
-    // Vincular una carpeta con su subcarpeta
-    suspend fun linkFolderWithSubfolder(parentFolderId: Long, subfolderId: Long) {
-        noteDAO.updateFolderParentId(subfolderId, parentFolderId)
-    }
-
     // Eliminar una carpeta
     suspend fun deleteFolder(folder: FolderEntity) {
         noteDAO.deleteFolder(folder)
@@ -178,15 +157,6 @@ class NotesRepository (val noteDB: NoteDB) {
     fun getOccurrencesTasksByDate(dueDate: String): Flow<List<TaskOccurrenceEntity>> = noteDAO.getOccurrencesTasksByDate(dueDate)
 
     fun getTaskById(taskId: Long): TaskWithCategories = noteDAO.getTaskById(taskId)
-
-
-    // Obtener todas las tareas con la misma prioridad
-    fun getTasksByPriority(priority: Int) = noteDAO.getTasksByPriority(priority)
-
-    // Eliminar una tarea
-    suspend fun deleteTask(task: TaskEntity) {
-        noteDAO.deleteTask(task)
-    }
 
     suspend fun deleteTaskById(taskId: Long) {
         noteDAO.deleteTaskById(taskId)
@@ -221,11 +191,6 @@ class NotesRepository (val noteDB: NoteDB) {
     // Vincular una tarea con una categoría
     suspend fun linkTaskWithCategory(taskId: Long, categoryId: Long) {
         noteDAO.insertTaskCategoryCrossRef(TaskCategoryCrossRef(taskId, categoryId))
-    }
-
-    // Método para actualizar una tarea con sus categorías
-    suspend fun updateTaskWithCategories(task: TaskEntity, categoryIds: List<Long>) {
-        noteDAO.updateTaskWithCategories(task, categoryIds)
     }
 
     suspend fun deleteTaskCategories(taskId: Long) {
@@ -273,9 +238,6 @@ class NotesRepository (val noteDB: NoteDB) {
     suspend fun addFinanceToCategory(financeId: Long, categoryId: Long) {
         noteDAO.insertFinanceCategoryCrossRef(FinanceCategoryCrossRef(financeId, categoryId))
     }
-
-    // Obtener listas individuales
-    fun getAllFinances(): Flow<List<FinanceEntity>> = noteDAO.getAllFinances()
 
     fun getFinancesByDate(date: String): Flow<List<FinanceWithCategories>> = noteDAO.getFinancesByDate(date)
 
@@ -331,15 +293,11 @@ class NotesRepository (val noteDB: NoteDB) {
 
     fun getAllHabits(): Flow<List<HabitEntity>> = noteDAO.getAllHabits()
 
-    fun getHabitById(habitId: Long): Flow<HabitEntity> = noteDAO.getHabitById(habitId)
-
-    suspend fun updateHabit(habit: HabitEntity) = noteDAO.updateHabit(habit)
+    fun getHabitById(habitId: Long): HabitEntity = noteDAO.getHabitById(habitId)
 
     suspend fun deleteHabit(habit: HabitEntity) = noteDAO.deleteHabit(habit)
 
     suspend fun insertHabitOccurrence(habitOccurrence: HabitOccurrenceEntity): Long = noteDAO.insertHabitOccurrence(habitOccurrence)
-
-    fun getHabitOccurencesById(habitId: Long): Flow<List<HabitOccurrenceEntity>> = noteDAO.getHabitOccurencesById(habitId)
 
     fun getAllHabitOccurrences(): Flow<List<HabitOccurrenceEntity>> = noteDAO.getAllHabitOccurrences()
 

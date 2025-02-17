@@ -1,6 +1,5 @@
 package com.example.mylifeorganizer.viewmodel
 
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mylifeorganizer.repositories.NotesRepository
@@ -15,12 +14,10 @@ import com.example.mylifeorganizer.room.HabitEntity
 import com.example.mylifeorganizer.room.HabitOccurrenceEntity
 import com.example.mylifeorganizer.room.NoteEntity
 import com.example.mylifeorganizer.room.NoteWithCategories
-import com.example.mylifeorganizer.room.NoteWithoutContentWithCategories
 import com.example.mylifeorganizer.room.PaymentMethodEntity
 import com.example.mylifeorganizer.room.SettingsEntity
 import com.example.mylifeorganizer.room.TaskEntity
 import com.example.mylifeorganizer.room.TaskOccurrenceEntity
-import com.example.mylifeorganizer.room.TaskWithCategories
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -45,12 +42,6 @@ class NoteViewModel(private val notesRepository: NotesRepository) : ViewModel() 
         viewModelScope.launch {
             notesRepository.updateSettings(settings)
             }
-    }
-
-    fun deleteSettings(settings: SettingsEntity) {
-        viewModelScope.launch {
-            notesRepository.deleteSettings(settings)
-        }
     }
 
     // -----------------------------------------------------------------------
@@ -171,24 +162,6 @@ class NoteViewModel(private val notesRepository: NotesRepository) : ViewModel() 
         return notesRepository.getNotesInFolder(folderId)
     }
 
-    // Obtener todas las notas de una carpeta sin contenido
-    fun getNotesInFolderWithoutContent(folderId: Long): Flow<List<NoteWithoutContentWithCategories>> {
-        return notesRepository.getNotesInFolderWithoutContent(folderId)
-    }
-
-    // Mapa que rastrea las notas de carpetas expandidas
-    private val _expandedFolderNotes = mutableStateMapOf<Long, List<NoteWithoutContentWithCategories>>()
-    val expandedFolderNotes: Map<Long, List<NoteWithoutContentWithCategories>> get() = _expandedFolderNotes
-
-    // Función para cargar las notas de una carpeta cuando se expande
-    fun loadNotesForExpandedFolder(folderId: Long) {
-        viewModelScope.launch {
-            getNotesInFolderWithoutContent(folderId).collect { notes ->
-                _expandedFolderNotes[folderId] = notes
-            }
-        }
-    }
-
     fun countSubfoldersAndNotes(
         folderId: Long,
         onResult: (Int, Int) -> Unit
@@ -253,22 +226,6 @@ class NoteViewModel(private val notesRepository: NotesRepository) : ViewModel() 
         }
     }
 
-
-
-    // Vincular una nota con una carpeta
-    fun linkNoteWithFolder(noteId: Long, folderId: Long) {
-        viewModelScope.launch {
-            notesRepository.linkNoteWithFolder(noteId, folderId)
-        }
-    }
-
-    // Vincular una carpeta con su subcarpeta
-    fun linkFolderWithSubfolder(parentFolderId: Long, subfolderId: Long) {
-        viewModelScope.launch {
-            notesRepository.linkFolderWithSubfolder(parentFolderId, subfolderId)
-        }
-    }
-
     // Eliminar una carpeta
     fun deleteFolder(folder: FolderEntity) {
         viewModelScope.launch {
@@ -302,31 +259,6 @@ class NoteViewModel(private val notesRepository: NotesRepository) : ViewModel() 
         return notesRepository.getOccurrencesTasksByDate(dueDate)
     }
 
-    fun getTaskById(taskId: Long): TaskWithCategories {
-        return notesRepository.getTaskById(taskId)
-    }
-
-
-    // Obtener todas las tareas con la misma prioridad
-    fun getTasksByPriority(priority: Int): Flow<List<TaskEntity>> {
-        return notesRepository.getTasksByPriority(priority)
-    }
-
-
-    // Eliminar una tarea
-    fun deleteTask(task: TaskEntity) {
-        viewModelScope.launch {
-            notesRepository.deleteTask(task)
-        }
-    }
-
-    // Actualizar una tarea
-    fun updateTask(task: TaskEntity, onTaskUpdated: (Long) -> Unit) {
-        viewModelScope.launch {
-            notesRepository.updateTask(task)
-            onTaskUpdated(task.taskId) // Ejecuta una acción cuando se actualiza la tarea
-        }
-    }
 
     // ------
 
@@ -360,12 +292,6 @@ class NoteViewModel(private val notesRepository: NotesRepository) : ViewModel() 
         }
     }
 
-    // Método para actualizar una nota con sus categorías
-    fun updateTaskWithCategories(task: TaskEntity, categoryIds: List<Long>) {
-        viewModelScope.launch {
-            notesRepository.updateTaskWithCategories(task, categoryIds)
-        }
-    }
 
     fun deleteTaskCategories(taskId: Long) {
         viewModelScope.launch {
@@ -393,12 +319,6 @@ class NoteViewModel(private val notesRepository: NotesRepository) : ViewModel() 
         }
     }
 
-    fun deleteOccurrence(occurrence: TaskOccurrenceEntity) {
-        viewModelScope.launch {
-            notesRepository.deleteOccurrence(occurrence)
-        }
-    }
-
     fun deleteTaskWithOccurrences(taskId: Long) {
         viewModelScope.launch {
             val occurrences = notesRepository.getOccurrencesForTask(taskId).first() // Obtener ocurrencias asociadas
@@ -415,17 +335,8 @@ class NoteViewModel(private val notesRepository: NotesRepository) : ViewModel() 
         }
     }
 
-
     fun getAllOccurrences(): Flow<List<TaskOccurrenceEntity>> {
         return notesRepository.getAllOccurrences()
-    }
-
-    fun getOccurrencesForTask(taskId: Long): Flow<List<TaskOccurrenceEntity>> {
-        return notesRepository.getOccurrencesForTask(taskId)
-    }
-
-    fun getOccurrencesByDate(date: String): Flow<List<TaskOccurrenceEntity>> {
-        return notesRepository.getOccurrencesByDate(date)
     }
 
 
@@ -435,7 +346,6 @@ class NoteViewModel(private val notesRepository: NotesRepository) : ViewModel() 
     //                                  FINANZAS
 
     // LiveData para observar datos en la UI
-    val finances: Flow<List<FinanceEntity>> = notesRepository.getAllFinances()
     val categoriesFinance: Flow<List<CategoryFinanceEntity>> = notesRepository.getAllCategoriesFinance()
     val paymentMethods: Flow<List<PaymentMethodEntity>> = notesRepository.getAllPaymentMethods()
     val financesWithCategories: Flow<List<FinanceWithCategories>> = notesRepository.getAllFinancesWithCategories()
@@ -529,9 +439,7 @@ class NoteViewModel(private val notesRepository: NotesRepository) : ViewModel() 
 
     // -------------------------------------------------------------------------
     // -------------------------------------------------------------------------
-    // -------------------------------------------------------------------------
     //                      HABITS
-    // -------------------------------------------------------------------------
     // -------------------------------------------------------------------------
     // -------------------------------------------------------------------------
 
@@ -544,17 +452,6 @@ class NoteViewModel(private val notesRepository: NotesRepository) : ViewModel() 
 
     val habits = notesRepository.getAllHabits()
 
-    fun getHabitById(habitId: Long): Flow<HabitEntity> {
-        return notesRepository.getHabitById(habitId)
-    }
-
-    fun updateHabit(habit: HabitEntity, onHabitUpdated: (Long) -> Unit) {
-        viewModelScope.launch {
-            notesRepository.updateHabit(habit)
-            onHabitUpdated(habit.habitId)
-        }
-    }
-
     fun deleteHabit(habit: HabitEntity) {
         viewModelScope.launch {
             notesRepository.deleteHabit(habit)
@@ -565,10 +462,6 @@ class NoteViewModel(private val notesRepository: NotesRepository) : ViewModel() 
         viewModelScope.launch {
             notesRepository.insertHabitOccurrence(habitOccurrence)
         }
-    }
-
-    fun getHabitOccurencesById(habitId: Long): Flow<List<HabitOccurrenceEntity>> {
-        return notesRepository.getHabitOccurencesById(habitId)
     }
 
     val habitsOccurrences = notesRepository.getAllHabitOccurrences()
