@@ -14,7 +14,8 @@ import com.github.mikephil.charting.data.BarEntry
 fun prepareCatChartData(
     finances: List<FinanceWithCategories>,
     categories: List<CategoryFinanceEntity>,
-    themeViewModel: ThemeViewModel
+    themeViewModel: ThemeViewModel,
+    isLangEng: Boolean
 ): BarData {
     val incomeEntries = mutableListOf<BarEntry>()
     val expenseEntries = mutableListOf<BarEntry>()
@@ -34,13 +35,13 @@ fun prepareCatChartData(
         }
     }
 
-    val incomeDataSet = BarDataSet(incomeEntries, "Income").apply {
+    val incomeDataSet = BarDataSet(incomeEntries, if(isLangEng) "Income" else "Ingresos").apply {
         valueTextColor = Color.Green.toArgb()
         valueTextSize = 12f
         colors = colorS
     }
 
-    val expenseDataSet = BarDataSet(expenseEntries, "Expense").apply {
+    val expenseDataSet = BarDataSet(expenseEntries, if(isLangEng) "Expense" else "Gastos").apply {
         valueTextColor = Color.Red.toArgb()
         valueTextSize = 12f
         colors = colorS
@@ -54,7 +55,8 @@ fun prepareCatChartData(
 fun preparePaymentChartData(
     finances: List<FinanceWithCategories>,
     paymentMethods: List<PaymentMethodEntity>,
-    themeViewModel: ThemeViewModel
+    themeViewModel: ThemeViewModel,
+    isLangEng: Boolean
 ): BarData {
     val incomeEntries = mutableListOf<BarEntry>()
     val expenseEntries = mutableListOf<BarEntry>()
@@ -74,13 +76,13 @@ fun preparePaymentChartData(
 
     }
 
-    val incomeDataSet = BarDataSet(incomeEntries, "Income").apply {
+    val incomeDataSet = BarDataSet(incomeEntries, if(isLangEng) "Income" else "Ingresos").apply {
         valueTextColor = Color.Green.toArgb()
         valueTextSize = 12f
         colors = colorsPay
     }
 
-    val expenseDataSet = BarDataSet(expenseEntries, "Expense").apply {
+    val expenseDataSet = BarDataSet(expenseEntries, if(isLangEng) "Expense" else "Gastos").apply {
         valueTextColor = Color.Red.toArgb()
         valueTextSize = 12f
         colors = colorsPay

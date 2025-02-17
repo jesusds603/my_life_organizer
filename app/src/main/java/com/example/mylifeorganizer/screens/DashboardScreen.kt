@@ -4,6 +4,7 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -44,6 +45,7 @@ fun DashboardScreen() {
     val noteViewModel: NoteViewModel = appViewModel.noteViewModel
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
     var selectedYear by remember { mutableStateOf(YearMonth.now().year) }
     var selectedMonth by remember { mutableStateOf(YearMonth.now().monthValue) }
@@ -61,16 +63,16 @@ fun DashboardScreen() {
 
     // Prepare data for charts
     val pieChartData by remember(totalIncome, totalExpense) {
-        mutableStateOf(preparePieChartData(totalIncome, totalExpense, themeViewModel))
+        mutableStateOf(preparePieChartData(totalIncome, totalExpense, themeViewModel, isLangEng))
     }
     val catChartData by remember (financesForMonth, categoriesFinance) {
         mutableStateOf(
-            prepareCatChartData(financesForMonth, categoriesFinance, themeViewModel)
+            prepareCatChartData(financesForMonth, categoriesFinance, themeViewModel, isLangEng)
         )
     }
     val paymentChartData by remember (financesForMonth, paymentMethods) {
         mutableStateOf(
-            preparePaymentChartData(financesForMonth, paymentMethods, themeViewModel)
+            preparePaymentChartData(financesForMonth, paymentMethods, themeViewModel, isLangEng)
         )
     }
 
@@ -90,7 +92,7 @@ fun DashboardScreen() {
        )
 
         Text(
-            text = "Balance: $balance",
+            text = "Balance: $ $balance",
             color = themeColors.text1,
             fontWeight = FontWeight.Bold
         )
@@ -123,8 +125,10 @@ fun DashboardScreen() {
                 .height(300.dp)
         )
 
+        Spacer(modifier = Modifier.height(16.dp))
+
         Text(
-            text = "Category-wise Expenses",
+            text = if(isLangEng) "Category-wise Expenses and Income" else "Gastos y ganancias por categoría",
             color = themeColors.text1,
             fontWeight = FontWeight.Bold
         )
@@ -163,8 +167,10 @@ fun DashboardScreen() {
                 .height(300.dp)
         )
 
+        Spacer(modifier = Modifier.height(16.dp))
+
         Text(
-            text = "Payment Method-wise Expenses",
+            text = if(isLangEng) "Payment Method-wise Expenses and Income" else "Gastos y ganancias por método de pago",
             color = themeColors.text1,
             fontWeight = FontWeight.Bold
         )

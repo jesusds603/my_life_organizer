@@ -51,13 +51,18 @@ fun CalendarScreen() {
     val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
     val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
     val todayDate = LocalDate.now()
     val selectedDateCalendar = appViewModel.selectedDateCalendar.value
     var selectedMonth by remember { mutableStateOf(selectedDateCalendar.month) }
     var selectedYear by remember { mutableIntStateOf(selectedDateCalendar.year) }
 
-    val daysOfWeek = listOf("S", "M", "T", "W", "T", "F", "S")
+    val daysOfWeek = if(isLangEng) {
+        listOf("S", "M", "T", "W", "T", "F", "S")
+    } else {
+        listOf("D", "L", "M", "M", "J", "V", "S")
+    }
     val daysInMonth = selectedMonth.length(Year.of(selectedYear).isLeap)
     val firstDayOfMonth = LocalDate.of(selectedYear, selectedMonth, 1).dayOfWeek.value % 7
     val daysGrid = (1..daysInMonth).toList()
@@ -128,7 +133,7 @@ fun CalendarScreen() {
                 )
             }
             Text(
-                text = selectedMonth.getDisplayName(TextStyle.FULL, Locale.getDefault()),
+                text = selectedMonth.getDisplayName(TextStyle.FULL, if (isLangEng) Locale.ENGLISH else Locale("es", "MX")),
                 style = MaterialTheme.typography.titleLarge,
                 color = themeColors.text1
             )

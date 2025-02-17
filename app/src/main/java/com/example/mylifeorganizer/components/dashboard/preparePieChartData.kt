@@ -9,7 +9,7 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.ValueFormatter
 
 // Helper Function to Prepare Pie Chart Data
-fun preparePieChartData(totalIncome: Double, totalExpense: Double, themeViewModel: ThemeViewModel): PieData {
+fun preparePieChartData(totalIncome: Double, totalExpense: Double, themeViewModel: ThemeViewModel, isLangEng: Boolean): PieData {
     // Calculate the total sum of incomes and expenses
     val totalSum = totalIncome + totalExpense
 
@@ -21,8 +21,8 @@ fun preparePieChartData(totalIncome: Double, totalExpense: Double, themeViewMode
 
     // Create entries
     val entries = listOf(
-        PieEntry(incomePercentage, "Income: $${"%.2f".format(totalIncome)}"),
-        PieEntry(expensePercentage, "Expense: $${"%.2f".format(totalExpense)}")
+        PieEntry(incomePercentage, "${if(isLangEng) "Income" else "Ingresos"}: $${"%.2f".format(totalIncome)}"),
+        PieEntry(expensePercentage, "${if(isLangEng) "Expense" else "Gastos"}: $${"%.2f".format(totalExpense)}")
     )
 
     // Create dataset

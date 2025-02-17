@@ -43,6 +43,7 @@ fun DayCalendarWindow() {
     val themeViewModel: ThemeViewModel = viewModel()
 
     val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
     val selectedDateCalendar = appViewModel.selectedDateCalendar.value
 
@@ -93,14 +94,14 @@ fun DayCalendarWindow() {
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    color = themeColors.backGround2
+                    color = themeColors.bgCardFolder
                 )
                 .padding(horizontal = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Habits",
+                text = if(isLangEng) "Habits" else "Hábitos",
                 color = themeColors.text1,
                 fontWeight = FontWeight.Bold
             )
@@ -111,7 +112,7 @@ fun DayCalendarWindow() {
                 },
                 modifier = Modifier
                     .background(
-                        color = themeColors.backGround4,
+                        color = themeColors.backGround1,
                         shape = CircleShape
                     )
             ) {
@@ -142,6 +143,9 @@ fun DayCalendarWindow() {
                         Row (
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .background(
+                                    color = themeColors.bgCardNote
+                                )
                         ) {
                             IconButton(
                                 onClick = {
@@ -174,7 +178,7 @@ fun DayCalendarWindow() {
                                     .padding(horizontal = 2.dp)
                             ) {
                                 Text(
-                                    text = habit?.title ?: "Unknown habit",
+                                    text = habit?.title ?: if(isLangEng) "Unknown habit" else "Hábito desconocido",
                                     color = themeColors.text1,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -193,14 +197,14 @@ fun DayCalendarWindow() {
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    color = themeColors.backGround2
+                    color = themeColors.bgCardFolder
                 )
                 .padding(horizontal = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "Tasks",
+                text = if(isLangEng) "Tasks" else "Tareas",
                 color = themeColors.text1,
                 fontWeight = FontWeight.Bold
             )
@@ -211,7 +215,7 @@ fun DayCalendarWindow() {
                 },
                 modifier = Modifier
                     .background(
-                        color = themeColors.backGround4,
+                        color = themeColors.backGround1,
                         shape = CircleShape
                     )
             ) {
@@ -242,6 +246,9 @@ fun DayCalendarWindow() {
                         Row (
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .background(
+                                    color = themeColors.bgCardNote
+                                )
                         ) {
                             IconButton(
                                 onClick = {
@@ -274,7 +281,7 @@ fun DayCalendarWindow() {
                                     .padding(horizontal = 2.dp)
                             ) {
                                 Text(
-                                    text = task?.task?.title ?: "Unknown task",
+                                    text = task?.task?.title ?: if(isLangEng) "Unknown task" else "Tarea desconocida",
                                     color = themeColors.text1,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -293,7 +300,7 @@ fun DayCalendarWindow() {
             modifier = Modifier
                 .fillMaxWidth()
                 .background(
-                    color = themeColors.backGround2
+                    color = themeColors.bgCardFolder
                 )
                 .padding(horizontal = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -301,7 +308,7 @@ fun DayCalendarWindow() {
         ) {
             Row {
                 Text(
-                    text = "Finances",
+                    text = if(isLangEng) "Finances" else "Finanzas",
                     color = themeColors.text1,
                     fontWeight = FontWeight.Bold
                 )
@@ -337,7 +344,7 @@ fun DayCalendarWindow() {
                 },
                 modifier = Modifier
                     .background(
-                        color = themeColors.backGround4,
+                        color = themeColors.backGround1,
                         shape = CircleShape
                     )
             ) {
