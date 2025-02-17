@@ -67,7 +67,11 @@ fun FinanceScreen() {
             containerColor = themeColors.buttonAdd,
             shape = CircleShape
         ) {
-            Text("+", fontSize = 24.sp, color = themeColors.text1)
+            Text(
+                text = "+",
+                fontSize = 24.sp,
+                color = themeColors.text1
+            )
         }
 
         if (isAddingFinance || isEditingFinance) {

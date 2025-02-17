@@ -76,9 +76,9 @@ fun HabitsContent(
             item {
                 Text(
                     text = if (isLangEng) {
-                        "No habits completed"
+                        "No habits"
                     } else {
-                        "No hay hábitos completados"
+                        "No hay hábitos"
                     },
                     color = themeColors.text1,
                     modifier = Modifier.padding(vertical = 8.dp)

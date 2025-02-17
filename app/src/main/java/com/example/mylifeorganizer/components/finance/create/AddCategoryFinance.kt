@@ -3,13 +3,9 @@ package com.example.mylifeorganizer.components.finance.create
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,34 +22,25 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mylifeorganizer.room.CategoryFinanceEntity
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 
-@OptIn(ExperimentalLayoutApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AddCategoryFinance() {
     val themeViewModel: ThemeViewModel = viewModel()
-    val themeColors = themeViewModel.themeColors.value
     val appViewModel: AppViewModel = viewModel()
     val noteViewModel = appViewModel.noteViewModel
 
-    var nameNewCategory by remember { mutableStateOf("") }
-    var colorNewCategory by remember { mutableStateOf("") }
+    val themeColors = themeViewModel.themeColors.value
+    val isLangEng = appViewModel.isLangEng.value
 
     val allCategories = noteViewModel.categoriesFinance.collectAsState(initial = emptyList()).value
     val selectedCategoriesForNewFinance = appViewModel.selectedCategoriesForNewFinance
@@ -68,25 +55,18 @@ fun AddCategoryFinance() {
             Button(
                 onClick = { appViewModel.toggleAddingCategoryForFinance() },
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = themeColors.backGround2
+                    containerColor = themeColors.backGround1
                 )
             ) {
-                Text(text = "OK", color = themeColors.text1)
-            }
-        },
-        dismissButton = {
-            Button(
-                onClick = { appViewModel.toggleAddingCategoryForFinance() },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = themeColors.backGround2
+                Text(
+                    text = "OK",
+                    color = themeColors.text1
                 )
-                ) {
-                Text(text = "Cancel", color = themeColors.text1)
             }
         },
         title = {
             Text(
-                text = "Add New Category",
+                text = if(isLangEng) "Add New Category" else "Añadir Nueva Categoría",
                 color = themeColors.text1
             )
         },
@@ -97,7 +77,7 @@ fun AddCategoryFinance() {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        "Available Categories:",
+                        text = if(isLangEng) "Available Categories:" else "Categorías Disponibles:",
                         color = themeColors.text1
                     )
                     Spacer(modifier = Modifier.width(4.dp))
@@ -120,95 +100,7 @@ fun AddCategoryFinance() {
                 }
 
                 if(isCreatingCategoryForFinance) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(0.dp)
-                            .background(themeColors.backGround1)
-                            .border(1.dp, themeColors.text1)
-                            .padding(4.dp)
-                    ) {
-                        Text(
-                            text = "Write the name of the category:",
-                            color = themeColors.text1,
-                        )
-
-                        TextField(
-                            value = nameNewCategory,
-                            onValueChange = { nameNewCategory = it },
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = TextFieldDefaults.colors(
-                                focusedTextColor = themeColors.text1,
-                                unfocusedTextColor = themeColors.text1,
-                                focusedContainerColor = themeViewModel.getCategoryColor(colorNewCategory),
-                                unfocusedContainerColor = themeViewModel.getCategoryColor(colorNewCategory),
-                            )
-                        )
-
-                        Text(
-                            text = "Select the color of the category:",
-                            color = themeColors.text1,
-                        )
-                        FlowRow {
-                            themeViewModel.namesColorCategories.forEach { color ->
-                                TextButton(
-                                    modifier = Modifier.size(30.dp),
-                                    onClick = { colorNewCategory = color },
-                                    colors = ButtonDefaults.textButtonColors(
-                                        contentColor = themeColors.text1,
-                                        containerColor = themeViewModel.getCategoryColor(color)
-                                    ),
-                                    shape = CircleShape,
-                                ) {}
-                            }
-                        }
-
-                        Row (
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            TextButton(
-                                onClick = {
-                                    noteViewModel.addCategoryFinance(
-                                        CategoryFinanceEntity(
-                                            name = nameNewCategory,
-                                            bgColor = colorNewCategory
-                                        )
-                                    )
-                                    appViewModel.toggleCreatingCategoryForFinance()
-                                    nameNewCategory = ""
-                                    colorNewCategory = ""
-                                },
-                                colors = ButtonDefaults.textButtonColors(
-                                    contentColor = themeColors.text1,
-                                    containerColor = themeColors.buttonAdd
-                                )
-                            ) {
-                                Text(
-                                    text = "Create",
-                                    color = themeColors.text1
-                                )
-                            }
-
-                            TextButton(
-                                onClick = {
-                                    appViewModel.toggleCreatingCategoryForFinance()
-                                    nameNewCategory = ""
-                                    colorNewCategory = ""
-                                },
-                                colors = ButtonDefaults.textButtonColors(
-                                    contentColor = themeColors.text1,
-                                    containerColor = themeColors.buttonDelete
-                                )
-                            ) {
-                                Text(
-                                    text = "Cancel",
-                                    color = themeColors.text1
-                                )
-                            }
-                        }
-                    }
+                    CreatingCategory()
                 }
 
                 LazyRow {
@@ -233,7 +125,14 @@ fun AddCategoryFinance() {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Text("Press on a category to add it or remove it from the list to the finance", color = themeColors.text1)
+                Text(
+                    text = if(isLangEng) {
+                        "Press on a category to add it or remove it from the list to the finance"
+                    } else {
+                        "Presiona en una categoría para agregarlo o eliminarlo de la lista para la finanzas"
+                    },
+                    color = themeColors.text1
+                )
 
                 LazyRow {
                     items(selectedCategoriesForNewFinance) { category ->
@@ -256,7 +155,7 @@ fun AddCategoryFinance() {
                 }
             }
         },
-        containerColor = themeColors.backGround3,
+        containerColor = themeColors.bgDialog,
         tonalElevation = 8.dp,
         shape = MaterialTheme.shapes.large // Bordes más redondeados
     )
