@@ -110,6 +110,9 @@ fun CategoryBoxFinance(
     }
 
     if(showEditDialog) {
-
+        EditCategoryDialog(
+            category = category!!,
+            changeShowEditDialog = { showEditDialog = it }
+        )
     }
 }
