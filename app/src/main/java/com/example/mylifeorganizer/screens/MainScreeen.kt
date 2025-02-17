@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mylifeorganizer.ads.BannerAd
 import com.example.mylifeorganizer.components.ButtonTabs
 import com.example.mylifeorganizer.components.calendar.DayCalendarWindow
 import com.example.mylifeorganizer.components.notes.add.AddNoteWindow
@@ -63,6 +65,8 @@ fun ContentMainScreen(
 ) {
     val appViewModel: AppViewModel = viewModel()
     val themeViewModel: ThemeViewModel = viewModel()
+    val context = LocalContext.current // Obtener el contexto para nuncios
+
 
     val selectedTab = appViewModel.selectedTab.value
     val themeColors = themeViewModel.themeColors.value
@@ -84,6 +88,8 @@ fun ContentMainScreen(
                 "Habits" -> HabitsScreen()
             }
         }
+
+        BannerAd(context)
 
         // Parte inferior: los botones de navegación
         ButtonTabs()

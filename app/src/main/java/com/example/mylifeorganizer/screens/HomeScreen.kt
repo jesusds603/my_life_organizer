@@ -19,9 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mylifeorganizer.ads.BannerAd
 import com.example.mylifeorganizer.components.home.HabitsSection
 import com.example.mylifeorganizer.components.home.Header
 import com.example.mylifeorganizer.components.home.QuickCard
@@ -117,6 +119,5 @@ fun HomeScreen() {
             )
         }
     }
-
 
 }
