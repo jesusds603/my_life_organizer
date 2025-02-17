@@ -21,7 +21,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mylifeorganizer.room.CategoryFinanceEntity
+import com.example.mylifeorganizer.room.PaymentMethodEntity
 import com.example.mylifeorganizer.viewmodel.AppViewModel
 import com.example.mylifeorganizer.viewmodel.NoteViewModel
 import com.example.mylifeorganizer.viewmodel.ThemeViewModel
@@ -29,8 +29,8 @@ import com.example.mylifeorganizer.viewmodel.ThemeViewModel
 @OptIn(ExperimentalLayoutApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun EditCategoryDialog(
-    category: CategoryFinanceEntity,
+fun EditPaymentMethodDialog(
+    paymentMethod: PaymentMethodEntity,
     changeShowEditDialog: (Boolean) -> Unit,
 ) {
     val appViewModel: AppViewModel = viewModel()
@@ -42,8 +42,8 @@ fun EditCategoryDialog(
 
     val namesColorCategories = themeViewModel.namesColorCategories
 
-    var newName by remember { mutableStateOf(category.name) }
-    var newColor by remember { mutableStateOf(category.bgColor) }
+    var newName by remember { mutableStateOf(paymentMethod.name) }
+    var newColor by remember { mutableStateOf(paymentMethod.bgColor) }
 
     AlertDialog(
         onDismissRequest = {
@@ -52,8 +52,8 @@ fun EditCategoryDialog(
         confirmButton = {
             Button(
                 onClick = {
-                    noteViewModel.updateCategoryFinance(
-                        category.copy(
+                    noteViewModel.updatePaymentMethod(
+                        paymentMethod.copy(
                             name = newName,
                             bgColor = newColor,
                         )
@@ -87,7 +87,7 @@ fun EditCategoryDialog(
         },
         title = {
             Text(
-                text = if(isLangEng) "Edit Category" else "Editar Categoría",
+                text = if(isLangEng) "Edit Payment Method" else "Editar Método de Pago",
                 color = themeColors.text1
             )
         },

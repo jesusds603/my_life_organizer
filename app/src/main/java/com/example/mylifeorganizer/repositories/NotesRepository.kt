@@ -298,11 +298,20 @@ class NotesRepository (val noteDB: NoteDB) {
 
     suspend fun updatePaymentMethod(paymentMethod: PaymentMethodEntity) = noteDAO.updatePaymentMethod(paymentMethod)
 
+    // Función para actualizar paymentId a null donde coincida con el argumento
+    suspend fun updatePaymentIdToNull(paymentId: Long): Int = noteDAO.updatePaymentIdToNull(paymentId)
+
     // Eliminar datos
     suspend fun deleteFinance(finance: FinanceEntity) = noteDAO.deleteFinance(finance)
 
+    // Eliminar todas las relaciones categorías relacionadas con una finanza
     suspend fun deleteFinanceCategories(financeId: Long) {
         noteDAO.deleteFinanceCategories(financeId)
+    }
+
+    // Eliminar todas las relaciones de una categoria
+    suspend fun deleteRelationFinanceCategory(categoryId: Long) {
+        noteDAO.deleteRelationFinanceCategory(categoryId)
     }
 
     suspend fun deleteCategoryFinance(category: CategoryFinanceEntity) = noteDAO.deleteCategoryFinance(category)

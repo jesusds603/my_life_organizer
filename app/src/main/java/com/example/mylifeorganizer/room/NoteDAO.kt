@@ -345,13 +345,21 @@ interface NoteDao {
     @Update
     suspend fun updatePaymentMethod(paymentMethod: PaymentMethodEntity)
 
+    // Función para actualizar paymentId a null donde coincida con el argumento
+    @Query("UPDATE finance SET paymentId = null WHERE paymentId = :paymentId")
+    suspend fun updatePaymentIdToNull(paymentId: Long): Int
+
     // Eliminar datos
     @Delete
     suspend fun deleteFinance(finance: FinanceEntity)
 
-    // Eliminar todas las categorías relacionadas con una tarea
+    // Eliminar todas las relaciones categorías relacionadas con una tarea
     @Query("DELETE FROM finance_category_cross_ref WHERE financeId = :financeId")
     suspend fun deleteFinanceCategories(financeId: Long)
+
+    // Eliminar todas las relaciones de una categoria
+    @Query("DELETE FROM finance_category_cross_ref WHERE categoryId = :categoryId")
+    suspend fun deleteRelationFinanceCategory(categoryId: Long)
 
     @Delete
     suspend fun deleteCategoryFinance(category: CategoryFinanceEntity)

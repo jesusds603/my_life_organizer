@@ -115,4 +115,11 @@ fun CategoryBoxFinance(
             changeShowEditDialog = { showEditDialog = it }
         )
     }
+
+    if(showDeleteDialog) {
+        DeleteCategoryDialog(
+            category = category!!,
+            changeShowDeleteDialog = { showDeleteDialog = it }
+        )
+    }
 }

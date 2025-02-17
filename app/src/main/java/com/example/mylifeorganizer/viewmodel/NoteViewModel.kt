@@ -488,6 +488,13 @@ class NoteViewModel(private val notesRepository: NotesRepository) : ViewModel() 
         }
     }
 
+    // Función para actualizar paymentId a null donde coincida con el argumento
+    fun updatePaymentIdToNull(paymentId: Long) {
+        viewModelScope.launch {
+            notesRepository.updatePaymentIdToNull(paymentId)
+        }
+    }
+
     // Eliminar datos
     fun deleteFinance(finance: FinanceEntity) {
         viewModelScope.launch {
@@ -498,6 +505,13 @@ class NoteViewModel(private val notesRepository: NotesRepository) : ViewModel() 
     fun deleteFinanceCategories(financeId: Long) {
         viewModelScope.launch {
             notesRepository.deleteFinanceCategories(financeId)
+        }
+    }
+
+    // Eliminar todas las relaciones de una categoria
+    fun deleteRelationFinanceCategory(categoryId: Long) {
+        viewModelScope.launch {
+            notesRepository.deleteRelationFinanceCategory(categoryId)
         }
     }
 

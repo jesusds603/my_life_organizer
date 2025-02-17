@@ -34,6 +34,7 @@ fun RowPaymentMethods() {
     ) {
         item {
             PaymentBox(
+                paymentMethod = null,
                 name = "All",
                 bgColor = ""
             )
@@ -41,6 +42,7 @@ fun RowPaymentMethods() {
 
         items(paymentMethods) { paymentMethod ->
             PaymentBox(
+                paymentMethod = paymentMethod,
                 name = paymentMethod.name,
                 bgColor = paymentMethod.bgColor
             )
