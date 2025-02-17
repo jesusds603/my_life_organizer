@@ -58,9 +58,6 @@ fun FinanceCard(
     }
 
 
-
-
-
     Column (
         modifier = Modifier
             .fillMaxWidth()
@@ -149,7 +146,6 @@ fun FinanceCard(
                 )
             }
         }
-
 
 
         FloatingOptionsFinance(

@@ -19,9 +19,17 @@ fun DismissButton() {
     val themeColors = themeViewModel.themeColors.value
     val isLangEng = appViewModel.isLangEng.value
 
+    val isAddingFinance = appViewModel.isAddingFinance.value
+    val isEditingFinance = appViewModel.isEditingFinance.value
+
     Button(
         onClick = {
-            appViewModel.toggleAddingFinance()
+            if(isAddingFinance) {
+                appViewModel.toggleAddingFinance()
+            }
+            if(isEditingFinance) {
+                appViewModel.toggleEditingFinance()
+            }
             appViewModel.updateTitleForNewFinance("")
             appViewModel.updateDescriptionForNewFinance("")
             appViewModel.updateAmountForNewFinance(0)

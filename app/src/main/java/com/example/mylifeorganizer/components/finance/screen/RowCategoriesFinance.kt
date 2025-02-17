@@ -34,6 +34,7 @@ fun RowCategoriesFinance() {
     ) {
         item {
             CategoryBoxFinance(
+                category = null,
                 name = "All",
                 bgColor = ""
             )
@@ -41,6 +42,7 @@ fun RowCategoriesFinance() {
 
         items(categories) { category ->
             CategoryBoxFinance(
+                category = category,
                 name = category.name,
                 bgColor = category.bgColor
             )
