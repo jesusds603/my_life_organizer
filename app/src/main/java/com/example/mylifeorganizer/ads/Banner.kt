@@ -10,6 +10,8 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 
+// test:        ca-app-pub-3940256099942544/9214589741
+// Mi banner:   ca-app-pub-6007960646352251/2206415414
 @Composable
 fun BannerAd(context: Context) {
     AndroidView(
@@ -19,7 +21,7 @@ fun BannerAd(context: Context) {
         factory = {
             AdView(context).apply {
                 setAdSize(AdSize.FULL_BANNER)
-                adUnitId = "ca-app-pub-3940256099942544/9214589741" // Reemplaza con tu ID real
+                adUnitId = "ca-app-pub-6007960646352251/2206415414" // Reemplaza con tu ID real
                 loadAd(AdRequest.Builder().build())
             }
         }
