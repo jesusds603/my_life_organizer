@@ -42,9 +42,8 @@
 
 ## 📲 Instalación
 
-1. Descarga el APK desde [Releases](https://github.com/jesusds603/my_life_organizer/releases)
-2. Alternativamente, clona y compila el proyecto:
+Clona y compila el proyecto:
 
 ```bash
-git clone https://github.com/tu-usuario/my-life-organizer.git
+git clone https://github.com/jesusds603/my-life-organizer.git
 cd my-life-organizer
