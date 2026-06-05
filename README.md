@@ -45,5 +45,5 @@
 Clona y compila el proyecto:
 
 ```bash
-git clone https://github.com/jesusds603/my-life-organizer.git
+git clone https://github.com/jesusds603/my_life_organizer.git
 cd my-life-organizer
